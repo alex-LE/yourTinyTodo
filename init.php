@@ -10,7 +10,7 @@ if(!defined('MTTPATH')) define('MTTPATH', dirname(__FILE__) .'/');
 require_once(MTTPATH. 'common.php');
 require_once(MTTPATH. 'db/config.php');
 
-ini_set('display_errors', 'On');
+ini_set('display_errors', 0);
 
 if(!isset($config)) global $config;
 Config::loadConfig($config);
@@ -21,18 +21,32 @@ date_default_timezone_set(Config::get('timezone'));
 # MySQL Database Connection
 if(Config::get('db') == 'mysql')
 {
-	require_once(MTTPATH. 'class.db.mysql.php');
-	$db = DBConnection::init(new Database_Mysql);
-	$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
-	$db->dq("SET NAMES utf8");
+	try
+	{
+		require_once(MTTPATH. 'class.db.mysql.php');
+		$db = DBConnection::init(new Database_Mysql);
+		$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
+		$db->dq("SET NAMES utf8");
+	}
+	catch(Exception $e)
+	{
+		die('Database connection error - check config file');
+	}
 }
 
 # SQLite3 (pdo_sqlite)
 elseif(Config::get('db') == 'sqlite')
 {
-	require_once(MTTPATH. 'class.db.sqlite3.php');
-	$db = DBConnection::init(new Database_Sqlite3);
-	$db->connect(MTTPATH. 'db/todolist.db');
+	try
+	{
+		require_once(MTTPATH. 'class.db.sqlite3.php');
+		$db = DBConnection::init(new Database_Sqlite3);
+		$db->connect(MTTPATH. 'db/todolist.db');
+	}
+	catch(Exception $e)
+	{
+		die('Database connection error - check config file');
+	}
 }
 else {
 	# It seems not installed
