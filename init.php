@@ -37,6 +37,15 @@ if(Config::get('db') == 'mysql')
 	}
 }
 
+# PostgreSQL Database Connection
+if(Config::get('db') == 'postgres')
+{
+	require_once(MTTPATH. 'class.db.postgres.php');
+	$db = DBConnection::init(new Database_Postgres);
+	$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
+	$db->dq("SET NAMES 'utf8'");
+}
+
 # SQLite3 (pdo_sqlite)
 elseif(Config::get('db') == 'sqlite')
 {

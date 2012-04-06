@@ -18,6 +18,12 @@ if(!isset($config['db']))
 		$config['mysql.db'] = $config['mysql'][3];
 		$config['mysql.user'] = $config['mysql'][1];
 		$config['mysql.password'] = $config['mysql'][2];
+	} elseif(isset($config['postgres'])) {
+		$config['db'] = 'mysql';
+		$config['postgres.host'] = $config['postgres'][0];
+		$config['postgres.db'] = $config['postgres'][3];
+		$config['postgres.user'] = $config['postgres'][1];
+		$config['postgres.password'] = $config['postgres'][2];
 	} else {
 		$config['db'] = 'sqlite';
 	}
@@ -31,7 +37,13 @@ if($config['db'] != '')
 	{
 		die("Access denied!<br> Disable password protection or Log in.");
 	}
-	$dbtype = (strtolower(get_class($db)) == 'database_mysql') ? 'mysql' : 'sqlite';
+	if(strtolower(get_class($db)) == 'database_mysql') {
+		$dbtype = 'mysql';
+	} elseif (strtolower(get_class($db)) == 'database_postgres') {
+		$dbtype = 'postgres';
+	} else {
+		$dbtype = 'sqlite';
+	}
 }
 else
 {
@@ -58,24 +70,37 @@ if(!$ver)
 	{
 		exitMessage("<form method=post>Select database type to use:<br><br>
 <label><input type=radio name=installdb value=sqlite checked=checked onclick=\"document.getElementById('mysqlsettings').style.display='none'\">SQLite</label><br><br>
-<label><input type=radio name=installdb value=mysql onclick=\"document.getElementById('mysqlsettings').style.display=''\">MySQL</label><br>
+<label><input type=radio name=installdb value=mysql onclick=\"document.getElementById('mysqlsettings').style.display='';document.getElementById('postgressettings').style.display='none'\">MySQL</label><br><br>
+<label><input type=radio name=installdb value=postgres onclick=\"document.getElementById('postgressettings').style.display='';document.getElementById('mysqlsettings').style.display='none'\">Postgres</label><br>
 <div id='mysqlsettings' style='display:none; margin-left:30px;'><br><table><tr><td>Host:</td><td><input name=mysql_host value=localhost></td></tr>
 <tr><td>Database:</td><td><input name=mysql_db value=mytinytodo></td></tr>
 <tr><td>User:</td><td><input name=mysql_user value=user></td></tr>
 <tr><td>Password:</td><td><input type=password name=mysql_password></td></tr>
+<tr><td>Table prefix:</td><td><input name=prefix value=\"mtt_\"></td></tr>
+</table></div><div id='postgressettings' style='display:none; margin-left:30px;'><br><table><tr><td>Host:</td><td><input name=postgres_host value=localhost></td></tr>
+<tr><td>Database:</td><td><input name=postgres_db value=mytinytodo></td></tr>
+<tr><td>User:</td><td><input name=postgres_user value=user></td></tr>
+<tr><td>Password:</td><td><input type=password name=postgres_password></td></tr>
 <tr><td>Table prefix:</td><td><input name=prefix value=\"mtt_\"></td></tr>
 </table></div><br><input type=submit value=' Next '></form>");
 	}
 	elseif(isset($_POST['installdb']))
 	{
 		# Save configuration
-		$dbtype = ($_POST['installdb'] == 'mysql') ? 'mysql' : 'sqlite';
+		$dbtype = (in_array($_POST['installdb'], array('mysql','postgres','sqlite'))) ? $_POST['installdb'] : 'sqlite';
 		Config::set('db', $dbtype);
 		if($dbtype == 'mysql') {
 			Config::set('mysql.host', _post('mysql_host'));
 			Config::set('mysql.db', _post('mysql_db'));
 			Config::set('mysql.user', _post('mysql_user'));
 			Config::set('mysql.password', _post('mysql_password'));
+			Config::set('prefix', trim(_post('prefix')));
+		}
+		if($dbtype == 'postgres') {
+			Config::set('postgres.host', _post('postgres_host'));
+			Config::set('postgres.db', _post('postgres_db'));
+			Config::set('postgres.user', _post('postgres_user'));
+			Config::set('postgres.password', _post('postgres_password'));
 			Config::set('prefix', trim(_post('prefix')));
 		}
 		if(!testConnect($error)) {
@@ -150,6 +175,114 @@ if(!$ver)
  KEY(`task_id`),
  KEY(`list_id`)		/* for tagcloud */
 ) CHARSET=utf8 ");
+
+
+		} catch (Exception $e) {
+			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
+		}
+	}
+	elseif($dbtype == 'postgres') 
+	{
+		try
+		{
+
+			$db->ex(
+"CREATE TABLE {$db->prefix}lists (
+    id integer NOT NULL,
+    uuid character varying(36) NOT NULL,
+    ow integer DEFAULT 0 NOT NULL,
+    name character varying(50) NOT NULL,
+    d_created integer DEFAULT 0 NOT NULL,
+    d_edited integer DEFAULT 0 NOT NULL,
+    sorting integer DEFAULT 0 NOT NULL,
+    published integer DEFAULT 0 NOT NULL,
+    taskview integer DEFAULT 0 NOT NULL
+);
+CREATE SEQUENCE {$db->prefix}lists_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+ALTER SEQUENCE {$db->prefix}lists_id_seq OWNED BY {$db->prefix}lists.id;
+ALTER TABLE {$db->prefix}lists ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}lists_id_seq'::regclass);
+ALTER TABLE ONLY {$db->prefix}lists
+    ADD CONSTRAINT {$db->prefix}lists_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY {$db->prefix}lists
+    ADD CONSTRAINT {$db->prefix}lists_uuid_key UNIQUE (uuid);");
+
+
+			$db->ex(
+"CREATE TABLE {$db->prefix}todolist (
+    id integer NOT NULL,
+    uuid character varying(36) NOT NULL,
+    list_id integer DEFAULT 0 NOT NULL,
+    d_created integer DEFAULT 0 NOT NULL,	-- time() timestamp
+    d_completed integer DEFAULT 0 NOT NULL,	-- time() timestamp
+    d_edited integer DEFAULT 0 NOT NULL,	-- time() timestamp
+    compl integer DEFAULT 0 NOT NULL,
+    title character varying(250) NOT NULL,
+    note text,
+    prio integer DEFAULT 0 NOT NULL,		-- priority -,0,+
+    ow integer DEFAULT 0 NOT NULL,			-- order weight
+    tags character varying(600),			-- for fast access to task tags
+    tags_ids character varying(250),		-- no more than 22 tags (x11 chars)
+    duedate date
+);
+CREATE SEQUENCE {$db->prefix}todolist_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+ALTER SEQUENCE {$db->prefix}todolist_id_seq OWNED BY {$db->prefix}todolist.id;
+ALTER TABLE {$db->prefix}todolist ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}todolist_id_seq'::regclass);
+ALTER TABLE ONLY {$db->prefix}todolist
+    ADD CONSTRAINT {$db->prefix}todolist_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY {$db->prefix}todolist
+    ADD CONSTRAINT {$db->prefix}todolist_uuid_key UNIQUE (uuid);
+CREATE INDEX idx_list_id ON {$db->prefix}todolist USING btree (list_id);");
+
+
+			$db->ex(
+"CREATE TABLE {$db->prefix}tags (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL
+);
+CREATE SEQUENCE {$db->prefix}tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+ALTER SEQUENCE {$db->prefix}tags_id_seq OWNED BY {$db->prefix}tags.id;
+ALTER TABLE {$db->prefix}tags ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}tags_id_seq'::regclass);
+ALTER TABLE ONLY {$db->prefix}tags
+    ADD CONSTRAINT {$db->prefix}tags_name_key UNIQUE (name);
+ALTER TABLE ONLY {$db->prefix}tags
+    ADD CONSTRAINT {$db->prefix}tags_pkey PRIMARY KEY (id);");
+
+
+			$db->ex(
+"CREATE TABLE {$db->prefix}tag2task (
+    id integer NOT NULL,
+    tag_id integer NOT NULL,
+    task_id integer NOT NULL,
+    list_id integer NOT NULL			-- for tagcloud
+);
+CREATE SEQUENCE {$db->prefix}tag2task_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+ALTER SEQUENCE {$db->prefix}tag2task_id_seq OWNED BY {$db->prefix}tag2task.id;
+ALTER TABLE {$db->prefix}tag2task ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}tag2task_id_seq'::regclass);
+ALTER TABLE ONLY {$db->prefix}tag2task
+    ADD CONSTRAINT {$db->prefix}tag2task_pkey PRIMARY KEY (id);
+CREATE INDEX {$db->prefix}idx_tag_id ON {$db->prefix}tag2task USING btree (tag_id);
+CREATE INDEX {$db->prefix}idx_task_id ON {$db->prefix}tag2task USING btree (task_id);
+CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING btree (list_id);");
 
 
 		} catch (Exception $e) {
@@ -277,6 +410,8 @@ function get_ver($db, $dbtype)
 	$v = '1.1';
 	if($dbtype == 'mysql') {
 		if(!has_field_mysql($db, $db->prefix.'todolist', 'duedate')) return $v;
+	} elseif($dbtype == 'postgres') {
+		if(!has_field_postgres($db, $db->prefix.'todolist', 'duedate')) return $v;
 	} else {
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'duedate')) return $v;
 	}
@@ -285,12 +420,16 @@ function get_ver($db, $dbtype)
 	$v = '1.3.0';
 	if($dbtype == 'mysql') {
 		if(!has_field_mysql($db, $db->prefix.'todolist', 'd_completed')) return $v;
+	} elseif($dbtype == 'postgres') {
+		if(!has_field_postgres($db, $db->prefix.'todolist', 'd_completed')) return $v;
 	} else {
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'd_completed')) return $v;
 	}
 	$v = '1.3.1';
 	if($dbtype == 'mysql') {
 		if(!has_field_mysql($db, $db->prefix.'todolist', 'd_edited')) return $v;
+	} elseif($dbtype == 'postgres') {
+		if(!has_field_postgres($db, $db->prefix.'todolist', 'd_edited')) return $v;
 	} else {
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'd_edited')) return $v;
 	}
@@ -329,6 +468,14 @@ function has_field_mysql($db, $table, $field)
 	return false;
 }
 
+function has_field_postgres($db, $table, $field)
+{
+	$table = addslashes($table);
+	$q = $db->dq("select * from INFORMATION_SCHEMA.COLUMNS where column_name='$field' AND table_name = '$table';");
+	if($q->rows() > 0) return false;
+	else return true;
+}
+
 function testConnect(&$error)
 {
 	try
@@ -338,7 +485,15 @@ function testConnect(&$error)
 			require_once(MTTPATH. 'class.db.mysql.php');
 			$db = new Database_Mysql;
 			$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
-		} else
+		
+		}
+		else if(Config::get('db') == 'postgres')
+		{
+			require_once(MTTPATH. 'class.db.postgres.php');
+			$db = new Database_Postgres;
+			$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
+		}
+		else
 		{
 			if(false === $f = @fopen(MTTPATH. 'db/todolist.db', 'a+')) throw new Exception("database file is not readable/writable");
 			else fclose($f);
@@ -412,7 +567,7 @@ function get_or_create_tag($name)
 
 	# need to create tag
 	$db->ex("INSERT INTO tags (name) VALUES (?)", $name);
-	return array($db->last_insert_id(), $name);
+	return array($db->last_insert_id($db->prefix.'tags'), $name);
 }
 
 function update_task_tags($id, $tag_ids)
@@ -759,7 +914,7 @@ function v14_getOrCreateTag($name)
 	if($tagId) return array('id'=>$tagId, 'name'=>$name);
 
 	$db->ex("INSERT INTO {$db->prefix}tags (name) VALUES (?)", array($name));
-	return array('id'=>$db->last_insert_id(), 'name'=>$name);
+	return array('id'=>$db->last_insert_id($db->prefix.'tags'), 'name'=>$name);
 }
 
 function v14_addTaskTags($taskId, $tagIds, $listId)

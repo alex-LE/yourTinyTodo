@@ -130,7 +130,7 @@ elseif(isset($_GET['newTask']))
 	$db->ex("BEGIN");
 	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio) VALUES (?,?,?,?,?,?,?)",
 				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio) );
-	$id = $db->last_insert_id();
+	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
 	{
 		$aTags = prepareTags($tags);
@@ -167,7 +167,7 @@ elseif(isset($_GET['fullNewTask']))
 	$db->ex("BEGIN");
 	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate) VALUES(?,?,?,?,?,?,?,?,?)",
 				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate) );
-	$id = $db->last_insert_id();
+	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
 	{
 		$aTags = prepareTags($tags);
@@ -375,7 +375,7 @@ elseif(isset($_GET['addList']))
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}lists");
 	$db->dq("INSERT INTO {$db->prefix}lists (uuid,name,ow,d_created,d_edited) VALUES (?,?,?,?,?)",
 				array(generateUUID(), $name, $ow, time(), time()) );
-	$id = $db->last_insert_id();
+	$id = $db->last_insert_id($db->prefix.'lists');
 	$t['total'] = 1;
 	$r = $db->sqa("SELECT * FROM {$db->prefix}lists WHERE id=$id");
 	$t['list'][] = prepareList($r);
@@ -633,7 +633,7 @@ function getOrCreateTag($name)
 	if($tagId) return array('id'=>$tagId, 'name'=>$name);
 
 	$db->ex("INSERT INTO {$db->prefix}tags (name) VALUES (?)", array($name));
-	return array('id'=>$db->last_insert_id(), 'name'=>$name);
+	return array('id'=>$db->last_insert_id($db->prefix.'tags'), 'name'=>$name);
 }
 
 function getTagId($tag)
