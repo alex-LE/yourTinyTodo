@@ -1,0 +1,22 @@
+Simple way to manage your todo list in AJAX style.
+Written in PHP and jQuery.
+Data stored in SQLite or MySQL database.
+Distributed under the GNU GPL License.
+
+Originally developed by Max Pozdeev <www.mytinytodo.net>
+
+Demo: http://www.mytinytodo.net/demo/
+
+Features
+
+*  Multiple lists
+*  Task notes
+*  Tags (and tag cloud)
+*  Due dates (input format: y-m-d, m/d/y, d.m.y, m/d, d.m)
+*  Priority (-1, 0, +1, +2)
+*  Different sortings including sort by drag-and-drop
+*  Search
+*  Password protection
+*  Smart syntax improves creation of tasks (usage: /priority/ Task /tags/)
+*  Print-friendly CSS
+*  Style for mobiles devices
