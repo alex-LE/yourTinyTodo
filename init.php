@@ -2,6 +2,7 @@
 /*
 	This file is part of myTinyTodo.
 	(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+	Modified by Alexander Adam <info@alexander-adam.net> Copyright 2012
 	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
