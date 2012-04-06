@@ -12,6 +12,8 @@ require_once(MTTPATH. 'db/config.php');
 
 ini_set('display_errors', 0);
 
+define('MTT_VERSION', '1.5');
+
 if(!isset($config)) global $config;
 Config::loadConfig($config);
 unset($config);

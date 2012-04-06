@@ -4,26 +4,26 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php mttinfo('title'); ?></title>
-<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>style.css?v=1.4.2" media="all" />
+<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>style.css?v=<?=MTT_VERSION?>" media="all" />
 <?php if(Config::get('rtl')): ?>
-<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>style_rtl.css?v=1.4.2" media="all" />
+<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>style_rtl.css?v=<?=MTT_VERSION?>" media="all" />
 <?php endif; ?>
 <?php if(isset($_GET['pda'])): ?>
 <meta name="viewport" id="viewport" content="width=device-width" />
-<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>pda.css?v=1.4.2" media="all" />
+<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>pda.css?v=<?=MTT_VERSION?>" media="all" />
 <?php else: ?>
-<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>print.css?v=1.4.2" media="print" />
+<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>print.css?v=<?=MTT_VERSION?>" media="print" />
 <?php endif; ?>
 </head>
 
 <body>
 
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo.js?v=1.4.2"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo_lang.php?v=1.4.2"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo_ajax_storage.js?v=1.4.2"></script>
+<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo.js?v=<?=MTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo_lang.php?v=<?=MTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo_ajax_storage.js?v=<?=MTT_VERSION?>"></script>
 
 <script type="text/javascript">
 $().ready(function(){
@@ -281,8 +281,9 @@ $().ready(function(){
 <div id="space"></div>
 </div>
 
-<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.mytinytodo.net/">myTinyTodo</a></strong> 1.4.2 </div></div>
+<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.mytinytodo.net/">myTinyTodo</a></strong> <?=MTT_VERSION?> </div></div>
 
 </div>
 </body>
-</html><!-- r387 -->
+</html>
+<!-- r387 -->
