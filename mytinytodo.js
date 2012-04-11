@@ -1149,6 +1149,7 @@ function tabSelect(elementOrId)
 	cancelTagFilter(0, 1);
 	setTaskview(0);
 	loadTasks({clearTasklist:1});
+	window.location.hash="list/"+id;
 };
 
 
