@@ -12,7 +12,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -96,6 +96,11 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 		flag.needAuth = options.needAuth ? true : false;
 		flag.isLogged = options.isLogged ? true : false;
+		flag.multiUser = options.multiUser ? true : false;
+		flag.readOnly = options.readOnly ? true : false;
+		flag.admin = options.admin ? true : false;
+		flag.userId = options.userId;
+		flag.userRole = options.userRole;
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .mtt-tabs').addClass('mtt-tabs-only-one');
@@ -330,7 +335,9 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			//clear selection
 			if(document.selection && document.selection.empty && document.selection.createRange().text) document.selection.empty();
 			else if(window.getSelection) window.getSelection().removeAllRanges();
-			
+
+            if(flag.userRole != 1 && flag.userRole != 2) return false;
+
 			var li = findParentNode(this, 'LI');
 			if(li && li.id) {
 				var id = li.id.split('_',2)[1];
@@ -365,7 +372,8 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 		if(!this.options.touchDevice) {
 			$('#tasklist .task-prio').live('mouseover mouseout', function(event){
-				var id = parseInt(getLiTaskId(this));
+                if(flag.userRole != 1 && flag.userRole != 2) return false;
+                var id = parseInt(getLiTaskId(this));
 				if(!id) return;
 				if(event.type == 'mouseover') prioPopup(1, this, id);
 				else prioPopup(0, this);
@@ -465,6 +473,35 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			}
 		});
 
+        // User management
+        $("#manageusers").live('click', showUserManagement);
+        $('#createuserBtn').live('click', function(){
+            if(!_mtt.menus.createuser) _mtt.menus.createuser = new mttMenu('createuser', {adjustWidth:true, modal:true});
+            _mtt.menus.createuser.show(this);
+            $("#um_role").removeAttr("disabled");
+            $('#um_userid').val('');
+            $('#um_username').val('');
+            $('#um_password').val('');
+            $('#um_email').val('');
+            $('#um_role').val('');
+            return false;
+        });
+        $('#createuserSubmit').live('click', function() {
+            if($('#um_userid').val() == '') {
+                createUser();
+            } else {
+                editUser(this, 1);
+            }
+            return false;
+        });
+        $('.edituser').live('click', function() {
+            editUser(this, 0);
+            return false;
+        });
+        $('.deleteuser').live('click', function() {
+            deleteUser($(this).attr('rel'));
+            return false;
+        });
 
 		// tab menu
 		this.addAction('listSelected', tabmenuOnListSelected);
@@ -613,6 +650,9 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		prev.lastScrollTop = $(window).scrollTop();
 		this.pages.prev.push(this.pages.current);
 		this.pages.current = {page:page, pageClass:pageClass};
+        if(this.pages.current.page == 'ajax') {
+            $('#page_'+ this.pages.current.page).removeClass();
+        }
 		showhide($('#page_'+ this.pages.current.page).addClass('mtt-page-'+ this.pages.current.pageClass), $('#page_'+ prev.page));
 	},
 	
@@ -1149,6 +1189,7 @@ function tabSelect(elementOrId)
 	cancelTagFilter(0, 1);
 	setTaskview(0);
 	loadTasks({clearTasklist:1});
+    window.location.hash="list/"+id;
 };
 
 
@@ -1608,6 +1649,10 @@ function mttMenu(container, options)
 	{
 		for(var i in this.submenu) this.submenu[i].hide();
 		clearTimeout(this.showTimer);
+        if(this.options.modal)
+        {
+            $('.mtt-menu-modal').hide();
+        }
 		this.$container.hide();
 		this.$container.find('li').removeClass('mtt-menu-item-active');
 		this.menuOpen = false;
@@ -1615,8 +1660,9 @@ function mttMenu(container, options)
 
 	this.close = function(event)
 	{
-		if(!this.menuOpen) return;
-		if(event)
+        if(!this.menuOpen) return;
+
+        if(event)
 		{
 			// ignore if event (click) was on caller or container
 			var t = event.target;
@@ -1626,18 +1672,30 @@ function mttMenu(container, options)
 				t = t.parentNode;
 			}
 		}
+
+        if(this.options.modal)
+        {
+            $('.mtt-menu-modal').hide();
+        }
+
 		this.hide();
 		$(this.caller).removeClass('mtt-menu-button-active');
 		$(document).unbind('mousedown.mttmenuclose');
 	};
 
+    this.log = function(msg)
+    {
+        console.log(msg);
+    }
+
 	this.show = function(caller)
 	{
-		if(this.menuOpen)
+        if(this.menuOpen)
 		{
-			this.close();
+            this.close();
 			if(this.caller && this.caller == caller) return;
 		}
+
 		$(document).triggerHandler('mousedown.mttmenuclose'); //close any other open menu
 		this.caller = caller;
 		var $caller = $(caller);
@@ -1646,10 +1704,14 @@ function mttMenu(container, options)
 		if(this.options.beforeShow && this.options.beforeShow.call)
 			this.options.beforeShow();
 
+        if(this.options.modal)
+        {
+            $('.mtt-menu-modal').show();
+        }
+
 		// adjust width
 		if(this.options.adjustWidth && this.$container.outerWidth(true) > $(window).width())
 			this.$container.width($(window).width() - (this.$container.outerWidth(true) - this.$container.width()));
-
 		$caller.addClass('mtt-menu-button-active');
 		var offset = $caller.offset();
 		var x2 = $(window).width() + $(document).scrollLeft() - this.$container.outerWidth(true) - 1;
@@ -1658,8 +1720,8 @@ function mttMenu(container, options)
 		var y = offset.top+caller.offsetHeight-1;
 		if(y + this.$container.outerHeight(true) > $(window).height() + $(document).scrollTop()) y = offset.top - this.$container.outerHeight();
 		if(y<0) y=0;
-		this.$container.css({ position: 'absolute', top: y, left: x, width:this.$container.width() /*, 'min-width': $caller.width()*/ }).show();
-		var menu = this;
+        this.$container.css({ 'position': 'absolute', 'top': y, 'left': x, 'width':this.$container.width()}).show();
+        var menu = this;
 		$(document).bind('mousedown.mttmenuclose', function(e){ menu.close(e) });
 		this.menuOpen = true;
 	};
@@ -1680,7 +1742,11 @@ function mttMenu(container, options)
 
 	this.destroy = function()
 	{
-		for(var i in this.submenu) {
+        if(this.options.modal)
+        {
+            $('.mtt-menu-modal').hide();
+        }
+        for(var i in this.submenu) {
 			this.submenu[i].destroy();
 			delete this.submenu[i];
 		}
@@ -1864,7 +1930,11 @@ function tasklistClick(e)
 
 function showhide(a,b)
 {
-	a.show();
+	// its the same page - do nothing
+    if(a.attr('id') == b.attr('id')) {
+        return;
+    }
+    a.show();
 	b.hide();
 };
 
@@ -2053,8 +2123,10 @@ function updateAccessStatus()
 		$('#bar_auth').show();
 		if(flag.isLogged) {
 			showhide($("#bar_logout"),$("#bar_login"));
-			$('#bar .menu-owner').show();
-			$('#bar .bar-delim').show();
+			if(flag.admin) {
+                $('#bar .menu-owner').show();
+			    $('#bar .bar-delim').show();
+            }
 		}
 		else {
 			showhide($("#bar_login"),$("#bar_logout"));
@@ -2066,16 +2138,22 @@ function updateAccessStatus()
 		$('#bar .menu-owner').show();
 	}
 	if(flag.needAuth && !flag.isLogged) {
-		flag.readOnly = true;
+        flag.readOnly = true;
 		$("#bar_public").show();
-		$('#mtt_body').addClass('readonly')
+		$('#mtt_body').addClass('readonly');
 		liveSearchToggle(1);
 		// remove some tab menu items
 		$('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish').remove();
 	}
+    else if(flag.needAuth && flag.isLogged && flag.readOnly) {
+        $('#mtt_body').addClass('readonly');
+        liveSearchToggle(1);
+        // remove some tab menu items
+        $('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish').remove();
+    }
 	else {
-		flag.readOnly = false;
-		$('#mtt_body').removeClass('readonly')
+        flag.readOnly = false;
+		$('#mtt_body').removeClass('readonly');
 		$("#bar_public").hide();
 		liveSearchToggle(0);
 	}
@@ -2093,7 +2171,11 @@ function showAuth(el)
 			top: offset.top + el.offsetHeight + 3,
 			left: offset.left + el.offsetWidth - w.outerWidth()
 		}).show();
-		$('#password').focus();
+        if(flag.multiUser) {
+		    $('#username').focus();
+        } else {
+            $('#password').focus();
+        }
 	}
 	else {
 		w.hide();
@@ -2103,18 +2185,42 @@ function showAuth(el)
 
 function doAuth(form)
 {
-	$.post(mytinytodo.mttUrl+'ajax.php?login', { login:1, password: form.password.value }, function(json){
-		form.password.value = '';
-		if(json.logged)
-		{
-			flag.isLogged = true;
-			window.location.reload();
-		}
-		else {
-			flashError(_mtt.lang.get('invalidpass'));
-			$('#password').focus();
-		}
-	}, 'json');
+	if(flag.multiUser)
+    {
+        $.post(mytinytodo.mttUrl+'ajax.php?login', { login:1, username: form.username.value, password: form.password.value }, function(json){
+            form.password.value = '';
+            form.username.value = '';
+            if(json.logged)
+            {
+                flag.isLogged = true;
+                flag.userRole = json.role;
+                flag.userId = json.userid;
+                if(json.role == 3) {
+                    flag.readOnly = true;
+                }
+                window.location.reload();
+            }
+            else {
+                flashError(_mtt.lang.get('invalidlogin'));
+                $('#password').focus();
+            }
+        }, 'json');
+    }
+    else
+    {
+        $.post(mytinytodo.mttUrl+'ajax.php?login', { login:1, password: form.password.value }, function(json){
+            form.password.value = '';
+            if(json.logged)
+            {
+                flag.isLogged = true;
+                window.location.reload();
+            }
+            else {
+                flashError(_mtt.lang.get('invalidpass'));
+                $('#password').focus();
+            }
+        }, 'json');
+    }
 	$('#authform').hide();
 }
 
@@ -2154,6 +2260,121 @@ function saveSettings(frm)
 			setTimeout('window.location.reload();', 1000);
 		}
 	}, 'json');
-} 
+}
+
+/*
+    User Management
+*/
+function showUserManagement()
+{
+    if(_mtt.pages.current.page == 'ajax' && _mtt.pages.current.pageClass == 'manageusers') return false;
+    $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
+        //showhide($('#page_ajax').addClass('mtt-page-settings'), $('#page_tasks'));
+        _mtt.pageSet('ajax','manageusers');
+    })
+    return false;
+}
+
+function createUser()
+{
+    _mtt.db.request('createUser', { username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
+        switch(json.error)
+        {
+            case 1:
+                flashError(_mtt.lang.get('um_createerror1'));
+                break;
+
+            case 2:
+                flashError(_mtt.lang.get('um_createerror2'));
+                break;
+
+            case 3:
+                flashError(_mtt.lang.get('um_createerror3'));
+                break;
+
+            case 0:
+                _mtt.menus.createuser.close();
+                $('#um_username').val('');
+                $('#um_password').val('');
+                $('#um_email').val('');
+                $('#um_role').val('');
+                flashInfo(_mtt.lang.get('um_usercreated'));
+                $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
+
+                })
+                break;
+        }
+    });
+}
+
+function editUser(clickeditem, step) {
+    if(step == 0) { // load data to form
+        if(!_mtt.menus.createuser) _mtt.menus.createuser = new mttMenu('createuser', {adjustWidth:true, modal:true});
+        _mtt.menus.createuser.show(clickeditem);
+
+        $('#um_userid').val($(clickeditem).attr('rel'));
+        $('#um_username').val($(clickeditem).parent().parent().find('td.username').html());
+        $('#um_email').val($(clickeditem).parent().parent().find('td.email').html());
+        $("#um_role > option:contains('"+$(clickeditem).parent().parent().find('td.role').html()+"')").attr('selected',true);
+
+        if($(clickeditem).attr('rel') == flag.userId) {
+            $("#um_role").attr('disabled','disabled');
+        } else {
+            $("#um_role").removeAttr("disabled");
+        }
+
+    } else {        // send form
+        _mtt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
+            switch(json.error)
+            {
+                case 1:
+                    flashError(_mtt.lang.get('um_createerror1'));
+                    break;
+
+                case 2:
+                    flashError(_mtt.lang.get('um_createerror2'));
+                    break;
+
+                case 4:
+                    flashError(_mtt.lang.get('um_updateerror1'));
+                    break;
+
+                case 0:
+                    $('#um_username').val('');
+                    $('#um_password').val('');
+                    $('#um_email').val('');
+                    $('#um_role').val('');
+                    $('#um_userid').val('');
+                    _mtt.menus.createuser.close();
+                    $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
+                        flashInfo(_mtt.lang.get('um_userupdated'));
+                    })
+                    break;
+            }
+        });
+    }
+}
+
+function deleteUser(userid)
+{
+    _mtt.db.request('deleteUser', { userid:userid }, function(json){
+        switch(json.error)
+        {
+            case 1:
+                flashError(_mtt.lang.get('um_deleteerror1'));
+                break;
+
+            case 2:
+                flashError(_mtt.lang.get('um_deleteerror1'));
+                break;
+
+            case 0:
+                $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
+                    flashInfo(_mtt.lang.get('um_userdeleted'));
+                })
+                break;
+        }
+    });
+}
 
 })();

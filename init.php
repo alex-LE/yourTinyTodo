@@ -38,7 +38,7 @@ if(Config::get('db') == 'mysql')
 }
 
 # PostgreSQL Database Connection
-if(Config::get('db') == 'postgres')
+elseif(Config::get('db') == 'postgres')
 {
 	require_once(MTTPATH. 'class.db.postgres.php');
 	$db = DBConnection::init(new Database_Postgres);
@@ -71,7 +71,8 @@ require_once(MTTPATH. 'lang/'.Config::get('lang').'.php');
 
 $_mttinfo = array();
 
-$needAuth = (Config::get('password') != '') ? 1 : 0;
+$needAuth = (Config::get('password') != '' || Config::get('multiuser') == 1) ? 1 : 0;
+$multiUser = (Config::get('multiuser') == 1) ? 1 : 0;
 if($needAuth && !isset($dontStartSession))
 {
 	if(Config::get('session') == 'files')
@@ -97,9 +98,14 @@ function is_logged()
 
 function is_readonly()
 {
-	$needAuth = (Config::get('password') != '') ? 1 : 0;
-	if($needAuth && !is_logged()) return true;
+	$needAuth = (Config::get('password') != '' || Config::get('multiuser') == 1) ? 1 : 0;
+	if(($needAuth && !is_logged()) || (Config::get('multiuser') == 1 && is_logged() && $_SESSION['role'] == 3)) return true;
 	return false;
+}
+
+function is_admin()
+{
+	return (is_logged() && Config::get('multiuser') == 1 && $_SESSION['role'] == 1);
 }
 
 function timestampToDatetime($timestamp)

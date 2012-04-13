@@ -1,6 +1,6 @@
 <?php
 
-# Copyright 2011 Alexander Adam
+# Copyright 2012 Alexander Adam
 
 class DatabaseResult_Posgres
 {

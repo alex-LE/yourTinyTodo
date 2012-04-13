@@ -76,6 +76,7 @@ class Config
 		'title' => array('default'=>'', 'type'=>'s'),
 		'lang' => array('default'=>'en', 'type'=>'s'),
 		'password' => array('default'=>'', 'type'=>'s'),
+		'multiuser' => array('default'=>0, 'type'=>'i'),
 		'smartsyntax' => array('default'=>1, 'type'=>'i'),
 		'timezone' => array('default'=>'UTC', 'type'=>'s'),
 		'autotag' => array('default'=>1, 'type'=>'i'),
@@ -201,6 +202,11 @@ class DBConnection
         }
 		return self::$instance;	
 	}
+}
+
+function hashPassword($password, $salt)
+{
+	return md5($password.$salt);
 }
 
 ?>

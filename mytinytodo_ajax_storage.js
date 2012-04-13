@@ -171,6 +171,21 @@ mytinytodoStorageAjax.prototype =
 	clearCompletedInList: function(params, callback)
 	{
 		$.post(this.mtt.mttUrl+'ajax.php?clearCompletedInList', { list:params.list }, callback, 'json');
+	},
+
+	createUser: function(params, callback)
+	{
+		$.post(this.mtt.mttUrl+'ajax.php?createuser', { mttusername:params.username, mttpassword:params.password, email:params.email, role:params.role }, callback, 'json');
+	},
+
+	editUser: function(params, callback)
+	{
+		$.post(this.mtt.mttUrl+'ajax.php?edituser', { mttuserid:params.userid, mttusername:params.username, mttpassword:params.password, email:params.email, role:params.role }, callback, 'json');
+	},
+
+	deleteUser: function(params, callback)
+	{
+		$.post(this.mtt.mttUrl+'ajax.php?deleteuser', { mttuserid:params.userid }, callback, 'json');
 	}
 
 };

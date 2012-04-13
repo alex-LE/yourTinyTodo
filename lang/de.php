@@ -21,12 +21,21 @@ class Lang extends DefaultLang
 		'error' => "Ein Fehler ist aufgetreten (hier klicken für Details)",
 		'denied' => "Zugriff verweigert",
 		'invalidpass' => "Falsches Passwort",
+		'invalidlogin' => "Ungültige Logindaten",
 		'tagfilter' => "Tag:",
 		'addList' => "Neue Liste erstellen",
 		'renameList' => "Liste umbenennen",
 		'deleteList' => "Damit werden alle Tasks aus der aktuellen Liste gelöscht.\\nBist du sicher?",
 		'clearCompleted' => "Damit werden alle abgeschlossenen Tasks in dieser Liste gelöscht.\\nBist du sicher?",
 		'settingsSaved' => "Einstellungen gespeichert. Bitte warten...",
+		'um_usercreated' => "Benutzer anlegt",
+		'um_userupdated' => "Benutzer gespeichert",
+		'um_userdeleted' => "Benutzer gelöscht",
+		'um_createerror1' => "Die Daten sind nicht vollständig",
+		'um_createerror2' => "Der Benutzername existiert bereits",
+		'um_createerror3' => "Benutzer konnte nicht angelegt werden",
+		'um_updateerror1' => "Benutzer konnte nicht geändert werden",
+		'um_deleteerror1' => "Benutzer konnte nicht gelöscht werden",
 	);
 
 	var $inc = array
@@ -113,6 +122,9 @@ class Lang extends DefaultLang
 		'set_title_descr' => "(angeben, wenn du den ursprünglichen Titel ändern willst)",
 		'set_language' => "Sprache",
 		'set_protection' => "Passwortschutz",
+		'set_enabled_single' => "Single User (nur ein Passwort, siehe unten)",
+		'set_enabled_multi' => "Multi User",
+		'set_manage_users' => "Benutzer verwalten",
 		'set_enabled' => "Aktiviert",
 		'set_disabled' => "Deaktiviert",
 		'set_newpass' => "Neues Passwort",
@@ -121,7 +133,7 @@ class Lang extends DefaultLang
 		'set_smartsyntax_descr' => "(/Priorität/ Task /Tags/)",
 		'set_timezone' => "Zeitzone",
 		'set_autotag' => "Autotagging",
-		'set_autotag_descr' => "(fügt automatisch Tags aus dem aktuellen Tag Filter in den neuen Tasks)",
+		'set_autotag_descr' => "(fügt automatisch Tags aus dem aktuellen Tag Filter in den neuen Task)",
 		'set_sessions' => "Session handling Methode",
 		'set_sessions_php' => "PHP",
 		'set_sessions_files' => "Dateien",
@@ -136,5 +148,18 @@ class Lang extends DefaultLang
 		'set_submit' => "Änderungen speichern",
 		'set_cancel' => "Abbrechen",
 		'set_showdate' => "Task Datum in Liste anzeigen",
+
+		/* user management */
+		'um_header' => "Benutzerverwaltung",
+		'um_username' => "Benutzername",
+		'um_email' => "E-Mail",
+		'um_role' => "Zugriffs-Level",
+		'um_password' => "Passwort",
+		'um_rolename_1' => "Administrator",
+		'um_rolename_2' => "Lesen/Schreiben",
+		'um_rolename_3' => "nur Lesen",
+		'um_nousers' => "Keine Benutzer vorhanden",
+		'um_createuser' => "Benutzer anlegen",
+
 	);
 }

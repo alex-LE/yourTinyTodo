@@ -18,6 +18,7 @@ class DefaultLang
 		'error' => "Some error occurred (click for details)",
 		'denied' => "Access denied",
 		'invalidpass' => "Wrong password",
+		'invalidlogin' => "Invalid credentials",
 		'tagfilter' => "Tag:",
 		'addList' => "Create new list",
 		'addListDefault' => "Todo",
@@ -25,6 +26,14 @@ class DefaultLang
 		'deleteList' => "This will delete current list with all tasks in it.\\nAre you sure?",
 		'clearCompleted' => "This will delete all completed tasks in the list.\\nAre you sure?",
 		'settingsSaved' => "Settings saved. Reloading...",
+		'um_usercreated' => "User created",
+		'um_userupdated' => "User updated",
+		'um_userdeleted' => "User deleted",
+		'um_createerror1' => "Invalid data",
+		'um_createerror2' => "Username already exists",
+		'um_createerror3' => "Unable to create user",
+		'um_updateerror1' => "Unable to update user",
+		'um_deleteerror1' => "Unable to delete user",
 	);
 
 	private $default_inc = array
@@ -112,6 +121,9 @@ class DefaultLang
 		'set_title_descr' => "(specify if you want to change default title)",
 		'set_language' => "Language",
 		'set_protection' => "Password protection",
+		'set_enabled_single' => "Single user (only one password, see below)",
+		'set_enabled_multi' => "Multi user",
+		'set_manage_users' => "Manage Users",
 		'set_enabled' => "Enabled",
 		'set_disabled' => "Disabled",
 		'set_newpass' => "New password",
@@ -135,6 +147,19 @@ class DefaultLang
 		'set_submit' => "Submit changes",
 		'set_cancel' => "Cancel",
 		'set_showdate' => "Show task date in list",
+
+		/* user management */
+		'um_header' => "User Management",
+		'um_username' => "Username",
+		'um_email' => "E-Mail",
+		'um_role' => "Access-Level",
+		'um_password' => "Password",
+		'um_rolename_1' => "Administrator",
+		'um_rolename_2' => "Read/Write",
+		'um_rolename_3' => "read only",
+		'um_nousers' => "No users available",
+		'um_createuser' => "Create user",
+
 	);
 
 	var $js = array();

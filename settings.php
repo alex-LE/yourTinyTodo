@@ -10,7 +10,7 @@ require_once('./init.php');
 
 $lang = Lang::instance();
 
-if($needAuth && !is_logged())
+if(($needAuth && !is_logged()) || !is_admin())
 {
 	die("Access denied!<br/> Disable password protection or Log in.");
 }
@@ -24,6 +24,12 @@ if(isset($_POST['save']))
 	Config::set('lang', _post('lang'));
 	if(isset($_POST['password']) && $_POST['password'] != '') Config::set('password', $_POST['password']);
 	elseif(!_post('allowpassword')) Config::set('password', '');
+	if(_post('allowpassword') == 2) {
+		Config::set('password', '');
+		Config::set('multiuser', 1);
+	} else {
+		Config::set('multiuser', 0);
+	}
 	Config::set('smartsyntax', (int)_post('smartsyntax'));
 	// Do not set invalid timezone
 	try {
@@ -154,8 +160,9 @@ header('Content-type:text/html; charset=utf-8');
 <tr>
 <th><?php _e('set_protection');?>:</th>
 <td>
- <label><input type="radio" name="allowpassword" value="1" <?php if(_c('password')!='') echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled",false)' /><?php _e('set_enabled');?></label> <br/>
- <label><input type="radio" name="allowpassword" value="0" <?php if(_c('password')=='') echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled")' /><?php _e('set_disabled');?></label> <br/>
+ <label><input type="radio" name="allowpassword" value="1" <?php if(_c('password')!=''&&_c('multiuser')==0) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled",false);$(this.form).find("a.mtt-manage-users").hide()' /><?php _e('set_enabled_single');?></label> <br/>
+ <label><input type="radio" name="allowpassword" value="2" <?php if(_c('multiuser')==1) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled");$(this.form).find("a.mtt-manage-users").show()' /><?php _e('set_enabled_multi');?> <a href="#manageusers" id="manageusers" class="mtt-manage-users" <?php if(_c('multiuser')==0) echo ' style="display:none"'; ?>><?php _e('set_manage_users');?></a></label> <br/>
+ <label><input type="radio" name="allowpassword" value="0" <?php if(_c('password')=='' && _c('multiuser')==0) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled");$(this.form).find("a.mtt-manage-users").hide()' /><?php _e('set_disabled');?></label> <br/>
 </td></tr>
 
 <tr>

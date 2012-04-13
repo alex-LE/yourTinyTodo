@@ -33,6 +33,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 #authform { overflow: hidden; z-index:100; background-color:#f9f9f9; border:1px solid #cccccc; padding:5px; width:160px; }
 #authform div { padding:2px 0px; }
 #authform div.h { font-weight:bold; }
+#authform label {font-size: 1em; font-weight: bold}
 #loading { float:left; padding-top:5px; background-color:#ffffff; display:none; padding-right:6px; width:16px; height:16px; background:url(images/loading1.gif) no-repeat; }
 
 #msg { float:left; }
@@ -241,6 +242,7 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
 #taskedit-date { font-size:1em; font-weight:normal; display:inline; color:#777; margin-left:8px; }
 
 a.mtt-back-button { font-size:0.8em; }
+a.mtt-manage-users { font-size:0.8em; }
 
 /* autocomplete */
 .ac_results { padding:0px; border:1px solid #cccccc; background-color:#f9f9f9; overflow:hidden; z-index:99999; -moz-box-shadow:1px 2px 5px rgba(0,0,0,0.5); -webkit-box-shadow:1px 2px 5px rgba(0,0,0,0.5); }
@@ -350,3 +352,33 @@ li.mtt-item-hidden { display:none; }
 .mtt-settings-table th { text-align:left; width:210px; padding-left:8px; }
 .mtt-settings-table .descr { font-size:0.8em; font-weight:normal; color:#222; }
 .mtt-settings-table .in350 { min-width:350px; }
+
+.mtt-usermanagement-table { width:100%; border-collapse:collapse; }
+.mtt-usermanagement-table th, .mtt-usermanagement-table td { border-bottom:1px solid #dedede; padding:8px; vertical-align:top; }
+.mtt-usermanagement-table th { text-align:left; width:210px; padding-left:8px; }
+.mtt-usermanagement-table a { font-size:0.8em; }
+
+.mtt-page-manageusers a.createuserBtn {margin:20px 0; display: block;}
+#createuser label {display: block; width:150px; float:left; text-align: left}
+#createuser input,select {display: block; width:200px; margin:3px 0}
+#createuser #createuserSubmit {width:auto; margin-left: 150px}
+#createuser {
+    height:140px;width:430px;
+    overflow: hidden; z-index:100; background-color:#f9f9f9; border:1px solid #cccccc; padding:5px;
+    width:100%; max-width:450px; margin:0px 7px 7px 7px; text-align:center;
+    -moz-box-shadow:1px 2px 5px rgba(0,0,0,0.5); -webkit-box-shadow:1px 2px 5px rgba(0,0,0,0.5);
+}
+
+.mtt-menu-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+    -webkit-transition: opacity 500ms ease-in;
+    -moz-transition: opacity 500ms ease-in;
+    transition: opacity 500ms ease-in;
+    display: none;
+}

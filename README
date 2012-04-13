@@ -20,3 +20,8 @@ Features
   *  Smart syntax improves creation of tasks (usage: /priority/ Task /tags/)
   *  Print-friendly CSS
   *  Style for mobiles devices
+
+
+Features comming with the next version:
+
+ * MulitUser Support (3 UserGroups: Admin, Read/Write, Readonly)

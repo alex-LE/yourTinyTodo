@@ -289,17 +289,42 @@ elseif(isset($_POST['login']))
 		jsonExit($t);
 	}
 	stop_gpc($_POST);
-	$password = _post('password');
-	if($password == Config::get('password')) {
-		$t['logged'] = 1;
-		session_regenerate_id(1);
-		$_SESSION['logged'] = 1;
+
+	if(Config::get('multiuser') == 1)
+	{
+		$password = _post('password');
+		$username = _post('username');
+		$result = $db->dq("SELECT role,id FROM {$db->prefix}users WHERE username = ? AND MD5(CONCAT(?,uuid)) = password", array($username, $password) );
+		if($result && $result->rows() == 1) {
+			$t['logged'] = 1;
+			$row = $result->fetch_assoc();
+			session_regenerate_id(1);
+			$_SESSION['logged'] = 1;
+			$_SESSION['userid'] = $row['id'];
+			$_SESSION['role'] = $row['role'];
+
+			$t['role'] = $row['role'];
+			$t['userid'] = $row['id'];
+		}
 	}
+	else
+	{
+		$password = _post('password');
+		if($password == Config::get('password')) {
+			$t['logged'] = 1;
+			session_regenerate_id(1);
+			$_SESSION['logged'] = 1;
+		}
+	}
+
+
 	jsonExit($t);
 }
 elseif(isset($_POST['logout']))
 {
 	unset($_SESSION['logged']);
+	unset($_SESSION['userid']);
+	unset($_SESSION['role']);
 	$t = array('logged' => 0);
 	jsonExit($t);
 }
@@ -515,7 +540,110 @@ elseif(isset($_GET['setHideList']))
 	$db->dq("UPDATE {$db->prefix}lists SET taskview=$bitwise WHERE id=$listId");
 	jsonExit(array('total'=>1));	
 }
+elseif(isset($_GET['createuser']))
+{
+	check_admin_access();
+	stop_gpc($_POST);
+	$username = _post('mttusername');
+	$password = _post('mttpassword');
+	$email = _post('email');
+	$role = (int)_post('role');
 
+
+	// check input
+	if(empty($username) || empty($password) || empty($email) || !in_array($role, array(1,2,3)))
+	{
+		jsonExit(array('error' => 1)); // data invalid
+	}
+
+	$result = $db->dq("SELECT * FROM {$db->prefix}users WHERE username = ?", array($username));
+	if($result->rows() > 0)
+	{
+		jsonExit(array('error' => 2)); // username already exists
+	}
+
+	$uuid = generateUUID();
+	$db->dq("INSERT INTO {$db->prefix}users (uuid,username,password,email,d_created,role) VALUES(?,?,?,?,?,?)",
+		array($uuid, $username, hashPassword($password, $uuid), $email, time(), $role) );
+	$id = $db->last_insert_id($db->prefix.'users');
+	if($id > 0)
+	{
+		jsonExit(array('error' => 0)); // everything is fine
+	}
+	else
+	{
+		jsonExit(array('error' => 3)); // error creating user
+	}
+}
+elseif(isset($_GET['edituser']))
+{
+	check_admin_access();
+	stop_gpc($_POST);
+	$username = _post('mttusername');
+	$password = _post('mttpassword');
+	$email = _post('email');
+	$role = (int)_post('role');
+	$userid = (int)_post('mttuserid');
+
+
+	// check input
+	if(empty($username) || empty($email) || !in_array($role, array(1,2,3)) || empty($userid))
+	{
+		jsonExit(array('error' => 1)); // data invalid
+	}
+
+	$result = $db->dq("SELECT * FROM {$db->prefix}users WHERE username = ? AND id != ?", array($username,$userid));
+	if($result->rows() > 0)
+	{
+		jsonExit(array('error' => 2)); // username already exists
+	}
+
+	$result = $db->dq("SELECT uuid FROM {$db->prefix}users WHERE id = ?", array($userid));
+	if($result && $result->rows() == 1) {
+		if(!empty($password)) {
+			$row = $result->fetch_assoc();
+			$uuid = $row['uuid'];
+			$updateresult = $db->dq("UPDATE {$db->prefix}users SET username= ?, password = ?, email = ?, role = ? WHERE id = ?",
+				array($username, hashPassword($password, $uuid), $email, $role, $userid) );
+		} else {
+			$updateresult = $db->dq("UPDATE {$db->prefix}users SET username= ?, email = ?, role = ? WHERE id = ?",
+				array($username, $email, $role, $userid) );
+		}
+	} else {
+		jsonExit(array('error' => 1)); // data invalid
+	}
+
+	if($updateresult)
+	{
+		jsonExit(array('error' => 0)); // everything is fine
+	}
+	else
+	{
+		jsonExit(array('error' => 4)); // error updating user
+	}
+}
+elseif(isset($_GET['deleteuser']))
+{
+	check_admin_access();
+	stop_gpc($_POST);
+	$userid = (int)_post('mttuserid');
+
+	// check input
+	if(empty($userid))
+	{
+		jsonExit(array('error' => 1)); // data invalid
+	}
+
+	$result = $db->dq("DELETE FROM {$db->prefix}users WHERE id = ?", array($userid));
+	if($result->affected())
+	{
+		jsonExit(array('error' => 0)); // done
+	}
+	else
+	{
+		jsonExit(array('error' => 2)); // error
+	}
+}
 
 ###################################################################################################
 
@@ -587,6 +715,13 @@ function check_write_access($listId = null)
 {
 	if(have_write_access($listId)) return;
 	jsonExit( array('total'=>0, 'list'=>array(), 'denied'=>1) );
+}
+
+function check_admin_access()
+{
+	if(!is_admin()) {
+		jsonExit( array('total'=>0, 'list'=>array(), 'denied'=>1) );
+	}
 }
 
 function inputTaskParams()

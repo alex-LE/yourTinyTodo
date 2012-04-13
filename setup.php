@@ -177,6 +177,19 @@ if(!$ver)
 ) CHARSET=utf8 ");
 
 
+			$db->ex(
+"CREATE TABLE IF NOT EXISTS {$db->prefix}users (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `uuid` varchar(36) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `d_created` int(10) unsigned NOT NULL,
+  `role` enum('1','2','3') NOT NULL default '3',
+  PRIMARY KEY  (`id`)
+) CHARSET=utf8 ");
+
+
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
 		}
@@ -284,6 +297,38 @@ CREATE INDEX {$db->prefix}idx_tag_id ON {$db->prefix}tag2task USING btree (tag_i
 CREATE INDEX {$db->prefix}idx_task_id ON {$db->prefix}tag2task USING btree (task_id);
 CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING btree (list_id);");
 
+			$db->ex(
+				"CREATE TABLE {$db->prefix}users (
+					id integer NOT NULL,
+					uuid character varying(36),
+					username character varying(50),
+					\"password\" character varying(32),
+					email character varying(100),
+					d_created integer,
+					\"role\" integer
+				);
+				CREATE SEQUENCE {$db->prefix}users_id_seq
+					INCREMENT BY 1
+					NO MAXVALUE
+					NO MINVALUE
+					CACHE 1;
+				ALTER SEQUENCE {$db->prefix}users_id_seq OWNED BY {$db->prefix}users.id;
+				SELECT pg_catalog.setval('{$db->prefix}users_id_seq', 1, true);
+				ALTER TABLE {$db->prefix}users ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}users_id_seq'::regclass);
+				ALTER TABLE ONLY {$db->prefix}users
+    				ADD CONSTRAINT {$db->prefix}users_pkey PRIMARY KEY (id);
+				");
+
+			// Using || to concatenate in MTT is not recommeneded because there are
+			// database drivers for MTT that do not support the syntax, however
+			// they do support CONCAT(item1, item2) which we can replicate in
+			// PostgreSQL. PostgreSQL requires the function to be defined for each
+			// different argument variation the function can handle.
+			$db->ex('CREATE OR REPLACE FUNCTION "concat"(anynonarray, anynonarray) RETURNS text AS \'SELECT CAST($1 AS text) || CAST($2 AS text);\' LANGUAGE \'sql\'');
+			$db->ex('CREATE OR REPLACE FUNCTION "concat"(text, anynonarray) RETURNS text AS \'SELECT $1 || CAST($2 AS text);\' LANGUAGE \'sql\'');
+			$db->ex('CREATE OR REPLACE FUNCTION "concat"(anynonarray, text) RETURNS text AS \'SELECT CAST($1 AS text) || $2;\' LANGUAGE \'sql\'');
+			$db->ex('CREATE OR REPLACE FUNCTION "concat"(text, text) RETURNS text AS \'SELECT $1 || $2;\' LANGUAGE \'sql\'');
+
 
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
@@ -348,6 +393,8 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 			$db->ex("CREATE INDEX tag2task_task_id ON {$db->prefix}tag2task (task_id)");
 			$db->ex("CREATE INDEX tag2task_list_id ON {$db->prefix}tag2task (list_id)");	/* for tagcloud */
 
+			$db->ex('CREATE TABLE '.$db->prefix.'users ("id" INTEGER PRIMARY KEY  NOT NULL , "uuid" VARCHAR, "username" VARCHAR, "password" VARCHAR, "email" VARCHAR, "d_created" INTEGER, "role" INTEGER)');
+
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
 		} 
@@ -355,6 +402,10 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 	
 	# create default list	
 	$db->ex("INSERT INTO {$db->prefix}lists (uuid,name,d_created) VALUES (?,?,?)", array(generateUUID(), 'Todo', time()));
+
+	// create default user - for multi user support
+	$uuid = generateUUID();
+	$db->ex("INSERT INTO {$db->prefix}users` (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 }
 elseif($ver == $lastVer)
@@ -374,6 +425,10 @@ else
 	}
 
 	# update process
+	if($ver == '1.4')
+	{
+		update_14_15($db, $dbtype);
+	}
 	if($ver == '1.3.1')
 	{
 		update_131_14($db, $dbtype);
@@ -434,6 +489,9 @@ function get_ver($db, $dbtype)
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'd_edited')) return $v;
 	}
 	$v = '1.4';
+	if(!$db->table_exists($db->prefix.'users')) return $v;
+
+	$v = '1.5';
 	return $v;
 }
 
@@ -928,5 +986,70 @@ function v14_addTaskTags($taskId, $tagIds, $listId)
 }
 ### end of 1.4 #####
 
+### update v1.4 to v1.5 ##########
+function update_14_15($db, $dbtype)
+{
+	$db->ex("BEGIN");
+	if($dbtype=='mysql')
+	{
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}users (
+			  `id` int(10) unsigned NOT NULL auto_increment,
+			  `uuid` varchar(36) NOT NULL,
+			  `username` varchar(50) NOT NULL,
+			  `password` varchar(32) NOT NULL,
+			  `email` varchar(100) NOT NULL,
+			  `d_created` int(10) unsigned NOT NULL,
+			  `role` enum('1','2','3') NOT NULL default '3',
+			  PRIMARY KEY  (`id`)
+			) CHARSET=utf8 ");
+
+	}
+	else if($dbtype == 'postgres')
+	{
+		$db->ex(
+			"CREATE TABLE {$db->prefix}users (
+					id integer NOT NULL,
+					uuid character varying(36),
+					username character varying(50),
+					\"password\" character varying(32),
+					email character varying(100),
+					d_created integer,
+					\"role\" integer
+				);
+				CREATE SEQUENCE {$db->prefix}users_id_seq
+					INCREMENT BY 1
+					NO MAXVALUE
+					NO MINVALUE
+					CACHE 1;
+				ALTER SEQUENCE {$db->prefix}users_id_seq OWNED BY {$db->prefix}users.id;
+				SELECT pg_catalog.setval('{$db->prefix}users_id_seq', 1, true);
+				ALTER TABLE {$db->prefix}users ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}users_id_seq'::regclass);
+				ALTER TABLE ONLY {$db->prefix}users
+    				ADD CONSTRAINT {$db->prefix}users_pkey PRIMARY KEY (id);
+				");
+
+		// Using || to concatenate in MTT is not recommeneded because there are
+		// database drivers for MTT that do not support the syntax, however
+		// they do support CONCAT(item1, item2) which we can replicate in
+		// PostgreSQL. PostgreSQL requires the function to be defined for each
+		// different argument variation the function can handle.
+		$db->ex('CREATE OR REPLACE FUNCTION "concat"(anynonarray, anynonarray) RETURNS text AS \'SELECT CAST($1 AS text) || CAST($2 AS text);\' LANGUAGE \'sql\'');
+		$db->ex('CREATE OR REPLACE FUNCTION "concat"(text, anynonarray) RETURNS text AS \'SELECT $1 || CAST($2 AS text);\' LANGUAGE \'sql\'');
+		$db->ex('CREATE OR REPLACE FUNCTION "concat"(anynonarray, text) RETURNS text AS \'SELECT CAST($1 AS text) || $2;\' LANGUAGE \'sql\'');
+		$db->ex('CREATE OR REPLACE FUNCTION "concat"(text, text) RETURNS text AS \'SELECT $1 || $2;\' LANGUAGE \'sql\'');
+	}
+	else #sqlite
+	{
+		$db->ex('CREATE TABLE '.$db->prefix.'users ("id" INTEGER PRIMARY KEY  NOT NULL , "uuid" VARCHAR, "username" VARCHAR, "password" VARCHAR, "email" VARCHAR, "d_created" INTEGER, "role" INTEGER)');
+	}
+
+	// create default user - for multi user support
+	$uuid = generateUUID();
+	$db->ex("INSERT INTO {$db->prefix}users` (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
+
+	$db->ex("COMMIT");
+}
+### end of 1.5 #####
 
 ?>
