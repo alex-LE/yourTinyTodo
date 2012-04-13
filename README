@@ -5,7 +5,10 @@ Distributed under the GNU GPL License.
 
 Originally developed by Max Pozdeev <www.mytinytodo.net>
 
-Demo: http://www.mytinytodo.net/demo/
+Demo: http://www.mytinytodo.net/demo/ (OLD VERSION)
+
+Demo Nightly Build: http://alexphpc.my.phpcloud.com/mytinytodo
+(latest development version)
 
 Features
 
@@ -20,3 +23,7 @@ Features
 *  Smart syntax improves creation of tasks (usage: /priority/ Task /tags/)
 *  Print-friendly CSS
 *  Style for mobiles devices
+
+Features comming with the next version:
+
+ * MulitUser Support (3 UserGroups: Admin, Read/Write, Readonly)
