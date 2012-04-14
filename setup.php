@@ -405,7 +405,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 
 	// create default user - for multi user support
 	$uuid = generateUUID();
-	$db->ex("INSERT INTO {$db->prefix}users` (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
+	$db->ex("INSERT INTO {$db->prefix}users (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 }
 elseif($ver == $lastVer)
@@ -1046,7 +1046,7 @@ function update_14_15($db, $dbtype)
 
 	// create default user - for multi user support
 	$uuid = generateUUID();
-	$db->ex("INSERT INTO {$db->prefix}users` (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
+	$db->ex("INSERT INTO {$db->prefix}users (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 	$db->ex("COMMIT");
 }
