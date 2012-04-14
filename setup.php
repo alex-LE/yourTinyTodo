@@ -3,8 +3,13 @@
 /*
 	This file is part of myTinyTodo.
 	(C) Copyright 2009-2011 Max Pozdeev <maxpozdeev@gmail.com>
+
+	Modifications by Alexander Adam <info@alexander-adam.net>
+	(C) Copyright 2012
 	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
+
+define('MTT_VERSION', '1.5');
 
 set_exception_handler('myExceptionHandler');
 
@@ -56,7 +61,6 @@ else
 	$dbtype = '';
 }
 
-$lastVer = '1.4';
 echo '<html><head><meta name="robots" content="noindex,nofollow"><title>myTinyTodo <?=MTT_VERSION?> Setup</title></head><body>';
 echo "<big><b>myTinyTodo <?=MTT_VERSION?> Setup</b></big><br><br>";
 
@@ -408,7 +412,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 	$db->ex("INSERT INTO {$db->prefix}users (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 }
-elseif($ver == $lastVer)
+elseif($ver == MTT_VERSION)
 {
 	exitMessage("Installed version does not require database update.");
 }
