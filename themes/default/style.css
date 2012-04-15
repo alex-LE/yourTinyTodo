@@ -239,7 +239,7 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
 .alltags-cell { width:1%; white-space:nowrap; padding-left:5px; }
 #page_taskedit.mtt-inadd .mtt-inedit { display:none; }
 #page_taskedit.mtt-inedit .mtt-inadd { display:none; }
-#taskedit-date { font-size:1em; font-weight:normal; display:inline; color:#777; margin-left:8px; }
+#taskedit-date { display:block; font-size:1em; font-weight:normal; display:inline; color:#777; margin-left:8px; }
 
 a.mtt-back-button { font-size:0.8em; }
 a.mtt-manage-users { font-size:0.8em; }

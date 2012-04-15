@@ -92,7 +92,7 @@
 		<div id="tabs_buttons">
 			<div class="mtt-tabs-select-button mtt-tabs-button" title="<?php _e('list_select'); ?>"><span></span></div>
 		</div>
-		<div id="list_all" class="mtt-tab mtt-tabs-alltasks mtt-tabs-hidden"><a href="#alltasks"><span><?php _e('alltasks'); ?></span><div class="list-action"></div></a></div>
+		<div id="list_all" class="mtt-tab mtt-tabs-alltasks mtt-tabs-hidden"><a href="#alltasks"><span><?php _e('alltasks'); ?></span></a><div class="list-action"></div></div>
 	</div>
 
 
@@ -112,7 +112,7 @@
 		<div id="htab_newtask">
 			<table class="mtt-taskbox"><tr><td class="mtt-tb-cell">
 				<div class="mtt-tb-c">
-					<form id="newtask_form" method="post">
+					<form id="newtask_form" method="post" action="">
 						<label id="task_placeholder" class="placeholding" for="task">
 							<input type="text" name="task" value="" maxlength="250" id="task" autocomplete="off" />
 							<span><?php _e('htab_newtask');?></span>
@@ -152,12 +152,12 @@
 
 	<h3 class="mtt-inadd"><?php _e('add_task');?></h3>
 	<h3 class="mtt-inedit"><?php _e('edit_task');?>
-		<div id="taskedit-date" class="mtt-inedit">
-			(<span class="date-created" title="<?php _e('taskdate_created');?>"><span></span></span><span class="date-completed" title="<?php _e('taskdate_completed');?>"> &mdash; <span></span></span>)
-		</div>
+		<span id="taskedit-date" class="mtt-inedit">
+			(<span class="date-created" title="<?php _e('taskdate_created');?>"><span>&nbsp;</span></span><span class="date-completed" title="<?php _e('taskdate_completed');?>"> &mdash; <span>&nbsp;</span></span>)
+		</span>
 	</h3>
 
-	<form id="taskedit_form" name="edittask" method="post">
+	<form id="taskedit_form" name="edittask" method="post" action="">
 		<input type="hidden" name="isadd" value="0" />
 		<input type="hidden" name="id" value="" />
 		<div class="form-row form-row-short">
@@ -181,7 +181,7 @@
 					<a href="#" id="alltags_hide" style="display:none"><?php _e('alltags_hide');?></a></td>
 			</tr></table>
 		</div>
-		<div class="form-row" id="alltags" style="display:none;"><?php _e('alltags');?> <span class="tags-list"></span></div>
+		<div class="form-row" id="alltags" style="display:none;"><?php _e('alltags');?> <span class="tags-list">&nbsp;</span></div>
 		<div class="form-row form-bottom-buttons">
 			<input type="submit" value="<?php _e('save');?>" />
 			<input type="button" id="mtt_edit_cancel" class="mtt-back-button" value="<?php _e('cancel');?>" />
@@ -192,7 +192,7 @@
 
 
 <div id="authform" style="display:none">
-	<form id="login_form">
+	<form id="login_form" action="" method="post">
 		<?php if($multiUser) { ?>
 		<div><label for="username"><?php _e('um_username');?></label><input type="text" name="username" id="username" /></div>
 		<div><label for="password"><?php _e('um_password');?></label><input type="password" name="password" id="password" /></div>
@@ -222,7 +222,7 @@
 </div>
 
 <div id="tagcloud" style="display:none">
-	<a id="tagcloudcancel" class="mtt-img-button"><span></span></a>
+	<a id="tagcloudcancel" class="mtt-img-button"><span>&nbsp;</span></a>
 	<div id="tagcloudload"></div>
 	<div id="tagcloudcontent"></div>
 </div>
@@ -241,11 +241,11 @@
 		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
 		<li class="mtt-need-list mtt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
 		<li class="mtt-menu-delimiter mtt-need-real-list"></li>
-		<li class="mtt-need-list mtt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="mtt-sort-direction"></span></li>
-		<li class="mtt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div><?php _e('sortByDateCreated');?> <span class="mtt-sort-direction"></span></li>
-		<li class="mtt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div><?php _e('sortByPriority');?> <span class="mtt-sort-direction"></span></li>
-		<li class="mtt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div><?php _e('sortByDueDate');?> <span class="mtt-sort-direction"></span></li>
-		<li class="mtt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="mtt-sort-direction"></span></li>
+		<li class="mtt-need-list mtt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="mtt-sort-direction">&nbsp;</span></li>
+		<li class="mtt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div><?php _e('sortByDateCreated');?> <span class="mtt-sort-direction">&nbsp;</span></li>
+		<li class="mtt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div><?php _e('sortByPriority');?> <span class="mtt-sort-direction">&nbsp;</span></li>
+		<li class="mtt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div><?php _e('sortByDueDate');?> <span class="mtt-sort-direction">&nbsp;</span></li>
+		<li class="mtt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="mtt-sort-direction">&nbsp;</span></li>
 		<li class="mtt-menu-delimiter"></li>
 		<li class="mtt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
 	</ul>
