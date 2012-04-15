@@ -105,7 +105,20 @@ function is_readonly()
 
 function is_admin()
 {
-	return (is_logged() && Config::get('multiuser') == 1 && $_SESSION['role'] == 1);
+	$needAuth = (Config::get('password') != '' || Config::get('multiuser') == 1) ? 1 : 0;
+	if(!$needAuth) {
+		return true;
+	}
+
+	if($needAuth && Config::get('multiuser') != 1 && is_logged()) {
+		return true;
+	}
+
+	if($needAuth && Config::get('multiuser') == 1 && $_SESSION['role'] == 1) {
+		return true;
+	}
+
+	return false;
 }
 
 function timestampToDatetime($timestamp)
