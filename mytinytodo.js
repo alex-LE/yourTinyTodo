@@ -176,7 +176,6 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			}		
 		}).focusin(function(){
 			$('#toolbar').addClass('mtt-insearch');
-			$(this).focus();
 		}).focusout(function(){
 			$('#toolbar').removeClass('mtt-insearch');
 		});
