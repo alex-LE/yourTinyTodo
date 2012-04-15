@@ -40,7 +40,7 @@ if($config['db'] != '')
 	require_once('./init.php');
 	if($needAuth && !is_logged())
 	{
-		die("Access denied!<br> Disable password protection or Log in.");
+		die("Access denied!<br/> Disable password protection or Log in.");
 	}
 	if(strtolower(get_class($db)) == 'database_mysql') {
 		$dbtype = 'mysql';
@@ -61,8 +61,8 @@ else
 	$dbtype = '';
 }
 
-echo '<html><head><meta name="robots" content="noindex,nofollow"><title>myTinyTodo '.MTT_VERSION.' Setup</title></head><body>';
-echo "<big><b>myTinyTodo ".MTT_VERSION." Setup</b></big><br><br>";
+echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="robots" content="noindex,nofollow" /><title>myTinyTodo '.MTT_VERSION.' Setup</title></head><body>';
+echo "<big><b>myTinyTodo ".MTT_VERSION." Setup</b></big><br/><br/>";
 
 # determine current installed version
 $ver = get_ver($db, $dbtype);
@@ -72,21 +72,21 @@ if(!$ver)
 	# Which DB to select
 	if(!isset($_POST['installdb']) && !isset($_POST['install']))
 	{
-		exitMessage("<form method=post>Select database type to use:<br><br>
-<label><input type=radio name=installdb value=sqlite checked=checked onclick=\"document.getElementById('mysqlsettings').style.display='none'\">SQLite</label><br><br>
-<label><input type=radio name=installdb value=mysql onclick=\"document.getElementById('mysqlsettings').style.display='';document.getElementById('postgressettings').style.display='none'\">MySQL</label><br><br>
-<label><input type=radio name=installdb value=postgres onclick=\"document.getElementById('postgressettings').style.display='';document.getElementById('mysqlsettings').style.display='none'\">Postgres</label><br>
-<div id='mysqlsettings' style='display:none; margin-left:30px;'><br><table><tr><td>Host:</td><td><input name=mysql_host value=localhost></td></tr>
-<tr><td>Database:</td><td><input name=mysql_db value=mytinytodo></td></tr>
-<tr><td>User:</td><td><input name=mysql_user value=user></td></tr>
-<tr><td>Password:</td><td><input type=password name=mysql_password></td></tr>
-<tr><td>Table prefix:</td><td><input name=prefix value=\"mtt_\"></td></tr>
-</table></div><div id='postgressettings' style='display:none; margin-left:30px;'><br><table><tr><td>Host:</td><td><input name=postgres_host value=localhost></td></tr>
-<tr><td>Database:</td><td><input name=postgres_db value=mytinytodo></td></tr>
-<tr><td>User:</td><td><input name=postgres_user value=user></td></tr>
-<tr><td>Password:</td><td><input type=password name=postgres_password></td></tr>
-<tr><td>Table prefix:</td><td><input name=prefix value=\"mtt_\"></td></tr>
-</table></div><br><input type=submit value=' Next '></form>");
+		exitMessage('<form method="post" action="">Select database type to use:<br/><br/>
+<label><input type="radio" name="installdb" value="sqlite" checked="checked" onclick="document.getElementById(\'mysqlsettings\').style.display=\'none\'" />SQLite</label><br/><br/>
+<label><input type="radio" name="installdb" value="mysql" onclick="document.getElementById(\'mysqlsettings\').style.display=\'\';document.getElementById(\'postgressettings\').style.display=\'none\'" />MySQL</label><br/><br/>
+<label><input type="radio" name="installdb" value="postgres" onclick="document.getElementById(\'postgressettings\').style.display=\'\';document.getElementById(\'mysqlsettings\').style.display=\'none\'" />Postgres</label><br/>
+<div id="mysqlsettings" style="display:none; margin-left:30px;"><br/><table><tr><td>Host:</td><td><input type="text" name="mysql_host" value="localhost" /></td></tr>
+<tr><td>Database:</td><td><input type="text" name="mysql_db" value="mytinytodo" /></td></tr>
+<tr><td>User:</td><td><input type="text" name="mysql_user" value="user" /></td></tr>
+<tr><td>Password:</td><td><input type="password" name="mysql_password" /></td></tr>
+<tr><td>Table prefix:</td><td><input type="text" name="mysql_prefix" value="mtt_" /></td></tr>
+</table></div><div id="postgressettings" style="display:none; margin-left:30px;"><br/><table><tr><td>Host:</td><td><input type="text" name="postgres_host" value="localhost" /></td></tr>
+<tr><td>Database:</td><td><input type="text" name="postgres_db" value="mytinytodo" /></td></tr>
+<tr><td>User:</td><td><input type="text" name="postgres_user" value="user" /></td></tr>
+<tr><td>Password:</td><td><input type="password" name="postgres_password" /></td></tr>
+<tr><td>Table prefix:</td><td><input type="text" name="postgres_prefix" value="mtt_" /></td></tr>
+</table></div><br/><input type=submit value="Next" /></form>');
 	}
 	elseif(isset($_POST['installdb']))
 	{
@@ -98,14 +98,14 @@ if(!$ver)
 			Config::set('mysql.db', _post('mysql_db'));
 			Config::set('mysql.user', _post('mysql_user'));
 			Config::set('mysql.password', _post('mysql_password'));
-			Config::set('prefix', trim(_post('prefix')));
+			Config::set('prefix', trim(_post('mysql_prefix')));
 		}
 		if($dbtype == 'postgres') {
 			Config::set('postgres.host', _post('postgres_host'));
 			Config::set('postgres.db', _post('postgres_db'));
 			Config::set('postgres.user', _post('postgres_user'));
 			Config::set('postgres.password', _post('postgres_password'));
-			Config::set('prefix', trim(_post('prefix')));
+			Config::set('prefix', trim(_post('postgres_prefix')));
 		}
 		if(!testConnect($error)) {
 			exitMessage("Database connection error: $error");
@@ -456,7 +456,7 @@ else
 		update_131_14($db, $dbtype);
 	}
 }
-echo "Done<br><br> <b>Attention!</b> Delete this file for security reasons.";
+echo "Done<br/><br/> <b>Attention!</b> Delete this file for security reasons.";
 printFooter();
 
 
@@ -575,7 +575,7 @@ function testConnect(&$error)
 
 function myExceptionHandler($e)
 {
-	echo '<br><b>Fatal Error:</b> \''. $e->getMessage() .'\' in <i>'. $e->getFile() .':'. $e->getLine() . '</i>'.
+	echo '<br/><b>Fatal Error:</b> \''. $e->getMessage() .'\' in <i>'. $e->getFile() .':'. $e->getLine() . '</i>'.
 		"\n<pre>". $e->getTraceAsString() . "</pre>\n";
 	exit;
 }
