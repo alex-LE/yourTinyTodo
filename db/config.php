@@ -47,7 +47,7 @@ $config['duedateformat'] = 1;
 $config['firstdayofweek'] = 1;
 
 # select session handling mechanism: files or default (php default)
-$config['session'] = 'files';
+$config['session'] = 'default';
 
 # Date/time formats
 $config['clock'] = 24;

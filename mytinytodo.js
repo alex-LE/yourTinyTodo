@@ -181,7 +181,6 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			}		
 		}).focusin(function(){
 			$('#toolbar').addClass('mtt-insearch');
-			$(this).focus();
 		}).focusout(function(){
 			$('#toolbar').removeClass('mtt-insearch');
 		});
@@ -197,15 +196,15 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		});
 
 		$('#tagcloudbtn').click(function(){
-			if(!_mtt.menus.tagcloud) _mtt.menus.tagcloud = new mttMenu('tagcloud', {
+            if(!_mtt.menus.tagcloud) _mtt.menus.tagcloud = new mttMenu('tagcloud', {
 				beforeShow: function(){
-					if(flag.tagsChanged) {
+                    if(flag.tagsChanged) {
 						$('#tagcloudcontent').html('');
 						$('#tagcloudload').show();
 						loadTags(curList.id, function(){$('#tagcloudload').hide();});
 					}
 				}, adjustWidth:true
-			});
+            });
 			_mtt.menus.tagcloud.show(this);
 		});
 
@@ -311,7 +310,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			addEditTag($(this).attr('tag'));
 			return false;
 		});
-		
+
 		$("#duedate").datepicker({
 			dateFormat: _mtt.duedatepickerformat(),
 			firstDay: _mtt.options.firstdayofweek,
@@ -336,7 +335,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			if(document.selection && document.selection.empty && document.selection.createRange().text) document.selection.empty();
 			else if(window.getSelection) window.getSelection().removeAllRanges();
 
-            if(flag.userRole != 1 && flag.userRole != 2) return false;
+            if(flag.readOnly) return false;
 
 			var li = findParentNode(this, 'LI');
 			if(li && li.id) {
@@ -372,7 +371,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 		if(!this.options.touchDevice) {
 			$('#tasklist .task-prio').live('mouseover mouseout', function(event){
-                if(flag.userRole != 1 && flag.userRole != 2) return false;
+                if(flag.readOnly) return false;
                 var id = parseInt(getLiTaskId(this));
 				if(!id) return;
 				if(event.type == 'mouseover') prioPopup(1, this, id);
@@ -1463,7 +1462,7 @@ function addFilterTag(tag, tagId, exclude)
 
 function liveSearchToggle(toSearch, dontLoad)
 {
-	if(toSearch)
+    if(toSearch)
 	{
 		$('#search').focus();
 	}
@@ -2157,7 +2156,7 @@ function updateAccessStatus()
 		$("#bar_public").hide();
 		liveSearchToggle(0);
 	}
-	$('#page_ajax').hide();
+    $('#page_ajax').hide();
 }
 
 function showAuth(el)

@@ -228,17 +228,17 @@
 </div>
 
 <?php
-	$hide_edit_options = (isset($_SESSION['role']) && $_SESSION['role'] < 3);
+	$show_edit_options = (!isset($_SESSION['role']) || $_SESSION['role'] < 3);
 ?>
 
 <div id="listmenucontainer" class="mtt-menu-container" style="display:none">
 	<ul>
-		<?php if($hide_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
-		<?php if($hide_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
-		<?php if($hide_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
-		<?php if($hide_edit_options) {?><li class="mtt-need-list mtt-need-real-list mtt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
-		<?php if($hide_edit_options) {?><li class="mtt-menu-delimiter mtt-need-real-list"></li><?}?>
-		<?php if($hide_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list mtt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
+		<?php if($show_edit_options) {?><li class="mtt-menu-delimiter mtt-need-real-list"></li><?}?>
+		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
 		<li class="mtt-need-list mtt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
 		<li class="mtt-menu-delimiter mtt-need-real-list"></li>
 		<li class="mtt-need-list mtt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="mtt-sort-direction"></span></li>
