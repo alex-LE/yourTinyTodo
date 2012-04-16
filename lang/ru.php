@@ -6,8 +6,10 @@
 	Original name: Русский
 	Author: Max Pozdeev
 	Author Url: http://www.mytinytodo.net
-	AppVersion: v1.4.2
+	AppVersion: v1.5
 	Date: 2011-03-21
+
+	Modified 2012-04-16 by kilolife
 */
 
 class Lang extends DefaultLang
@@ -21,12 +23,21 @@ class Lang extends DefaultLang
 		'error' => 'Ошибка',
 		'denied' => 'Доступ запрещен',
 		'invalidpass' => 'Неверный пароль',
+		'invalidlogin' => 'Неверное имя',
 		'tagfilter' => 'Тег:',
 		'addList' => 'Новый список',
 		'renameList' => 'Переименовать список',
 		'deleteList' => 'Вы действительно хотите удалить этот список со всеми задачами?',
 		'clearCompleted' => 'Удалить все выполненные задачи из списка?',
 		'settingsSaved' => 'Настройки сохранены. Перезагрузка...',
+		'um_usercreated' => 'Пользователь создан',
+		'um_userupdated' => 'Пользователь обновлен',
+		'um_userdeleted' => 'Пользователь удален',
+		'um_createerror1' => 'Неправильные данные',
+		'um_createerror2' => 'Такой пользователь уже есть',
+		'um_createerror3' => 'Невозможно создать пользователя',
+		'um_updateerror1' => 'Невозможно обновить данные пользователя',
+		'um_deleteerror1' => 'Невозможно удалить пользователя',
 	);
 
 	var $inc = array
@@ -106,11 +117,16 @@ class Lang extends DefaultLang
 		'feed_modified_tasks' => 'Изменившиеся задачи',
 		'feed_new_tasks' => 'Новые задачи',
 		'alltasks' => 'Все задачи',
+
+		/* Settings */
 		'set_header' => 'Настройки',
 		'set_title' => 'Заголовок страницы',
 		'set_title_descr' => '(если поле не заполнено, будет использован заголовок по-умолчанию)',
 		'set_language' => 'Язык (Language)',
 		'set_protection' => 'Парольная защита',
+		'set_enabled_single' => 'Однопользовательский режим (только один пароль, см ниже)',
+		'set_enabled_multi' => 'Многопользовательский режим',
+		'set_manage_users' => 'Редактировать пользователей',
 		'set_enabled' => 'Включено',
 		'set_disabled' => 'Выключено',
 		'set_newpass' => 'Новый пароль',
@@ -134,5 +150,18 @@ class Lang extends DefaultLang
 		'set_submit' => 'Сохранить изменения',
 		'set_cancel' => 'Отмена',
 		'set_showdate' => 'Показывать дату создания задачи',
+		
+		/* user management */
+		'um_header' => 'Управление пользователями',
+		'um_username' => 'Имя пользователя',
+		'um_email' => 'E-Mail',
+		'um_role' => 'Уровень доступа',
+		'um_password' => 'Пароль',
+		'um_rolename_1' => 'Администратор',
+		'um_rolename_2' => 'Чтение и запись',
+		'um_rolename_3' => 'Только чтение',
+		'um_nousers' => 'Нет доступных пользователей',
+		'um_createuser' => 'Создать пользователя',
+
 	);
 }
