@@ -30,10 +30,10 @@ function getUserListFromDB()
 				<td valign="left" class="email"><?php echo $r['email'] ?></td>
 				<td valign="left" class="role"><?php echo _e('um_rolename_'.$r['role']) ?></td>
 				<td>
-					<a href="#" class="edituser" rel="<?php echo $r['id'] ?>">edit</a>
+					<a href="#" class="edituser" rel="<?php echo $r['id'] ?>"><?php _e('action_edit') ?></a>
 					<?php if($r['id'] != $_SESSION['userid']) { ?>
 					&nbsp;|&nbsp;
-					<a href="#" class="deleteuser" rel="<?php echo $r['id'] ?>">delete</a>
+					<a href="#" class="deleteuser" rel="<?php echo $r['id'] ?>"><?php _e('action_delete') ?></a>
 					<?php } ?>
 				</td>
 			</tr>
