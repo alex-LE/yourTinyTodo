@@ -292,6 +292,13 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 
 		// edit form handlers
+        $('#page_taskedit').live('keydown', function(e) {
+            if (e.keyCode === 13 && e.ctrlKey) {
+                $('#taskedit_form').submit();
+                e.preventDefault();
+            }
+        });
+
 		$('#alltags_show').click(function(){
 			toggleEditAllTags(1);
 			return false;
