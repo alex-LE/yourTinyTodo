@@ -224,8 +224,8 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
 .prio-neg { background-color:#3377ff; color:#ffffff; }
 .prio-pos { background-color:#ff3333; color:#ffffff; }
 .prio-pos-1 { background-color:#ff7700; color:#ffffff; }
-.prio-zero { /*background-color:#dedede;*/ }
-.task-prio.prio-zero { display:none; } 
+.prio-zero { background-color:#dedede; }
+/*.task-prio.prio-zero { display:none; } */
 
 .form-row { margin-top:8px; }
 .form-row .h { font-weight:bold; color:#333333; }
