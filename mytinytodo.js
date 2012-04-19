@@ -285,11 +285,10 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		$('#priopopup .prio-pos-2').click(function(){
 			prioClick(2,this);
 		});
-
+		
 		$('#priopopup').mouseleave(function(){
-			$(this).hide()}
-		);
-
+			prioPopup(2);
+		});
 
 		// edit form handlers
         $('#page_taskedit').live('keydown', function(e) {
@@ -1037,15 +1036,28 @@ function changeTaskOrder(id)
 
 function prioPopup(act, el, id)
 {
+	clearTimeout(objPrio.timerLeave);
+	var priopopup=$('#priopopup');
+	if(act==2) //leave
+	{
+		objPrio.timerLeave = setTimeout(function(){
+			priopopup.fadeOut('slow');
+		}, 300);
+		return;
+	}
 	if(act == 0) {
 		clearTimeout(objPrio.timer);
 		return;
 	}
 	var offset = $(el).offset();
-	$('#priopopup').css({ position: 'absolute', top: offset.top + 1, left: offset.left + 1 });
+	var prio=taskList[id].prio;
+	prio=parseInt(prio)+1;
+	priopopup.css({ position: 'absolute', top: offset.top-6, left: offset.left - 5 - (prio*20) });
 	objPrio.taskId = id;
 	objPrio.el = el;
-	objPrio.timer = setTimeout("$('#priopopup').show()", 300);
+	objPrio.timer = setTimeout(function(){
+		priopopup.fadeIn('fast');
+	}, 100);
 };
 
 function prioClick(prio, el)
