@@ -23,8 +23,8 @@ class DefaultLang
 		'addList' => "Create new list",
 		'addListDefault' => "Todo",
 		'renameList' => "Rename list",
-		'deleteList' => "This will delete current list with all tasks in it.\\nAre you sure?",
-		'clearCompleted' => "This will delete all completed tasks in the list.\\nAre you sure?",
+		'deleteList' => "This will delete current list with all tasks in it.\nAre you sure?",
+		'clearCompleted' => "This will delete all completed tasks in the list.\nAre you sure?",
 		'settingsSaved' => "Settings saved. Reloading...",
 		'um_usercreated' => "User created",
 		'um_userupdated' => "User updated",
@@ -167,43 +167,29 @@ class DefaultLang
 
 	function makeJS()
 	{
-		$a = array();
+		$a=array();
 		foreach($this->default_js as $k=>$v)
 		{
-			if(isset($this->js[$k])) $v = $this->js[$k];
-
-			if(is_array($v)) {
-				$a[] = "$k: ". $v[0];
-			} else {
-				$a[] = "$k: \"". str_replace('"','\\"',$v). "\"";
-			}
+			if(isset($this->js[$k]))
+				$v = $this->js[$k];
+			while(is_array($v))
+				$v=$v[0];
+			$a[$k]=$v;
 		}
-		$t = array();
-		foreach($this->get('days_min') as $v) { $t[] = '"'.str_replace('"','\\"',$v).'"'; }
-		$a[] = "daysMin: [". implode(',', $t). "]";
-		$t = array();
-		foreach($this->get('days_long') as $v) { $t[] = '"'.str_replace('"','\\"',$v).'"'; }
-		$a[] = "daysLong: [". implode(',', $t). "]";
-		$t = array();
-		foreach($this->get('months_long') as $v) { $t[] = '"'.str_replace('"','\\"',$v).'"'; }
-		$a[] = "monthsLong: [". implode(',', $t). "]";
-		$a[] = $this->_2js('tags');
-		$a[] = $this->_2js('tasks');
-		$a[] = $this->_2js('f_past');
-		$a[] = $this->_2js('f_today');
-		$a[] = $this->_2js('f_soon');
-		return "{\n". implode(",\n", $a). "\n}";
-	}
-
-	function _2js($v)
-	{
-		return "$v: \"". str_replace('"','\\"',$this->get($v)). "\"";
+		$a['daysMin'] = $this->get('days_min');
+		$a['daysLong'] = $this->get('days_long');
+		$a['monthsLong'] = $this->get('months_long');
+		foreach(array('tags','tasks','f_past','f_today','f_soon') as $v)
+			$a[$v]=$this->get($v); 
+		return json_encode($a);
 	}
 
 	function get($key)
 	{
-		if(isset($this->inc[$key])) return $this->inc[$key];
-		if(isset($this->default_inc[$key])) return $this->default_inc[$key];
+		if(isset($this->inc[$key]))
+			return $this->inc[$key];
+		if(isset($this->default_inc[$key]))
+			return $this->default_inc[$key];
 		return $key;
 	}
 
