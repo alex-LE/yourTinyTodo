@@ -1,9 +1,14 @@
+yourTinyTodo
+
 Simple way to manage your todo list in AJAX style.
 Written in PHP and jQuery.
 Data stored in SQLite or MySQL database.
 Distributed under the GNU GPL License.
 
 Originally developed by Max Pozdeev <www.mytinytodo.net>
+Forked by yourTinyTodo Team <www.yourtinytodo.net>
+
+Visit our Forum: www.yourtinytodo.net/forum
 
 Demo: http://www.mytinytodo.net/demo/ (OLD VERSION)
 
