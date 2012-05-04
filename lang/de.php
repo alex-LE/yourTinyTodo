@@ -1,13 +1,13 @@
 <?php
 
 /*
-	myTinyTodo language pack
-	Language: Deutsch
-	Original name: Deutsch
-	Author: Alexander Adam
-	Author Url: http://www.alexander-adam.net
-	AppVersion: v1.5
-	Date: 2012-04-07
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 class Lang extends DefaultLang

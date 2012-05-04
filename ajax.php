@@ -1,9 +1,13 @@
 <?php
 
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */ 
 
 set_error_handler('myErrorHandler');
@@ -544,8 +548,8 @@ elseif(isset($_GET['createuser']))
 {
 	check_admin_access();
 	stop_gpc($_POST);
-	$username = _post('mttusername');
-	$password = _post('mttpassword');
+	$username = _post('yttusername');
+	$password = _post('yttpassword');
 	$email = _post('email');
 	$role = (int)_post('role');
 
@@ -579,11 +583,11 @@ elseif(isset($_GET['edituser']))
 {
 	check_admin_access();
 	stop_gpc($_POST);
-	$username = _post('mttusername');
-	$password = _post('mttpassword');
+	$username = _post('yttusername');
+	$password = _post('yttpassword');
 	$email = _post('email');
 	$role = (int)_post('role');
-	$userid = (int)_post('mttuserid');
+	$userid = (int)_post('yttuserid');
 
 
 	// check input
@@ -626,7 +630,7 @@ elseif(isset($_GET['deleteuser']))
 {
 	check_admin_access();
 	stop_gpc($_POST);
-	$userid = (int)_post('mttuserid');
+	$userid = (int)_post('yttuserid');
 
 	// check input
 	if(empty($userid))

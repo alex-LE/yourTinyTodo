@@ -1,9 +1,13 @@
 <?php
 
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 $dontStartSession = 1;
@@ -69,7 +73,7 @@ printRss($listData, $data);
 
 function printRss($listData, $data)
 {
-	$link = get_mttinfo('url'). "?list=". $listData['id'];
+	$link = get_yttinfo('url'). "?list=". $listData['id'];
 	$buildDate = gmdate('r');
 
 	$s = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n<channel>\n".

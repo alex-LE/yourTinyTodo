@@ -1,15 +1,16 @@
 <?php
 
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2009-2011 Max Pozdeev <maxpozdeev@gmail.com>
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
 
-	Modifications by Alexander Adam <info@alexander-adam.net>
-	(C) Copyright 2012
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-define('MTT_VERSION', '1.5');
+define('YTT_VERSION', '1.5');
 
 set_exception_handler('myExceptionHandler');
 
@@ -52,8 +53,8 @@ if($config['db'] != '')
 }
 else
 {
-	if(!defined('MTTPATH')) define('MTTPATH', dirname(__FILE__) .'/');
-	require_once(MTTPATH. 'common.php');
+	if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
+	require_once(YTTPATH. 'common.php');
 	Config::loadConfig($config);
 	unset($config); 
 
@@ -61,8 +62,8 @@ else
 	$dbtype = '';
 }
 
-echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="robots" content="noindex,nofollow" /><title>myTinyTodo '.MTT_VERSION.' Setup</title></head><body>';
-echo "<big><b>myTinyTodo ".MTT_VERSION." Setup</b></big><br/><br/>";
+echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="robots" content="noindex,nofollow" /><title>yourTinyTodo '.YTT_VERSION.' Setup</title></head><body>';
+echo "<big><b>yourTinyTodo ".YTT_VERSION." Setup</b></big><br/><br/>";
 
 # determine current installed version
 $ver = get_ver($db, $dbtype);
@@ -77,15 +78,15 @@ if(!$ver)
 <label><input type="radio" name="installdb" value="mysql" onclick="document.getElementById(\'mysqlsettings\').style.display=\'\';document.getElementById(\'postgressettings\').style.display=\'none\'" />MySQL</label><br/><br/>
 <label><input type="radio" name="installdb" value="postgres" onclick="document.getElementById(\'postgressettings\').style.display=\'\';document.getElementById(\'mysqlsettings\').style.display=\'none\'" />Postgres</label><br/>
 <div id="mysqlsettings" style="display:none; margin-left:30px;"><br/><table><tr><td>Host:</td><td><input type="text" name="mysql_host" value="localhost" /></td></tr>
-<tr><td>Database:</td><td><input type="text" name="mysql_db" value="mytinytodo" /></td></tr>
+<tr><td>Database:</td><td><input type="text" name="mysql_db" value="yourtinytodo" /></td></tr>
 <tr><td>User:</td><td><input type="text" name="mysql_user" value="user" /></td></tr>
 <tr><td>Password:</td><td><input type="password" name="mysql_password" /></td></tr>
-<tr><td>Table prefix:</td><td><input type="text" name="mysql_prefix" value="mtt_" /></td></tr>
+<tr><td>Table prefix:</td><td><input type="text" name="mysql_prefix" value="ytt_" /></td></tr>
 </table></div><div id="postgressettings" style="display:none; margin-left:30px;"><br/><table><tr><td>Host:</td><td><input type="text" name="postgres_host" value="localhost" /></td></tr>
-<tr><td>Database:</td><td><input type="text" name="postgres_db" value="mytinytodo" /></td></tr>
+<tr><td>Database:</td><td><input type="text" name="postgres_db" value="yourtinytodo" /></td></tr>
 <tr><td>User:</td><td><input type="text" name="postgres_user" value="user" /></td></tr>
 <tr><td>Password:</td><td><input type="password" name="postgres_password" /></td></tr>
-<tr><td>Table prefix:</td><td><input type="text" name="postgres_prefix" value="mtt_" /></td></tr>
+<tr><td>Table prefix:</td><td><input type="text" name="postgres_prefix" value="ytt_" /></td></tr>
 </table></div><br/><input type=submit value="Next" /></form>');
 	}
 	elseif(isset($_POST['installdb']))
@@ -114,7 +115,7 @@ if(!$ver)
 			exitMessage("Config file ('db/config.php') is not writable.");
 		}
 		Config::save();
-		exitMessage("This will create myTinyTodo database <form method=post><input type=hidden name=install value=1><input type=submit value=' Install '></form>");
+		exitMessage("This will create yourTinyTodo database <form method=post><input type=hidden name=install value=1><input type=submit value=' Install '></form>");
 	}
 
 	# install database
@@ -323,8 +324,8 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
     				ADD CONSTRAINT {$db->prefix}users_pkey PRIMARY KEY (id);
 				");
 
-			// Using || to concatenate in MTT is not recommeneded because there are
-			// database drivers for MTT that do not support the syntax, however
+			// Using || to concatenate in YTT is not recommeneded because there are
+			// database drivers for YTT that do not support the syntax, however
 			// they do support CONCAT(item1, item2) which we can replicate in
 			// PostgreSQL. PostgreSQL requires the function to be defined for each
 			// different argument variation the function can handle.
@@ -412,7 +413,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 	$db->ex("INSERT INTO {$db->prefix}users (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 }
-elseif($ver == MTT_VERSION)
+elseif($ver == YTT_VERSION)
 {
 	exitMessage("Installed version does not require database update.");
 }
@@ -544,27 +545,27 @@ function testConnect(&$error)
 	{
 		if(Config::get('db') == 'mysql')
 		{
-			require_once(MTTPATH. 'class.db.mysql.php');
+			require_once(YTTPATH. 'class.db.mysql.php');
 			$db = new Database_Mysql;
 			$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		
 		}
 		else if(Config::get('db') == 'postgres')
 		{
-			require_once(MTTPATH. 'class.db.postgres.php');
+			require_once(YTTPATH. 'class.db.postgres.php');
 			$db = new Database_Postgres;
 			$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 		}
 		else
 		{
-			if(false === $f = @fopen(MTTPATH. 'db/todolist.db', 'a+')) throw new Exception("database file is not readable/writable");
+			if(false === $f = @fopen(YTTPATH. 'db/todolist.db', 'a+')) throw new Exception("database file is not readable/writable");
 			else fclose($f);
 
-			if(!is_writable(MTTPATH. 'db/')) throw new Exception("database directory ('db') is not writable");
+			if(!is_writable(YTTPATH. 'db/')) throw new Exception("database directory ('db') is not writable");
 
-			require_once(MTTPATH. 'class.db.sqlite3.php');
+			require_once(YTTPATH. 'class.db.sqlite3.php');
 			$db = new Database_Sqlite3;
-			$db->connect(MTTPATH. 'db/todolist.db');
+			$db->connect(YTTPATH. 'db/todolist.db');
 		}
 	} catch(Exception $e) {
 		$error = $e->getMessage();
@@ -1033,8 +1034,8 @@ function update_14_15($db, $dbtype)
     				ADD CONSTRAINT {$db->prefix}users_pkey PRIMARY KEY (id);
 				");
 
-		// Using || to concatenate in MTT is not recommeneded because there are
-		// database drivers for MTT that do not support the syntax, however
+		// Using || to concatenate in YTT is not recommeneded because there are
+		// database drivers for YTT that do not support the syntax, however
 		// they do support CONCAT(item1, item2) which we can replicate in
 		// PostgreSQL. PostgreSQL requires the function to be defined for each
 		// different argument variation the function can handle.

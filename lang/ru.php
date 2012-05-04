@@ -1,15 +1,13 @@
 <?php
 
 /*
-	myTinyTodo language pack
-	Language: Russian
-	Original name: Русский
-	Author: Max Pozdeev
-	Author Url: http://www.mytinytodo.net
-	AppVersion: v1.5
-	Date: 2011-03-21
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
 
-	Modified 2012-04-16 by kilolife
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 class Lang extends DefaultLang

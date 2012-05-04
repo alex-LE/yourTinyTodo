@@ -3,9 +3,12 @@ Written in PHP and jQuery.
 Data stored in SQLite or MySQL database.
 Distributed under the GNU GPL License.
 
-Originally developed by Max Pozdeev <www.mytinytodo.net>
+yourTinyTodo - by the yourTinyTodo community
 
-Demo: http://www.mytinytodo.net/demo/
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Demo: http://www.yourtinytodo.net/demo/
 
 Features
 

@@ -1,9 +1,13 @@
 <?php
 
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 require_once('./init.php');
@@ -61,14 +65,14 @@ function _c($key)
 
 function getLangs($withContents = 0)
 {
-    if (!$h = opendir(MTTPATH. 'lang')) return false;
+    if (!$h = opendir(YTTPATH. 'lang')) return false;
     $a = array();
     while(false !== ($file = readdir($h)))
 	{
 		if(preg_match('/(.+)\.php$/', $file, $m) && $file != 'class.default.php') {
 			$a[$m[1]] = $m[1];
 			if($withContents) {
-			    $a[$m[1]] = getLangDetails(MTTPATH. 'lang'. DIRECTORY_SEPARATOR. $file, $m[1]);
+			    $a[$m[1]] = getLangDetails(YTTPATH. 'lang'. DIRECTORY_SEPARATOR. $file, $m[1]);
 			    $a[$m[1]]['name'] = $a[$m[1]]['original_name'];
 			    $a[$m[1]]['title'] = $a[$m[1]]['language'];
 			}
@@ -82,7 +86,7 @@ function getLangDetails($filename, $default)
 {
     $contents = file_get_contents($filename);
     $a = array('language'=>$default, 'original_name'=>$default);
-    if(preg_match("|/\\*\s*myTinyTodo language pack([\s\S]+?)\\*/|", $contents, $m))
+    if(preg_match("|/\\*\s*yourTinyTodo language pack([\s\S]+?)\\*/|", $contents, $m))
 	{
 	    $str = $m[1];
 	 	if(preg_match("|Language\s*:\s*(.+)|i", $str, $m)) {
@@ -137,7 +141,7 @@ function timezoneIdentifiers()
 header('Content-type:text/html; charset=utf-8');
 ?>
 
-<div><a href="#" class="mtt-back-button"><?php _e('go_back');?></a></div>
+<div><a href="#" class="ytt-back-button"><?php _e('go_back');?></a></div>
 
 <h3><?php _e('set_header');?></h3>
 
@@ -145,7 +149,7 @@ header('Content-type:text/html; charset=utf-8');
 
 <form id="settings_form" method="post" action="settings.php">
 
-<table class="mtt-settings-table">
+<table class="ytt-settings-table">
 
 <tr>
 <th><?php _e('set_title');?>:<br/><span class="descr"><?php _e('set_title_descr');?></span></th>
@@ -160,9 +164,9 @@ header('Content-type:text/html; charset=utf-8');
 <tr>
 <th><?php _e('set_protection');?>:</th>
 <td>
- <label><input type="radio" name="allowpassword" value="1" <?php if(_c('password')!=''&&_c('multiuser')==0) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled",false);$(this.form).find("a.mtt-manage-users").hide()' /><?php _e('set_enabled_single');?></label> <br/>
- <label><input type="radio" name="allowpassword" value="2" <?php if(_c('multiuser')==1) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled");$(this.form).find("a.mtt-manage-users").show()' /><?php _e('set_enabled_multi');?> <a href="#manageusers" id="manageusers" class="mtt-manage-users" <?php if(_c('multiuser')==0) echo ' style="display:none"'; ?>><?php _e('set_manage_users');?></a></label> <br/>
- <label><input type="radio" name="allowpassword" value="0" <?php if(_c('password')=='' && _c('multiuser')==0) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled");$(this.form).find("a.mtt-manage-users").hide()' /><?php _e('set_disabled');?></label> <br/>
+ <label><input type="radio" name="allowpassword" value="1" <?php if(_c('password')!=''&&_c('multiuser')==0) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled",false);$(this.form).find("a.ytt-manage-users").hide()' /><?php _e('set_enabled_single');?></label> <br/>
+ <label><input type="radio" name="allowpassword" value="2" <?php if(_c('multiuser')==1) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled");$(this.form).find("a.ytt-manage-users").show()' /><?php _e('set_enabled_multi');?> <a href="#manageusers" id="manageusers" class="ytt-manage-users" <?php if(_c('multiuser')==0) echo ' style="display:none"'; ?>><?php _e('set_manage_users');?></a></label> <br/>
+ <label><input type="radio" name="allowpassword" value="0" <?php if(_c('password')=='' && _c('multiuser')==0) echo 'checked="checked"'; ?> onclick='$(this.form).find("input[name=password]").attr("disabled","disabled");$(this.form).find("a.ytt-manage-users").hide()' /><?php _e('set_disabled');?></label> <br/>
 </td></tr>
 
 <tr>
@@ -188,7 +192,7 @@ header('Content-type:text/html; charset=utf-8');
 <th><?php _e('set_sessions');?>:</th>
 <td>
  <label><input type="radio" name="session" value="default" <?php if(_c('session')=='default') echo 'checked="checked"'; ?> /><?php _e('set_sessions_php');?></label> <br/>
- <label><input type="radio" name="session" value="files" <?php if(_c('session')=='files') echo 'checked="checked"'; ?> /><?php _e('set_sessions_files');?></label> <span class="descr">(&lt;mytinytodo_dir&gt;/tmp/sessions)</span>
+ <label><input type="radio" name="session" value="files" <?php if(_c('session')=='files') echo 'checked="checked"'; ?> /><?php _e('set_sessions_files');?></label> <span class="descr">(&lt;yourtinytodo_dir&gt;/tmp/sessions)</span>
 </td></tr>
 
 <tr>
@@ -251,7 +255,7 @@ header('Content-type:text/html; charset=utf-8');
 <tr><td colspan="2" class="form-buttons">
 
 <input type="submit" value="<?php _e('set_submit');?>" />
-<input type="button" class="mtt-back-button" value="<?php _e('set_cancel');?>" />
+<input type="button" class="ytt-back-button" value="<?php _e('set_cancel');?>" />
 
 </td></tr>
 </table>

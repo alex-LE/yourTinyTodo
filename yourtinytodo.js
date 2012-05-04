@@ -1,8 +1,12 @@
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
-*/
+ This file is part of yourTinyTodo by the yourTinyTodo community.
+ Copyrights for portions of this file are retained by their owners.
+
+ Based on myTinyTodo by Max Pozdeev
+ (C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+ Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+ */
 
 (function(){
 
@@ -34,7 +38,7 @@ var tabLists = {
 var curList = 0;
 var tagsList = [];
 
-var mytinytodo = window.mytinytodo = _mtt = {
+var yourtinytodo = window.yourtinytodo = _ytt = {
 
 	theme: {
 		newTaskFlashColor: '#ffffaa',
@@ -44,7 +48,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 	actions: {},
 	menus: {},
-	mttUrl: '',
+	yttUrl: '',
 	templateUrl: '',
 	options: {
 		openList: 0,
@@ -103,23 +107,23 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		flag.userRole = options.userRole;
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
-		if(this.options.singletab) $('#lists .mtt-tabs').addClass('mtt-tabs-only-one');
+		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
 
 		this.parseAnchor();
 
 		// handlers
-		$('.mtt-tabs-add-button').click(function(){
+		$('.ytt-tabs-add-button').click(function(){
 			addList();
 		});
 
-		$('.mtt-tabs-select-button').click(function(event){
+		$('.ytt-tabs-select-button').click(function(event){
 			if(event.metaKey || event.ctrlKey) {
 				// toggle singetab interface
-				_mtt.applySingletab(!_mtt.options.singletab);
+				_ytt.applySingletab(!_ytt.options.singletab);
 				return false;
 			}
-			if(!_mtt.menus.selectlist) _mtt.menus.selectlist = new mttMenu('slmenucontainer', {onclick:slmenuSelect});
-			_mtt.menus.selectlist.show(this);
+			if(!_ytt.menus.selectlist) _ytt.menus.selectlist = new yttMenu('slmenucontainer', {onclick:slmenuSelect});
+			_ytt.menus.selectlist.show(this);
 		});
 
 
@@ -143,10 +147,10 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			}
 		}).focusin(function(){
 			$('#task_placeholder').removeClass('placeholding');
-			$('#toolbar').addClass('mtt-intask');
+			$('#toolbar').addClass('ytt-intask');
 		}).focusout(function(){
 			if('' == $(this).val()) $('#task_placeholder').addClass('placeholding');
-			$('#toolbar').removeClass('mtt-intask');
+			$('#toolbar').removeClass('ytt-intask');
 		});
 
 
@@ -180,23 +184,23 @@ var mytinytodo = window.mytinytodo = _mtt = {
 				return false; //need to return false in firefox (for AJAX?)
 			}		
 		}).focusin(function(){
-			$('#toolbar').addClass('mtt-insearch');
+			$('#toolbar').addClass('ytt-insearch');
 		}).focusout(function(){
-			$('#toolbar').removeClass('mtt-insearch');
+			$('#toolbar').removeClass('ytt-insearch');
 		});
 
 
 		$('#taskview').click(function(){
-			if(!_mtt.menus.taskview) _mtt.menus.taskview = new mttMenu('taskviewcontainer');
-			_mtt.menus.taskview.show(this);
+			if(!_ytt.menus.taskview) _ytt.menus.taskview = new yttMenu('taskviewcontainer');
+			_ytt.menus.taskview.show(this);
 		});
 
-		$('#mtt_filters .tag-filter .mtt-filter-close').live('click', function(){
+		$('#ytt_filters .tag-filter .ytt-filter-close').live('click', function(){
 			cancelTagFilter($(this).attr('tagid'));
 		});
 
 		$('#tagcloudbtn').click(function(){
-            if(!_mtt.menus.tagcloud) _mtt.menus.tagcloud = new mttMenu('tagcloud', {
+            if(!_ytt.menus.tagcloud) _ytt.menus.tagcloud = new yttMenu('tagcloud', {
 				beforeShow: function(){
                     if(flag.tagsChanged) {
 						$('#tagcloudcontent').html('');
@@ -205,26 +209,26 @@ var mytinytodo = window.mytinytodo = _mtt = {
 					}
 				}, adjustWidth:true
             });
-			_mtt.menus.tagcloud.show(this);
+			_ytt.menus.tagcloud.show(this);
 		});
 
 		$('#tagcloudcancel').click(function(){
-			if(_mtt.menus.tagcloud) _mtt.menus.tagcloud.close();
+			if(_ytt.menus.tagcloud) _ytt.menus.tagcloud.close();
 		});
 
 		$('#tagcloudcontent .tag').live('click', function(){
 			addFilterTag($(this).attr('tag'), $(this).attr('tagid'));
-			if(_mtt.menus.tagcloud) _mtt.menus.tagcloud.close();
+			if(_ytt.menus.tagcloud) _ytt.menus.tagcloud.close();
 			return false;
 		});	
 
-		$('#mtt-notes-show').click(function(){
+		$('#ytt-notes-show').click(function(){
 			toggleAllNotes(1);
 			this.blur();
 			return false;
 		});
 
-		$('#mtt-notes-hide').click(function(){
+		$('#ytt-notes-hide').click(function(){
 			toggleAllNotes(0);
 			this.blur();
 			return false;
@@ -239,7 +243,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 		
 		// Tabs
-		$('#lists li.mtt-tab').live('click', function(event){
+		$('#lists li.ytt-tab').live('click', function(event){
 			if(event.metaKey || event.ctrlKey) {
 				// hide the tab
 				hideTab(this);
@@ -259,7 +263,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			return false;
 		});
 
-		$('#lists li.mtt-tab .list-action').live('click', function(){
+		$('#lists li.ytt-tab .list-action').live('click', function(){
 			listMenu(this);
 			return false;	//stop bubble to tab click
 		});
@@ -318,13 +322,13 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		});
 
 		$("#duedate").datepicker({
-			dateFormat: _mtt.duedatepickerformat(),
-			firstDay: _mtt.options.firstdayofweek,
+			dateFormat: _ytt.duedatepickerformat(),
+			firstDay: _ytt.options.firstdayofweek,
 			showOn: 'button',
-			buttonImage: _mtt.templateUrl + 'images/calendar.png', buttonImageOnly: true,
+			buttonImage: _ytt.templateUrl + 'images/calendar.png', buttonImageOnly: true,
 			constrainInput: false,
 			duration:'',
-			dayNamesMin:_mtt.lang.daysMin, dayNames:_mtt.lang.daysLong, monthNamesShort:_mtt.lang.monthsLong
+			dayNamesMin:_ytt.lang.daysMin, dayNames:_ytt.lang.daysLong, monthNamesShort:_ytt.lang.monthsLong
 		});
 
 		$("#edittags").autocomplete('ajax.php?suggestTags', {scroll: false, multiple: true, selectFirst:false, max:8, extraParams:{list:function(){ var taskId = document.getElementById('taskedit_form').id.value; return taskList[taskId].listId; }}});
@@ -369,7 +373,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		});
 
 		$('#tasklist .tag').live('click', function(event){
-			clearTimeout(_mtt.timers.previewtag);
+			clearTimeout(_ytt.timers.previewtag);
 			$('#tasklist li').removeClass('not-in-tagpreview');
 			addFilterTag($(this).attr('tag'), $(this).attr('tagid'), (event.metaKey || event.ctrlKey ? true : false) );
 			return false;
@@ -385,13 +389,13 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			});
 		}
 
-		$('#tasklist .mtt-action-note-cancel').live('click', function(){
+		$('#tasklist .ytt-action-note-cancel').live('click', function(){
 			var id = parseInt(getLiTaskId(this));
 			if(id) cancelTaskNote(id);
 			return false;
 		});
 
-		$('#tasklist .mtt-action-note-save').live('click', function(){
+		$('#tasklist .ytt-action-note-save').live('click', function(){
 			var id = parseInt(getLiTaskId(this));
 			if(id) saveTaskNote(id);
 			return false;
@@ -402,10 +406,10 @@ var mytinytodo = window.mytinytodo = _mtt = {
 				var cl = 'tag-id-' + $(this).attr('tagid');
 				var sel = (event.metaKey || event.ctrlKey) ? 'li.'+cl : 'li:not(.'+cl+')';
 				if(event.type == 'mouseover') {
-					_mtt.timers.previewtag = setTimeout( function(){$('#tasklist '+sel).addClass('not-in-tagpreview');}, _mtt.options.tagPreviewDelay);
+					_ytt.timers.previewtag = setTimeout( function(){$('#tasklist '+sel).addClass('not-in-tagpreview');}, _ytt.options.tagPreviewDelay);
 				}
 				else {
-					clearTimeout(_mtt.timers.previewtag);
+					clearTimeout(_ytt.timers.previewtag);
 					$('#tasklist li').removeClass('not-in-tagpreview');
 				}
 			});
@@ -414,7 +418,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		$("#tasklist").sortable({
 				items:'> :not(.task-completed)', cancel:'span,input,a,textarea',
 		 		delay:150, start:sortStart, update:orderChanged, 
-				placeholder:'mtt-task-placeholder'
+				placeholder:'ytt-task-placeholder'
 		});
 
 		$("#lists ul").sortable({delay:150, update:listOrderChanged}); 
@@ -423,7 +427,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 		// AJAX Errors
 		$('#msg').ajaxSend(function(r,s){
-			$("#msg").hide().removeClass('mtt-error mtt-info').find('.msg-details').hide();
+			$("#msg").hide().removeClass('ytt-error ytt-info').find('.msg-details').hide();
 			$("#loading").show();
 		});
 
@@ -436,7 +440,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			if(request.status == 0) errtxt = 'Bad connection';
 			else if(request.status != 200) errtxt = 'HTTP: '+request.status+'/'+request.statusText;
 			else errtxt = request.responseText;
-			flashError(_mtt.lang.get('error'), errtxt); 
+			flashError(_ytt.lang.get('error'), errtxt); 
 		}); 
 
 
@@ -470,19 +474,19 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			return false;
 		});
 		
-		$(".mtt-back-button").live('click', function(){ _mtt.pageBack(); this.blur(); return false; } );
+		$(".ytt-back-button").live('click', function(){ _ytt.pageBack(); this.blur(); return false; } );
 
 		$(window).bind('beforeunload', function() {
-			if(_mtt.pages.current.page == 'taskedit' && flag.editFormChanged) {
-				return _mtt.lang.get('confirmLeave');
+			if(_ytt.pages.current.page == 'taskedit' && flag.editFormChanged) {
+				return _ytt.lang.get('confirmLeave');
 			}
 		});
 
         // User management
         $("#manageusers").live('click', showUserManagement);
         $('#createuserBtn').live('click', function(){
-            if(!_mtt.menus.createuser) _mtt.menus.createuser = new mttMenu('createuser', {adjustWidth:true, modal:true});
-            _mtt.menus.createuser.show(this);
+            if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('createuser', {adjustWidth:true, modal:true});
+            _ytt.menus.createuser.show(this);
             $("#um_role").removeAttr("disabled");
             $('#um_userid').val('');
             $('#um_username').val('');
@@ -572,8 +576,8 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			{
 				// open required or first non-hidden list
 				for(var i=0; i<res.list.length; i++) {
-					if(_mtt.options.openList) {
-						if(_mtt.options.openList == res.list[i].id) {
+					if(_ytt.options.openList) {
+						if(_ytt.options.openList == res.list[i].id) {
 							openListId = res.list[i].id;
 							break;
 						}
@@ -585,33 +589,33 @@ var mytinytodo = window.mytinytodo = _mtt = {
 				}
 				
 				// open all tasks tab
-				if(_mtt.options.openList == -1) openListId = -1;
+				if(_ytt.options.openList == -1) openListId = -1;
 				
 				// or open first if all list are hidden
 				if(!openListId) openListId = res.list[0].id;
 				
 				$.each(res.list, function(i,item){
 					tabLists.add(item);
-					ti += '<li id="list_'+item.id+'" class="mtt-tab'+(item.hidden?' mtt-tabs-hidden':'')+'">'+
+					ti += '<li id="list_'+item.id+'" class="ytt-tab'+(item.hidden?' ytt-tabs-hidden':'')+'">'+
 						'<a href="#list/'+item.id+'" title="'+item.name+'"><span>'+item.name+'</span>'+
 						'<div class="list-action"></div></a></li>';
 				});
 			}
 			
 			if(openListId) {
-				$('#mtt_body').removeClass('no-lists');
-				$('.mtt-need-list').removeClass('mtt-item-disabled');
+				$('#ytt_body').removeClass('no-lists');
+				$('.ytt-need-list').removeClass('ytt-item-disabled');
 			}
 			else {
 				curList = 0;
-				$('#mtt_body').addClass('no-lists');
-				$('.mtt-need-list').addClass('mtt-item-disabled');
+				$('#ytt_body').addClass('no-lists');
+				$('.ytt-need-list').addClass('ytt-item-disabled');
 			}
 
-			_mtt.options.openList = 0;
+			_ytt.options.openList = 0;
 			$('#lists ul').html(ti);
 			$('#lists').show();
-			_mtt.doAction('listsLoaded');
+			_ytt.doAction('listsLoaded');
 			tabSelect(openListId);
 
 			$('#page_tasks').show();
@@ -658,7 +662,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
         if(this.pages.current.page == 'ajax') {
             $('#page_'+ this.pages.current.page).removeClass();
         }
-		showhide($('#page_'+ this.pages.current.page).addClass('mtt-page-'+ this.pages.current.pageClass), $('#page_'+ prev.page));
+		showhide($('#page_'+ this.pages.current.page).addClass('ytt-page-'+ this.pages.current.pageClass), $('#page_'+ prev.page));
 	},
 	
 	pageBack: function()
@@ -666,7 +670,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		if(this.pages.current.page == 'tasks') return false;
 		var prev = this.pages.current;
 		this.pages.current = this.pages.prev.pop();
-		showhide($('#page_'+ this.pages.current.page), $('#page_'+ prev.page).removeClass('mtt-page-'+prev.page.pageClass));
+		showhide($('#page_'+ this.pages.current.page), $('#page_'+ prev.page).removeClass('ytt-page-'+prev.page.pageClass));
 		$(window).scrollTop(this.pages.current.lastScrollTop);
 	},
 	
@@ -676,11 +680,11 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		else this.options.singletab = yesno;
 		
 		if(yesno) {
-			$('#lists .mtt-tabs').addClass('mtt-tabs-only-one');
+			$('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
 			$("#lists ul").sortable('disable');
 		}
 		else {
-			$('#lists .mtt-tabs').removeClass('mtt-tabs-only-one');
+			$('#lists .ytt-tabs').removeClass('ytt-tabs-only-one');
 			$("#lists ul").sortable('enable');
 		}
 	},
@@ -689,7 +693,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 		_filters: [],
 		clear: function() {
 			this._filters = [];
-			$('#mtt_filters').html('');
+			$('#ytt_filters').html('');
 		},
 		addTag: function(tagId, tag, exclude)
 		{
@@ -697,9 +701,9 @@ var mytinytodo = window.mytinytodo = _mtt = {
 				if(this._filters[i].tagId && this._filters[i].tagId == tagId) return false;
 			}
 			this._filters.push({tagId:tagId, tag:tag, exclude:exclude});
-			$('#mtt_filters').append('<span class="tag-filter tag-id-'+tagId+
-				(exclude ? ' tag-filter-exclude' : '')+'"><span class="mtt-filter-header">'+
-				_mtt.lang.get('tagfilter')+'</span>'+tag+'<span class="mtt-filter-close" tagid="'+tagId+'"></span></span>');
+			$('#ytt_filters').append('<span class="tag-filter tag-id-'+tagId+
+				(exclude ? ' tag-filter-exclude' : '')+'"><span class="ytt-filter-header">'+
+				_ytt.lang.get('tagfilter')+'</span>'+tag+'<span class="ytt-filter-close" tagid="'+tagId+'"></span></span>');
 			return true;
 		},
 		cancelTag: function(tagId)
@@ -707,7 +711,7 @@ var mytinytodo = window.mytinytodo = _mtt = {
 			for(var i in this._filters) {
 				if(this._filters[i].tagId && this._filters[i].tagId == tagId) {
 					this._filters.splice(i,1);
-					$('#mtt_filters .tag-filter.tag-id-'+tagId).remove();
+					$('#ytt_filters .tag-filter.tag-id-'+tagId).remove();
 					return true;
 				}
 			}
@@ -752,65 +756,65 @@ var mytinytodo = window.mytinytodo = _mtt = {
 
 function addList()
 {
-	var r = prompt(_mtt.lang.get('addList'), _mtt.lang.get('addListDefault'));
+	var r = prompt(_ytt.lang.get('addList'), _ytt.lang.get('addListDefault'));
 	if(r == null) return;
 
-	_mtt.db.request('addList', {name:r}, function(json){
+	_ytt.db.request('addList', {name:r}, function(json){
 		if(!parseInt(json.total)) return;
 		var item = json.list[0];
 		var i = tabLists.length();
 		tabLists.add(item);
 		if(i > 0) {
-			$('#lists ul').append('<li id="list_'+item.id+'" class="mtt-tab">'+
+			$('#lists ul').append('<li id="list_'+item.id+'" class="ytt-tab">'+
 					'<a href="#" title="'+item.name+'"><span>'+item.name+'</span>'+
 					'<div class="list-action"></div></a></li>');
-			mytinytodo.doAction('listAdded', item);
+			yourtinytodo.doAction('listAdded', item);
 		}
-		else _mtt.loadLists();
+		else _ytt.loadLists();
 	});
 };
 
 function renameCurList()
 {
 	if(!curList) return;
-	var r = prompt(_mtt.lang.get('renameList'), dehtml(curList.name));
+	var r = prompt(_ytt.lang.get('renameList'), dehtml(curList.name));
 	if(r == null || r == '') return;
 
-	_mtt.db.request('renameList', {list:curList.id, name:r}, function(json){
+	_ytt.db.request('renameList', {list:curList.id, name:r}, function(json){
 		if(!parseInt(json.total)) return;
 		var item = json.list[0];
 		curList = item;
 		tabLists.replace(item); 
-		$('#lists ul>.mtt-tabs-selected>a').attr('title', item.name).find('span').html(item.name);
-		mytinytodo.doAction('listRenamed', item);
+		$('#lists ul>.ytt-tabs-selected>a').attr('title', item.name).find('span').html(item.name);
+		yourtinytodo.doAction('listRenamed', item);
 	});
 };
 
 function deleteCurList()
 {
 	if(!curList) return false;
-	var r = confirm(_mtt.lang.get('deleteList'));
+	var r = confirm(_ytt.lang.get('deleteList'));
 	if(!r) return;
 
-	_mtt.db.request('deleteList', {list:curList.id}, function(json){
+	_ytt.db.request('deleteList', {list:curList.id}, function(json){
 		if(!parseInt(json.total)) return;
-		_mtt.loadLists();
+		_ytt.loadLists();
 	})
 };
 
 function publishCurList()
 {
 	if(!curList) return false;
-	_mtt.db.request('publishList', { list:curList.id, publish:curList.published?0:1 }, function(json){
+	_ytt.db.request('publishList', { list:curList.id, publish:curList.published?0:1 }, function(json){
 		if(!parseInt(json.total)) return;
 		curList.published = curList.published?0:1;
 		if(curList.published) {
-			$('#btnPublish').addClass('mtt-item-checked');
-			$('#btnRssFeed').removeClass('mtt-item-disabled');
+			$('#btnPublish').addClass('ytt-item-checked');
+			$('#btnRssFeed').removeClass('ytt-item-disabled');
 		}
 		else {
-			$('#btnPublish').removeClass('mtt-item-checked');
-			$('#btnRssFeed').addClass('mtt-item-disabled');
+			$('#btnPublish').removeClass('ytt-item-checked');
+			$('#btnRssFeed').addClass('ytt-item-disabled');
 		}
 	});
 };
@@ -826,12 +830,12 @@ function loadTasks(opts)
 		$('#total').html('0');
 	}
 
-	_mtt.db.request('loadTasks', {
+	_ytt.db.request('loadTasks', {
 		list: curList.id,
 		compl: curList.showCompl,
 		sort: curList.sort,
 		search: filter.search,
-		tag: _mtt.filter.getTags(true),
+		tag: _ytt.filter.getTags(true),
 		setCompl: opts.setCompl
 	}, function(json){
 		taskList.length = 0;
@@ -872,8 +876,8 @@ function prepareTaskStr(item, noteExp)
 		'<div class="task-note-block">'+
 			'<div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
 			'<div id="tasknotearea'+id+'" class="task-note-area"><textarea id="notetext'+id+'"></textarea>'+
-				'<span class="task-note-actions"><a href="#" class="mtt-action-note-save">'+_mtt.lang.get('actionNoteSave')+
-				'</a> | <a href="#" class="mtt-action-note-cancel">'+_mtt.lang.get('actionNoteCancel')+'</a></span></div>'+
+				'<span class="task-note-actions"><a href="#" class="ytt-action-note-save">'+_ytt.lang.get('actionNoteSave')+
+				'</a> | <a href="#" class="ytt-action-note-cancel">'+_ytt.lang.get('actionNoteCancel')+'</a></span></div>'+
 		'</div>'+
 		"</div></li>\n";
 };
@@ -928,7 +932,7 @@ function prepareDuedate(item)
 function submitNewTask(form)
 {
 	if(form.task.value == '') return false;
-	_mtt.db.request('newTask', { list:curList.id, title: form.task.value, tag:_mtt.filter.getTags() }, function(json){
+	_ytt.db.request('newTask', { list:curList.id, title: form.task.value, tag:_ytt.filter.getTags() }, function(json){
 		if(!json.total) return;
 		$('#total').text( parseInt($('#total').text()) + 1 );
 		taskCnt.total++;
@@ -938,7 +942,7 @@ function submitNewTask(form)
 		taskOrder.push(parseInt(item.id));
 		$('#tasklist').append(prepareTaskStr(item));
 		changeTaskOrder(item.id);
-		$('#taskrow_'+item.id).effect("highlight", {color:_mtt.theme.newTaskFlashColor}, 2000);
+		$('#taskrow_'+item.id).effect("highlight", {color:_ytt.theme.newTaskFlashColor}, 2000);
 		refreshTaskCnt();
 	}); 
 	flag.tagsChanged = true;
@@ -1070,22 +1074,22 @@ function prioClick(prio, el)
 
 function setTaskPrio(id, prio)
 {
-	_mtt.db.request('setPrio', {id:id, prio:prio});
+	_ytt.db.request('setPrio', {id:id, prio:prio});
 	taskList[id].prio = prio;
 	var $t = $('#taskrow_'+id);
 	$t.find('.task-prio').replaceWith(preparePrio(prio, id));
 	if(curList.sort != 0) changeTaskOrder(id);
-	$t.effect("highlight", {color:_mtt.theme.editTaskFlashColor}, 'normal');
+	$t.effect("highlight", {color:_ytt.theme.editTaskFlashColor}, 'normal');
 };
 
 function setSort(v, init)
 {
-	$('#listmenucontainer .sort-item').removeClass('mtt-item-checked').children('.mtt-sort-direction').text('');
-	if(v == 0) $('#sortByHand').addClass('mtt-item-checked');
-	else if(v==1 || v==101) $('#sortByPrio').addClass('mtt-item-checked').children('.mtt-sort-direction').text(v==1 ? '↑' : '↓');
-	else if(v==2 || v==102) $('#sortByDueDate').addClass('mtt-item-checked').children('.mtt-sort-direction').text(v==2 ? '↑' : '↓');
-	else if(v==3 || v==103) $('#sortByDateCreated').addClass('mtt-item-checked').children('.mtt-sort-direction').text(v==3 ? '↓' : '↑');
-	else if(v==4 || v==104) $('#sortByDateModified').addClass('mtt-item-checked').children('.mtt-sort-direction').text(v==4 ? '↓' : '↑');
+	$('#listmenucontainer .sort-item').removeClass('ytt-item-checked').children('.ytt-sort-direction').text('');
+	if(v == 0) $('#sortByHand').addClass('ytt-item-checked');
+	else if(v==1 || v==101) $('#sortByPrio').addClass('ytt-item-checked').children('.ytt-sort-direction').text(v==1 ? '↑' : '↓');
+	else if(v==2 || v==102) $('#sortByDueDate').addClass('ytt-item-checked').children('.ytt-sort-direction').text(v==2 ? '↑' : '↓');
+	else if(v==3 || v==103) $('#sortByDateCreated').addClass('ytt-item-checked').children('.ytt-sort-direction').text(v==3 ? '↓' : '↑');
+	else if(v==4 || v==104) $('#sortByDateModified').addClass('ytt-item-checked').children('.ytt-sort-direction').text(v==4 ? '↓' : '↑');
 	else return;
 
 	curList.sort = v;
@@ -1095,7 +1099,7 @@ function setSort(v, init)
 	if(!init)
 	{
 		changeTaskOrder();
-		if(!flag.readOnly) _mtt.db.request('setSort', {list:curList.id, sort:curList.sort});
+		if(!flag.readOnly) _ytt.db.request('setSort', {list:curList.id, sort:curList.sort});
 	}
 };
 
@@ -1136,7 +1140,7 @@ function setTaskview(v)
 	if(v == 0)
 	{
 		if(filter.due == '') return;
-		$('#taskview .btnstr').text(_mtt.lang.get('tasks'));
+		$('#taskview .btnstr').text(_ytt.lang.get('tasks'));
 		$('#tasklist').removeClass('filter-'+filter.due);
 		filter.due = '';
 		$('#total').text(taskCnt.total);
@@ -1148,7 +1152,7 @@ function setTaskview(v)
 			$('#tasklist').removeClass('filter-'+filter.due);
 		}
 		$('#tasklist').addClass('filter-'+v);
-		$('#taskview .btnstr').text(_mtt.lang.get('f_'+v));
+		$('#taskview .btnstr').text(_ytt.lang.get('f_'+v));
 		$('#total').text(taskCnt[v]);
 		filter.due = v;
 	}
@@ -1164,7 +1168,7 @@ function toggleAllNotes(show)
 		else $('#taskrow_'+id).removeClass('task-expanded');
 	}
 	curList.showNotes = show;
-	if(_mtt.options.saveShowNotes) _mtt.db.request('setShowNotesInList', {list:curList.id, shownotes:show}, function(json){});
+	if(_ytt.options.saveShowNotes) _ytt.db.request('setShowNotesInList', {list:curList.id, shownotes:show}, function(json){});
 };
 
 
@@ -1179,29 +1183,29 @@ function tabSelect(elementOrId)
 		id = parseInt(id.split('_', 2)[1]);
 	}
 	if(!tabLists.exists(id)) return;
-	$('#lists .mtt-tabs-selected').removeClass('mtt-tabs-selected');
-	$('#list_all').removeClass('mtt-tabs-selected');
+	$('#lists .ytt-tabs-selected').removeClass('ytt-tabs-selected');
+	$('#list_all').removeClass('ytt-tabs-selected');
 	
 	if(id == -1) {
-		$('#list_all').addClass('mtt-tabs-selected').removeClass('mtt-tabs-hidden');
-		$('#listmenucontainer .mtt-need-real-list').addClass('mtt-item-hidden');
+		$('#list_all').addClass('ytt-tabs-selected').removeClass('ytt-tabs-hidden');
+		$('#listmenucontainer .ytt-need-real-list').addClass('ytt-item-hidden');
 	}
 	else {
-		$('#list_'+id).addClass('mtt-tabs-selected').removeClass('mtt-tabs-hidden');
-		$('#listmenucontainer .mtt-need-real-list').removeClass('mtt-item-hidden');
+		$('#list_'+id).addClass('ytt-tabs-selected').removeClass('ytt-tabs-hidden');
+		$('#listmenucontainer .ytt-need-real-list').removeClass('ytt-item-hidden');
 	}
 	
 	if(curList.id != id)
 	{
-		if(id == -1) $('#mtt_body').addClass('show-all-tasks');
-		else $('#mtt_body').removeClass('show-all-tasks');
+		if(id == -1) $('#ytt_body').addClass('show-all-tasks');
+		else $('#ytt_body').removeClass('show-all-tasks');
 		if(filter.search != '') liveSearchToggle(0, 1);
-		mytinytodo.doAction('listSelected', tabLists.get(id));
+		yourtinytodo.doAction('listSelected', tabLists.get(id));
 	}
 	curList = tabLists.get(id);
 	if(curList.hidden) {
 		curList.hidden = false;
-		if(curList.id > 0) _mtt.db.request('setHideList', {list:curList.id, hide:0});
+		if(curList.id > 0) _ytt.db.request('setHideList', {list:curList.id, hide:0});
 	}
 	flag.tagsChanged = true;
 	cancelTagFilter(0, 1);
@@ -1214,8 +1218,8 @@ function tabSelect(elementOrId)
 
 function listMenu(el)
 {
-	if(!mytinytodo.menus.listMenu) mytinytodo.menus.listMenu = new mttMenu('listmenucontainer', {onclick:listMenuClick});
-	mytinytodo.menus.listMenu.show(el);
+	if(!yourtinytodo.menus.listMenu) yourtinytodo.menus.listMenu = new yttMenu('listmenucontainer', {onclick:listMenuClick});
+	yourtinytodo.menus.listMenu.show(el);
 };
 
 function listMenuClick(el, menu)
@@ -1241,10 +1245,10 @@ function listMenuClick(el, menu)
 
 function deleteTask(id)
 {
-	if(!confirm(_mtt.lang.get('confirmDelete'))) {
+	if(!confirm(_ytt.lang.get('confirmDelete'))) {
 		return false;
 	}
-	_mtt.db.request('deleteTask', {id:id}, function(json){
+	_ytt.db.request('deleteTask', {id:id}, function(json){
 		if(!parseInt(json.total)) return;
 		var item = json.list[0];
 		taskOrder.splice($.inArray(id,taskOrder), 1);
@@ -1262,7 +1266,7 @@ function completeTask(id, ch)
 	if(!taskList[id]) return; //click on already removed from the list while anim. effect
 	var compl = 0;
 	if(ch.checked) compl = 1;
-	_mtt.db.request('completeTask', {id:id, compl:compl, list:curList.id}, function(json){
+	_ytt.db.request('completeTask', {id:id, compl:compl, list:curList.id}, function(json){
 		if(!parseInt(json.total)) return;
 		var item = json.list[0];
 		if(item.compl) $('#taskrow_'+id).addClass('task-completed');
@@ -1278,7 +1282,7 @@ function completeTask(id, ch)
 			$('#taskrow_'+item.id).replaceWith(prepareTaskStr(taskList[id]));
 			$('#taskrow_'+id).fadeOut('fast', function(){	
 				changeTaskOrder(id);				
-				$(this).effect("highlight", {color:_mtt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
+				$(this).effect("highlight", {color:_ytt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
 			});
 		}
 		refreshTaskCnt();
@@ -1312,7 +1316,7 @@ function cancelTaskNote(id)
 
 function saveTaskNote(id)
 {
-	_mtt.db.request('editNote', {id:id, note:$('#notetext'+id).val()}, function(json){
+	_ytt.db.request('editNote', {id:id, note:$('#notetext'+id).val()}, function(json){
 		if(!parseInt(json.total)) return;
 		var item = json.list[0];
 		taskList[id].note = item.note;
@@ -1363,12 +1367,12 @@ function showEditForm(isAdd)
 	if(isAdd)
 	{
 		clearEditForm();
-		$('#page_taskedit').removeClass('mtt-inedit').addClass('mtt-inadd');
+		$('#page_taskedit').removeClass('ytt-inedit').addClass('ytt-inadd');
 		form.isadd.value = 1;
-		if(_mtt.options.autotag) form.tags.value = _mtt.filter.getTags();
+		if(_ytt.options.autotag) form.tags.value = _ytt.filter.getTags();
 		if($('#task').val() != '')
 		{
-			_mtt.db.request('parseTaskStr', { list:curList.id, title:$('#task').val(), tag:_mtt.filter.getTags() }, function(json){
+			_ytt.db.request('parseTaskStr', { list:curList.id, title:$('#task').val(), tag:_ytt.filter.getTags() }, function(json){
 				if(!json) return;
 				form.task.value = json.title
 				form.tags.value = (form.tags.value != '') ? form.tags.value +', '+ json.tags : json.tags;
@@ -1379,12 +1383,12 @@ function showEditForm(isAdd)
 		}
 	}
 	else {
-		$('#page_taskedit').removeClass('mtt-inadd').addClass('mtt-inedit');
+		$('#page_taskedit').removeClass('ytt-inadd').addClass('ytt-inedit');
 		form.isadd.value = 0;
 	}
 
 	flag.editFormChanged = false;
-	_mtt.pageSet('taskedit');
+	_ytt.pageSet('taskedit');
 };
 
 function saveTask(form)
@@ -1393,7 +1397,7 @@ function saveTask(form)
 	if(form.isadd.value != 0)
 		return submitFullTask(form);
 
-	_mtt.db.request('editTask', {id:form.id.value, title: form.task.value, note:form.note.value,
+	_ytt.db.request('editTask', {id:form.id.value, title: form.task.value, note:form.note.value,
 		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value},
 		function(json){
 			if(!parseInt(json.total)) return;
@@ -1403,9 +1407,9 @@ function saveTask(form)
 			var noteExpanded = (item.note != '' && $('#taskrow_'+item.id).is('.task-expanded')) ? 1 : 0;
 			$('#taskrow_'+item.id).replaceWith(prepareTaskStr(item, noteExpanded));
 			if(curList.sort != 0) changeTaskOrder(item.id);
-			_mtt.pageBack(); //back to list
+			_ytt.pageBack(); //back to list
 			refreshTaskCnt();
-			$('#taskrow_'+item.id).effect("highlight", {color:_mtt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
+			$('#taskrow_'+item.id).effect("highlight", {color:_ytt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
 	});
 	$("#edittags").flushCache();
 	flag.tagsChanged = true;
@@ -1453,7 +1457,7 @@ function addEditTag(tag)
 
 function loadTags(listId, callback)
 {
-	_mtt.db.request('tagCloud', {list:listId}, function(json){
+	_ytt.db.request('tagCloud', {list:listId}, function(json){
 		if(!parseInt(json.total)) tagsList = [];
 		else tagsList = json.cloud;
 		var cloud = '';
@@ -1468,14 +1472,14 @@ function loadTags(listId, callback)
 
 function cancelTagFilter(tagId, dontLoadTasks)
 {
-	if(tagId)  _mtt.filter.cancelTag(tagId);
-	else _mtt.filter.clear();
+	if(tagId)  _ytt.filter.cancelTag(tagId);
+	else _ytt.filter.clear();
 	if(dontLoadTasks==null || !dontLoadTasks) loadTasks();
 };
 
 function addFilterTag(tag, tagId, exclude)
 {
-	if(!_mtt.filter.addTag(tagId, tag, exclude)) return false;
+	if(!_ytt.filter.addTag(tagId, tag, exclude)) return false;
 	loadTasks();
 };
 
@@ -1517,7 +1521,7 @@ function submitFullTask(form)
 {
 	if(flag.readOnly) return false;
 
-	_mtt.db.request('fullNewTask', { list:curList.id, tag:_mtt.filter.getTags(), title: form.task.value, note:form.note.value,
+	_ytt.db.request('fullNewTask', { list:curList.id, tag:_ytt.filter.getTags(), title: form.task.value, note:form.note.value,
 			prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value }, function(json){
 		if(!parseInt(json.total)) return;
 		form.task.value = '';
@@ -1526,8 +1530,8 @@ function submitFullTask(form)
 		taskOrder.push(parseInt(item.id));
 		$('#tasklist').append(prepareTaskStr(item));
 		changeTaskOrder(item.id);
-		_mtt.pageBack();
-		$('#taskrow_'+item.id).effect("highlight", {color:_mtt.theme.newTaskFlashColor}, 2000);
+		_ytt.pageBack();
+		$('#taskrow_'+item.id).effect("highlight", {color:_ytt.theme.newTaskFlashColor}, 2000);
 		changeTaskCnt(item, 1);
 		refreshTaskCnt();
 	});
@@ -1582,11 +1586,11 @@ function orderChanged(event,ui)
 		}
 	}
 
-	_mtt.db.request('changeOrder', {order:o});
+	_ytt.db.request('changeOrder', {order:o});
 };
 
 
-function mttMenu(container, options)
+function yttMenu(container, options)
 {
 	var menu = this;
 	this.container = document.getElementById(container);
@@ -1597,7 +1601,7 @@ function mttMenu(container, options)
 	this.curSubmenu = null;
 	this.showTimer = null;
 	this.ts = (new Date).getTime();
-	this.container.mttmenu = this.ts;
+	this.container.yttmenu = this.ts;
 
 	this.$container.find('li').click(function(){
 		menu.onclick(this, menu);
@@ -1606,15 +1610,15 @@ function mttMenu(container, options)
 	.each(function(){
 
 		var submenu = 0;
-		if($(this).is('.mtt-menu-indicator'))
+		if($(this).is('.ytt-menu-indicator'))
 		{
-			submenu = new mttMenu($(this).attr('submenu'));
+			submenu = new yttMenu($(this).attr('submenu'));
 			submenu.$caller = $(this);
 			submenu.parent = menu;
 			if(menu.root) submenu.root = menu.root;	//!! be careful with circular references
 			else submenu.root = menu;
 			menu.submenu.push(submenu);
-			submenu.ts = submenu.container.mttmenu = submenu.root.ts;
+			submenu.ts = submenu.container.yttmenu = submenu.root.ts;
 
 			submenu.$container.find('li').click(function(){
 				submenu.root.onclick(this, submenu);
@@ -1624,18 +1628,18 @@ function mttMenu(container, options)
 
 		$(this).hover(
 			function(){
-				if(!$(this).is('.mtt-menu-item-active')) menu.$container.find('li').removeClass('mtt-menu-item-active');
+				if(!$(this).is('.ytt-menu-item-active')) menu.$container.find('li').removeClass('ytt-menu-item-active');
 				clearTimeout(menu.showTimer);
 				if(menu.hideTimer && menu.parent) {
 					clearTimeout(menu.hideTimer);
 					menu.hideTimer = null;
-					menu.$caller.addClass('mtt-menu-item-active');
+					menu.$caller.addClass('ytt-menu-item-active');
 					clearTimeout(menu.parent.showTimer);
 				}
 
 				if(menu.curSubmenu && menu.curSubmenu.menuOpen && menu.curSubmenu != submenu && !menu.curSubmenu.hideTimer)
 				{
-					menu.$container.find('li').removeClass('mtt-menu-item-active');
+					menu.$container.find('li').removeClass('ytt-menu-item-active');
 					var curSubmenu = menu.curSubmenu;
 					curSubmenu.hideTimer = setTimeout(function(){
 						curSubmenu.hide();
@@ -1658,7 +1662,7 @@ function mttMenu(container, options)
 
 	this.onclick = function(item, fromMenu)
 	{
-		if($(item).is('.mtt-item-disabled,.mtt-menu-indicator,.mtt-item-hidden')) return;
+		if($(item).is('.ytt-item-disabled,.ytt-menu-indicator,.ytt-item-hidden')) return;
 		menu.close();
 		if(this.options.onclick) this.options.onclick(item, fromMenu);
 	};
@@ -1669,10 +1673,10 @@ function mttMenu(container, options)
 		clearTimeout(this.showTimer);
         if(this.options.modal)
         {
-            $('.mtt-menu-modal').hide();
+            $('.ytt-menu-modal').hide();
         }
 		this.$container.hide();
-		this.$container.find('li').removeClass('mtt-menu-item-active');
+		this.$container.find('li').removeClass('ytt-menu-item-active');
 		this.menuOpen = false;
 	};
 
@@ -1684,21 +1688,21 @@ function mttMenu(container, options)
 		{
 			// ignore if event (click) was on caller or container
 			var t = event.target;
-			if(t == this.caller || (t.mttmenu && t.mttmenu == this.ts)) return;
+			if(t == this.caller || (t.yttmenu && t.yttmenu == this.ts)) return;
 			while(t.parentNode) {
-				if(t.parentNode == this.caller || (t.mttmenu && t.mttmenu == this.ts)) return;
+				if(t.parentNode == this.caller || (t.yttmenu && t.yttmenu == this.ts)) return;
 				t = t.parentNode;
 			}
 		}
 
         if(this.options.modal)
         {
-            $('.mtt-menu-modal').hide();
+            $('.ytt-menu-modal').hide();
         }
 
 		this.hide();
-		$(this.caller).removeClass('mtt-menu-button-active');
-		$(document).unbind('mousedown.mttmenuclose');
+		$(this.caller).removeClass('ytt-menu-button-active');
+		$(document).unbind('mousedown.yttmenuclose');
 	};
 
     this.log = function(msg)
@@ -1714,7 +1718,7 @@ function mttMenu(container, options)
 			if(this.caller && this.caller == caller) return;
 		}
 
-		$(document).triggerHandler('mousedown.mttmenuclose'); //close any other open menu
+		$(document).triggerHandler('mousedown.yttmenuclose'); //close any other open menu
 		this.caller = caller;
 		var $caller = $(caller);
 		
@@ -1724,13 +1728,13 @@ function mttMenu(container, options)
 
         if(this.options.modal)
         {
-            $('.mtt-menu-modal').show();
+            $('.ytt-menu-modal').show();
         }
 
 		// adjust width
 		if(this.options.adjustWidth && this.$container.outerWidth(true) > $(window).width())
 			this.$container.width($(window).width() - (this.$container.outerWidth(true) - this.$container.width()));
-		$caller.addClass('mtt-menu-button-active');
+		$caller.addClass('ytt-menu-button-active');
 		var offset = $caller.offset();
 		var x2 = $(window).width() + $(document).scrollLeft() - this.$container.outerWidth(true) - 1;
 		var x = offset.left < x2 ? offset.left : x2;
@@ -1740,13 +1744,13 @@ function mttMenu(container, options)
 		if(y<0) y=0;
         this.$container.css({ 'position': 'absolute', 'top': y, 'left': x, 'width':this.$container.width()}).show();
         var menu = this;
-		$(document).bind('mousedown.mttmenuclose', function(e){ menu.close(e) });
+		$(document).bind('mousedown.yttmenuclose', function(e){ menu.close(e) });
 		this.menuOpen = true;
 	};
 
 	this.showSub = function()
 	{
-		this.$caller.addClass('mtt-menu-item-active');
+		this.$caller.addClass('ytt-menu-item-active');
 		var offset = this.$caller.offset();
 		var x = offset.left+this.$caller.outerWidth();
 		if(x + this.$container.outerWidth(true) > $(window).width() + $(document).scrollLeft()) x = offset.left - this.$container.outerWidth() - 1;
@@ -1762,7 +1766,7 @@ function mttMenu(container, options)
 	{
         if(this.options.modal)
         {
-            $('.mtt-menu-modal').hide();
+            $('.ytt-menu-modal').hide();
         }
         for(var i in this.submenu) {
 			this.submenu[i].destroy();
@@ -1775,21 +1779,21 @@ function mttMenu(container, options)
 
 function taskContextMenu(el, id)
 {
-	if(!_mtt.menus.cmenu) _mtt.menus.cmenu = new mttMenu('taskcontextcontainer', {
+	if(!_ytt.menus.cmenu) _ytt.menus.cmenu = new yttMenu('taskcontextcontainer', {
 		onclick: taskContextClick,
 		beforeShow: function() {
-			$('#cmenupriocontainer li').removeClass('mtt-item-checked');
-			$('#cmenu_prio\\:'+ taskList[_mtt.menus.cmenu.tag].prio).addClass('mtt-item-checked');
+			$('#cmenupriocontainer li').removeClass('ytt-item-checked');
+			$('#cmenu_prio\\:'+ taskList[_ytt.menus.cmenu.tag].prio).addClass('ytt-item-checked');
 		} 
 	});
-	_mtt.menus.cmenu.tag = id;
-	_mtt.menus.cmenu.show(el);
+	_ytt.menus.cmenu.tag = id;
+	_ytt.menus.cmenu.show(el);
 };
 
 function taskContextClick(el, menu)
 {
 	if(!el.id) return;
-	var taskId = parseInt(_mtt.menus.cmenu.tag);
+	var taskId = parseInt(_ytt.menus.cmenu.tag);
 	var id = el.id, value;
 	var a = id.split(':');
 	if(a.length == 2) {
@@ -1811,7 +1815,7 @@ function taskContextClick(el, menu)
 function moveTaskToList(taskId, listId)
 {
 	if(curList.id == listId) return;
-	_mtt.db.request('moveTask', {id:taskId, from:curList.id, to:listId}, function(json){
+	_ytt.db.request('moveTask', {id:taskId, from:curList.id, to:listId}, function(json){
 		if(!parseInt(json.total)) return;
 		if(curList.id == -1)
 		{
@@ -1823,7 +1827,7 @@ function moveTaskToList(taskId, listId)
 			$('#taskrow_'+item.id).replaceWith(prepareTaskStr(item, noteExpanded));
 			if(curList.sort != 0) changeTaskOrder(item.id);
 			refreshTaskCnt();
-			$('#taskrow_'+item.id).effect("highlight", {color:_mtt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
+			$('#taskrow_'+item.id).effect("highlight", {color:_ytt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
 		}
 		else {
 			// remove the task from currrent tab
@@ -1842,20 +1846,20 @@ function moveTaskToList(taskId, listId)
 
 function cmenuOnListsLoaded()
 {
-	if(_mtt.menus.cmenu) _mtt.menus.cmenu.destroy();
-	_mtt.menus.cmenu = null;
+	if(_ytt.menus.cmenu) _ytt.menus.cmenu.destroy();
+	_ytt.menus.cmenu = null;
 	var s = '';
 	var all = tabLists.getAll();
 	for(var i in all) {
-		s += '<li id="cmenu_list:'+all[i].id+'" class="'+(all[i].hidden?'mtt-list-hidden':'')+'">'+all[i].name+'</li>';
+		s += '<li id="cmenu_list:'+all[i].id+'" class="'+(all[i].hidden?'ytt-list-hidden':'')+'">'+all[i].name+'</li>';
 	}
 	$('#cmenulistscontainer ul').html(s);
 };
 
 function cmenuOnListAdded(list)
 {
-	if(_mtt.menus.cmenu) _mtt.menus.cmenu.destroy();
-	_mtt.menus.cmenu = null;
+	if(_ytt.menus.cmenu) _ytt.menus.cmenu.destroy();
+	_ytt.menus.cmenu = null;
 	$('#cmenulistscontainer ul').append('<li id="cmenu_list:'+list.id+'">'+list.name+'</li>');
 };
 
@@ -1866,34 +1870,34 @@ function cmenuOnListRenamed(list)
 
 function cmenuOnListSelected(list)
 {
-	$('#cmenulistscontainer li').removeClass('mtt-item-disabled');
-	$('#cmenu_list\\:'+list.id).addClass('mtt-item-disabled').removeClass('mtt-list-hidden');
+	$('#cmenulistscontainer li').removeClass('ytt-item-disabled');
+	$('#cmenu_list\\:'+list.id).addClass('ytt-item-disabled').removeClass('ytt-list-hidden');
 };
 
 function cmenuOnListOrderChanged()
 {
 	cmenuOnListsLoaded();
-	$('#cmenu_list\\:'+curList.id).addClass('mtt-item-disabled');
+	$('#cmenu_list\\:'+curList.id).addClass('ytt-item-disabled');
 };
 
 function cmenuOnListHidden(list)
 {
-	$('#cmenu_list\\:'+list.id).addClass('mtt-list-hidden');
+	$('#cmenu_list\\:'+list.id).addClass('ytt-list-hidden');
 };
 
 
 function tabmenuOnListSelected(list)
 {
 	if(list.published) {
-		$('#btnPublish').addClass('mtt-item-checked');
-		$('#btnRssFeed').removeClass('mtt-item-disabled');
+		$('#btnPublish').addClass('ytt-item-checked');
+		$('#btnRssFeed').removeClass('ytt-item-disabled');
 	}
 	else {
-		$('#btnPublish').removeClass('mtt-item-checked');
-		$('#btnRssFeed').addClass('mtt-item-disabled');
+		$('#btnPublish').removeClass('ytt-item-checked');
+		$('#btnRssFeed').addClass('ytt-item-disabled');
 	}
-	if(list.showCompl) $('#btnShowCompleted').addClass('mtt-item-checked');
-	else $('#btnShowCompleted').removeClass('mtt-item-checked');
+	if(list.showCompl) $('#btnShowCompleted').addClass('ytt-item-checked');
+	else $('#btnShowCompleted').removeClass('ytt-item-checked');
 };
 
 
@@ -1905,25 +1909,25 @@ function listOrderChanged(event, ui)
 		order.push(a[i].split('_')[1]);
 	}
 	tabLists.reorder(order);
-	_mtt.db.request('changeListOrder', {order:order});
-	_mtt.doAction('listOrderChanged', {order:order});
+	_ytt.db.request('changeListOrder', {order:order});
+	_ytt.doAction('listOrderChanged', {order:order});
 };
 
 function showCompletedToggle()
 {
 	var act = curList.showCompl ? 0 : 1;
 	curList.showCompl = tabLists.get(curList.id).showCompl = act;
-	if(act) $('#btnShowCompleted').addClass('mtt-item-checked');
-	else $('#btnShowCompleted').removeClass('mtt-item-checked');
+	if(act) $('#btnShowCompleted').addClass('ytt-item-checked');
+	else $('#btnShowCompleted').removeClass('ytt-item-checked');
 	loadTasks({setCompl:1});
 };
 
 function clearCompleted()
 {
 	if(!curList) return false;
-	var r = confirm(_mtt.lang.get('clearCompleted'));
+	var r = confirm(_ytt.lang.get('clearCompleted'));
 	if(!r) return;
-	_mtt.db.request('clearCompletedInList', {list:curList.id}, function(json){
+	_ytt.db.request('clearCompletedInList', {list:curList.id}, function(json){
 		if(!parseInt(json.total)) return;
 		flag.tagsChanged = true;
 		if(curList.showCompl) loadTasks();
@@ -1989,15 +1993,15 @@ function dehtml(str)
 
 function slmenuOnListsLoaded()
 {
-	if(_mtt.menus.selectlist) {
-		_mtt.menus.selectlist.destroy();
-		_mtt.menus.selectlist = null;
+	if(_ytt.menus.selectlist) {
+		_ytt.menus.selectlist.destroy();
+		_ytt.menus.selectlist = null;
 	}
 
 	var s = '';
 	var all = tabLists.getAll();
 	for(var i in all) {
-		s += '<li id="slmenu_list:'+all[i].id+'" class="'+(all[i].id==curList.id?'mtt-item-checked':'')+' list-id-'+all[i].id+(all[i].hidden?' mtt-list-hidden':'')+'"><div class="menu-icon"></div><a href="#list/'+all[i].id+'">'+all[i].name+'</a></li>';
+		s += '<li id="slmenu_list:'+all[i].id+'" class="'+(all[i].id==curList.id?'ytt-item-checked':'')+' list-id-'+all[i].id+(all[i].hidden?' ytt-list-hidden':'')+'"><div class="menu-icon"></div><a href="#list/'+all[i].id+'">'+all[i].name+'</a></li>';
 	}
 	$('#slmenucontainer ul>.slmenu-lists-begin').nextAll().remove();
 	$('#slmenucontainer ul>.slmenu-lists-begin').after(s);
@@ -2010,23 +2014,23 @@ function slmenuOnListRenamed(list)
 
 function slmenuOnListAdded(list)
 {
-	if(_mtt.menus.selectlist) {
-		_mtt.menus.selectlist.destroy();
-		_mtt.menus.selectlist = null;
+	if(_ytt.menus.selectlist) {
+		_ytt.menus.selectlist.destroy();
+		_ytt.menus.selectlist = null;
 	}
 	$('#slmenucontainer ul').append('<li id="slmenu_list:'+list.id+'" class="list-id-'+list.id+'"><div class="menu-icon"></div><a href="#list/'+list.id+'">'+list.name+'</a></li>');
 };
 
 function slmenuOnListSelected(list)
 {
-	$('#slmenucontainer li').removeClass('mtt-item-checked');
-	$('#slmenucontainer li.list-id-'+list.id).addClass('mtt-item-checked').removeClass('mtt-list-hidden');
+	$('#slmenucontainer li').removeClass('ytt-item-checked');
+	$('#slmenucontainer li.list-id-'+list.id).addClass('ytt-item-checked').removeClass('ytt-list-hidden');
 
 };
 
 function slmenuOnListHidden(list)
 {
-	$('#slmenucontainer li.list-id-'+list.id).addClass('mtt-list-hidden');
+	$('#slmenucontainer li.list-id-'+list.id).addClass('ytt-list-hidden');
 };
 
 function slmenuSelect(el, menu)
@@ -2049,13 +2053,13 @@ function exportCurList(format)
 {
 	if(!curList) return;
 	if(!format.match(/^[a-z0-9-]+$/i)) return;
-	window.location.href = _mtt.mttUrl + 'export.php?list='+curList.id +'&format='+format;
+	window.location.href = _ytt.yttUrl + 'export.php?list='+curList.id +'&format='+format;
 };
 
 function feedCurList()
 {
 	if(!curList) return;
-	window.location.href = _mtt.mttUrl + 'feed.php?list='+curList.id;
+	window.location.href = _ytt.yttUrl + 'feed.php?list='+curList.id;
 }
 
 function hideTab(listId)
@@ -2083,17 +2087,17 @@ function hideTab(listId)
 	}
 
 	if(listId == -1) {
-		$('#list_all').addClass('mtt-tabs-hidden').removeClass('mtt-tabs-selected');
+		$('#list_all').addClass('ytt-tabs-hidden').removeClass('ytt-tabs-selected');
 	}
 	else {
-		$('#list_'+listId).addClass('mtt-tabs-hidden').removeClass('mtt-tabs-selected');
+		$('#list_'+listId).addClass('ytt-tabs-hidden').removeClass('ytt-tabs-selected');
 	}
 	
 	tabLists.get(listId).hidden = true;
 	
 	if(listId > 0) {
-		_mtt.db.request('setHideList', {list:listId, hide:1});
-		_mtt.doAction('listHidden', tabLists.get(listId));
+		_ytt.db.request('setHideList', {list:listId, hide:1});
+		_ytt.doAction('listHidden', tabLists.get(listId));
 	}
 	
 	if(listIdToSelect) {
@@ -2110,7 +2114,7 @@ function flashError(str, details)
 	$("#msg>.msg-text").text(str)
 	$("#msg>.msg-details").text(details);
 	$("#loading").hide();
-	$("#msg").addClass('mtt-error').effect("highlight", {color:_mtt.theme.msgFlashColor}, 700);
+	$("#msg").addClass('ytt-error').effect("highlight", {color:_ytt.theme.msgFlashColor}, 700);
 }
 
 function flashInfo(str, details)
@@ -2118,7 +2122,7 @@ function flashInfo(str, details)
 	$("#msg>.msg-text").text(str)
 	$("#msg>.msg-details").text(details);
 	$("#loading").hide();
-	$("#msg").addClass('mtt-info').effect("highlight", {color:_mtt.theme.msgFlashColor}, 700);
+	$("#msg").addClass('ytt-info').effect("highlight", {color:_ytt.theme.msgFlashColor}, 700);
 }
 
 function toggleMsgDetails()
@@ -2158,20 +2162,20 @@ function updateAccessStatus()
 	if(flag.needAuth && !flag.isLogged) {
         flag.readOnly = true;
 		$("#bar_public").show();
-		$('#mtt_body').addClass('readonly');
+		$('#ytt_body').addClass('readonly');
 		liveSearchToggle(1);
 		// remove some tab menu items
 		$('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish').remove();
 	}
     else if(flag.needAuth && flag.isLogged && flag.readOnly) {
-        $('#mtt_body').addClass('readonly');
+        $('#ytt_body').addClass('readonly');
         liveSearchToggle(1);
         // remove some tab menu items
         $('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish').remove();
     }
 	else {
         flag.readOnly = false;
-		$('#mtt_body').removeClass('readonly');
+		$('#ytt_body').removeClass('readonly');
 		$("#bar_public").hide();
 		liveSearchToggle(0);
 	}
@@ -2205,7 +2209,7 @@ function doAuth(form)
 {
 	if(flag.multiUser)
     {
-        $.post(mytinytodo.mttUrl+'ajax.php?login', { login:1, username: form.username.value, password: form.password.value }, function(json){
+        $.post(yourtinytodo.yttUrl+'ajax.php?login', { login:1, username: form.username.value, password: form.password.value }, function(json){
             form.password.value = '';
             form.username.value = '';
             if(json.logged)
@@ -2219,14 +2223,14 @@ function doAuth(form)
                 window.location.reload();
             }
             else {
-                flashError(_mtt.lang.get('invalidlogin'));
+                flashError(_ytt.lang.get('invalidlogin'));
                 $('#password').focus();
             }
         }, 'json');
     }
     else
     {
-        $.post(mytinytodo.mttUrl+'ajax.php?login', { login:1, password: form.password.value }, function(json){
+        $.post(yourtinytodo.yttUrl+'ajax.php?login', { login:1, password: form.password.value }, function(json){
             form.password.value = '';
             if(json.logged)
             {
@@ -2234,7 +2238,7 @@ function doAuth(form)
                 window.location.reload();
             }
             else {
-                flashError(_mtt.lang.get('invalidpass'));
+                flashError(_ytt.lang.get('invalidpass'));
                 $('#password').focus();
             }
         }, 'json');
@@ -2244,7 +2248,7 @@ function doAuth(form)
 
 function logout()
 {
-	$.post(mytinytodo.mttUrl+'ajax.php?logout', { logout:1 }, function(json){
+	$.post(yourtinytodo.yttUrl+'ajax.php?logout', { logout:1 }, function(json){
 		flag.isLogged = false;
 		window.location.reload();
 	}, 'json');
@@ -2258,10 +2262,10 @@ function logout()
 
 function showSettings()
 {
-	if(_mtt.pages.current.page == 'ajax' && _mtt.pages.current.pageClass == 'settings') return false;
-	$('#page_ajax').load(_mtt.mttUrl+'settings.php?ajax=yes',null,function(){ 
-		//showhide($('#page_ajax').addClass('mtt-page-settings'), $('#page_tasks'));
-		_mtt.pageSet('ajax','settings');
+	if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'settings') return false;
+	$('#page_ajax').load(_ytt.yttUrl+'settings.php?ajax=yes',null,function(){ 
+		//showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
+		_ytt.pageSet('ajax','settings');
 	})
 	return false;
 }
@@ -2272,9 +2276,9 @@ function saveSettings(frm)
 	var params = { save:'ajax' };
 	$(frm).find("input:text,input:password,input:checked,select").filter(":enabled").each(function() { params[this.name || '__'] = this.value; }); 
 	$(frm).find(":submit").attr('disabled','disabled').blur();
-	$.post(_mtt.mttUrl+'settings.php', params, function(json){
+	$.post(_ytt.yttUrl+'settings.php', params, function(json){
 		if(json.saved) {
-			flashInfo(_mtt.lang.get('settingsSaved'));
+			flashInfo(_ytt.lang.get('settingsSaved'));
 			setTimeout('window.location.reload();', 1000);
 		}
 	}, 'json');
@@ -2285,39 +2289,39 @@ function saveSettings(frm)
 */
 function showUserManagement()
 {
-    if(_mtt.pages.current.page == 'ajax' && _mtt.pages.current.pageClass == 'manageusers') return false;
-    $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
-        //showhide($('#page_ajax').addClass('mtt-page-settings'), $('#page_tasks'));
-        _mtt.pageSet('ajax','manageusers');
+    if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'manageusers') return false;
+    $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+        //showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
+        _ytt.pageSet('ajax','manageusers');
     })
     return false;
 }
 
 function createUser()
 {
-    _mtt.db.request('createUser', { username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
+    _ytt.db.request('createUser', { username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
         switch(json.error)
         {
             case 1:
-                flashError(_mtt.lang.get('um_createerror1'));
+                flashError(_ytt.lang.get('um_createerror1'));
                 break;
 
             case 2:
-                flashError(_mtt.lang.get('um_createerror2'));
+                flashError(_ytt.lang.get('um_createerror2'));
                 break;
 
             case 3:
-                flashError(_mtt.lang.get('um_createerror3'));
+                flashError(_ytt.lang.get('um_createerror3'));
                 break;
 
             case 0:
-                _mtt.menus.createuser.close();
+                _ytt.menus.createuser.close();
                 $('#um_username').val('');
                 $('#um_password').val('');
                 $('#um_email').val('');
                 $('#um_role').val('');
-                flashInfo(_mtt.lang.get('um_usercreated'));
-                $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
+                flashInfo(_ytt.lang.get('um_usercreated'));
+                $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
 
                 })
                 break;
@@ -2327,8 +2331,8 @@ function createUser()
 
 function editUser(clickeditem, step) {
     if(step == 0) { // load data to form
-        if(!_mtt.menus.createuser) _mtt.menus.createuser = new mttMenu('createuser', {adjustWidth:true, modal:true});
-        _mtt.menus.createuser.show(clickeditem);
+        if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('createuser', {adjustWidth:true, modal:true});
+        _ytt.menus.createuser.show(clickeditem);
 
         $('#um_userid').val($(clickeditem).attr('rel'));
         $('#um_username').val($(clickeditem).parent().parent().find('td.username').html());
@@ -2342,19 +2346,19 @@ function editUser(clickeditem, step) {
         }
 
     } else {        // send form
-        _mtt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
+        _ytt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
             switch(json.error)
             {
                 case 1:
-                    flashError(_mtt.lang.get('um_createerror1'));
+                    flashError(_ytt.lang.get('um_createerror1'));
                     break;
 
                 case 2:
-                    flashError(_mtt.lang.get('um_createerror2'));
+                    flashError(_ytt.lang.get('um_createerror2'));
                     break;
 
                 case 4:
-                    flashError(_mtt.lang.get('um_updateerror1'));
+                    flashError(_ytt.lang.get('um_updateerror1'));
                     break;
 
                 case 0:
@@ -2363,9 +2367,9 @@ function editUser(clickeditem, step) {
                     $('#um_email').val('');
                     $('#um_role').val('');
                     $('#um_userid').val('');
-                    _mtt.menus.createuser.close();
-                    $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
-                        flashInfo(_mtt.lang.get('um_userupdated'));
+                    _ytt.menus.createuser.close();
+                    $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                        flashInfo(_ytt.lang.get('um_userupdated'));
                     })
                     break;
             }
@@ -2375,20 +2379,20 @@ function editUser(clickeditem, step) {
 
 function deleteUser(userid)
 {
-    _mtt.db.request('deleteUser', { userid:userid }, function(json){
+    _ytt.db.request('deleteUser', { userid:userid }, function(json){
         switch(json.error)
         {
             case 1:
-                flashError(_mtt.lang.get('um_deleteerror1'));
+                flashError(_ytt.lang.get('um_deleteerror1'));
                 break;
 
             case 2:
-                flashError(_mtt.lang.get('um_deleteerror1'));
+                flashError(_ytt.lang.get('um_deleteerror1'));
                 break;
 
             case 0:
-                $('#page_ajax').load(_mtt.mttUrl+'usermanagement.php?ajax=yes',null,function(){
-                    flashInfo(_mtt.lang.get('um_userdeleted'));
+                $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                    flashInfo(_ytt.lang.get('um_userdeleted'));
                 })
                 break;
         }

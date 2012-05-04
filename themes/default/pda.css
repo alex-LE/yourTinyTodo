@@ -1,3 +1,13 @@
+/*
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+*/
+
 body { margin:0px; font-size:100%; }
 h2 { margin:0; margin-bottom:2px; font-size:1em; }
 h3 { margin-bottom:4px; padding:4px 0; }
@@ -9,12 +19,12 @@ h3 { margin-bottom:4px; padding:4px 0; }
 .tab-content { padding:4px; }
 
 #htab_search { width:40%; max-width:190px; }
-.mtt-searchbox { float:right; }
-.mtt-searchbox td { width:40%; }
-#toolbar.mtt-intask #htab_search { display:none; }
-#toolbar.mtt-insearch #htab_newtask { display:none; }
-#toolbar.mtt-insearch #htab_search { width:100%; }
-#toolbar.mtt-insearch .mtt-searchbox td { width:40%; }
+.ytt-searchbox { float:right; }
+.ytt-searchbox td { width:40%; }
+#toolbar.ytt-intask #htab_search { display:none; }
+#toolbar.ytt-insearch #htab_newtask { display:none; }
+#toolbar.ytt-insearch #htab_search { width:100%; }
+#toolbar.ytt-insearch .ytt-searchbox td { width:40%; }
 
 #tasklist li { padding:0.5em 3px; overflow:hidden;  }
 .task-actions { display:none; }
@@ -46,5 +56,5 @@ h3 { margin-bottom:4px; padding:4px 0; }
 #loading img { /*width:8px; height:8px;*/ }
 
 #tagcloud { max-width:100%; }
-.mtt-settings-table .in350 { min-width:50px; }
-.mtt-notes-showhide { display:none; }
+.ytt-settings-table .in350 { min-width:50px; }
+.ytt-notes-showhide { display:none; }

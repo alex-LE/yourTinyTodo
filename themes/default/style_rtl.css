@@ -1,21 +1,31 @@
+/*
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+*/
+
 body { direction:rtl; }
 h2 { float:right; padding-left:10px; padding-right:0px; }
 .bar-menu { float:left; }
 #loading { float:right; }
-#lists .mtt-tabs { float:right; }
-.mtt-tabs li { float:right; margin:1px 0 0 3px; border-left:none; border-right:1px solid #ededed; background:#fbfbfb url(images/tab_hover.gif) no-repeat top left; }
-.mtt-tabs li.mtt-tabs-selected { border-left:none; border-right:1px solid #ededed;  background:#ededed url(images/corner_left.gif) no-repeat top left; }
+#lists .ytt-tabs { float:right; }
+.ytt-tabs li { float:right; margin:1px 0 0 3px; border-left:none; border-right:1px solid #ededed; background:#fbfbfb url(images/tab_hover.gif) no-repeat top left; }
+.ytt-tabs li.ytt-tabs-selected { border-left:none; border-right:1px solid #ededed;  background:#ededed url(images/corner_left.gif) no-repeat top left; }
 
 #tabs_buttons { float:left; }
-.mtt-tabs-button { float:right; }
+.ytt-tabs-button { float:right; }
 #tagcloudbtn { float:left; }
 
 #htab_search { float:left; }
 #task { padding: 2px 2px 2px 18px; }
 #task_placeholder span { right:0px; left:auto; }
-.mtt-taskbox-icon.mtt-icon-submittask { left:4px; right:auto; }
-.mtt-searchbox-icon.mtt-icon-search  { right:4px; left:auto; }
-.mtt-searchbox-icon.mtt-icon-cancelsearch { left:4px; right:auto; }
+.ytt-taskbox-icon.ytt-icon-submittask { left:4px; right:auto; }
+.ytt-searchbox-icon.ytt-icon-search  { right:4px; left:auto; }
+.ytt-searchbox-icon.ytt-icon-cancelsearch { left:4px; right:auto; }
 
 .task-actions { float:left; text-align:left; width:15px; }
 .task-left { float:right; }
