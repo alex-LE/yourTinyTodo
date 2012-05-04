@@ -2,8 +2,10 @@ html { height:0; }
 body { height:0; min-height:0; margin:0; }
 h2{ display: none; }
 h3 { border-bottom:2px solid #777777; } 
-#lists { display: none; }
+#lists { display: inline; }
 #toolbar { display: none; }
+.mtt-tab {display: none; }
+.mtt-tabs-selected { padding-left:5px; font-size:12pt; display: inline; }
 .small-bar { display:none; }
 .task-actions { display:none; }
 
