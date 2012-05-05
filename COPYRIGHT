@@ -1,10 +1,9 @@
-﻿
-myTinyTodo is free software: you can redistribute it and/or modify
+﻿yourTinyTodo is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-myTinyTodo is distributed in the hope that it will be useful,
+yourTinyTodo is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -12,14 +11,21 @@ GNU General Public License for more details.
 See file LICENSE or <http://www.gnu.org/licenses/gpl-3.0.txt>.
 
 
-myTinyTodo
+yourTinyTodo
+--------------
+Url:		http://www.yourtinytodo.net/
+Copyright:	2012 yourTinyTodo Community <info@yourtinytodo.net>
+License:	GPL version 3 (see LICENSE file)
+
+
+Based on myTinyTodo by Max Pozdeev
 --------------
 Url:		http://www.mytinytodo.net/
 Copyright:	2009,2010 Max Pozdeev <maxpozdeev@gmail.com>
 License:	GPL version 3 (see LICENSE file)
 
 
-myTinyTodo uses other works:
+yourTinyTodo uses other works:
 
 jQuery
 --------------

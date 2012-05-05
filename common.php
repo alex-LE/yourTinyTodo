@@ -1,4 +1,13 @@
 <?php
+/*
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+*/
 
 function htmlarray($a, $exclude=null)
 {
@@ -63,16 +72,16 @@ class Config
 	public static $params = array(
 		'db' => array('default'=>'sqlite', 'type'=>'s'),
 		'mysql.host' => array('default'=>'localhost', 'type'=>'s'),
-		'mysql.db' => array('default'=>'mytinytodo', 'type'=>'s'),
+		'mysql.db' => array('default'=>'yourtinytodo', 'type'=>'s'),
 		'mysql.user' => array('default'=>'user', 'type'=>'s'),
 		'mysql.password' => array('default'=>'', 'type'=>'s'),
 		'postgres.host' => array('default'=>'localhost', 'type'=>'s'),
-		'postgres.db' => array('default'=>'mytinytodo', 'type'=>'s'),
+		'postgres.db' => array('default'=>'yourtinytodo', 'type'=>'s'),
 		'postgres.user' => array('default'=>'user', 'type'=>'s'),
 		'postgres.password' => array('default'=>'', 'type'=>'s'),
 		'prefix' => array('default'=>'', 'type'=>'s'),
 		'url' => array('default'=>'', 'type'=>'s'),
-		'mtt_url' => array('default'=>'', 'type'=>'s'),
+		'ytt_url' => array('default'=>'', 'type'=>'s'),
 		'title' => array('default'=>'', 'type'=>'s'),
 		'lang' => array('default'=>'en', 'type'=>'s'),
 		'password' => array('default'=>'', 'type'=>'s'),
@@ -125,7 +134,7 @@ class Config
 				$s .= "\$config['$param'] = '".str_replace(array("\\","'"),array("\\\\","\\'"),$val)."';\n";
 			}
 		}
-		$f = fopen(MTTPATH. 'db/config.php', 'w');
+		$f = fopen(YTTPATH. 'db/config.php', 'w');
 		if($f === false) throw new Exception("Error while saving config file");
 		fwrite($f, "<?php\n\$config = array();\n$s?>");
 		fclose($f);

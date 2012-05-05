@@ -1,11 +1,21 @@
+/*
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+*/
+
 html { height:0; }
 body { height:0; min-height:0; margin:0; }
 h2{ display: none; }
 h3 { border-bottom:2px solid #777777; } 
 #lists { display: inline; }
 #toolbar { display: none; }
-.mtt-tab {display: none; }
-.mtt-tabs-selected { padding-left:5px; font-size:12pt; display: inline; }
+.ytt-tab {display: none; }
+.ytt-tabs-selected { padding-left:5px; font-size:12pt; display: inline; }
 .small-bar { display:none; }
 .task-actions { display:none; }
 
@@ -29,5 +39,5 @@ li.task-completed  { opacity:1; }
 #footer_content a { text-decoration:none; color:#000000; }
 
 #tagcloudbtn { display:none; }
-.mtt-notes-showhide { display:none; }
+.ytt-notes-showhide { display:none; }
 #taskview img { display:none; }

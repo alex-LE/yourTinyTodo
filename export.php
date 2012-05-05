@@ -1,9 +1,13 @@
 <?php
 
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2010-2011 Max Pozdeev <maxpozdeev@gmail.com>
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 //$dontStartSession = 1;
@@ -65,9 +69,9 @@ function escape_csv($v)
 
 function printICal($listData, $data)
 {
-	$mttToIcalPrio = array("1" => 5, "2" => 1);
-	$s = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\nCALSCALE:GREGORIAN\r\nPRODID:-//myTinyTodo//iCalendar Export v1.4//EN\r\n".
-		"X-WR-CALNAME:". $listData['name']. "\r\nX-MTT-TIMEZONE:".Config::get('timezone')."\r\n";
+	$yttToIcalPrio = array("1" => 5, "2" => 1);
+	$s = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nMETHOD:PUBLISH\r\nCALSCALE:GREGORIAN\r\nPRODID:-//yourTinyTodo//iCalendar Export v1.4//EN\r\n".
+		"X-WR-CALNAME:". $listData['name']. "\r\nX-YTT-TIMEZONE:".Config::get('timezone')."\r\n";
 	# to-do
 	foreach($data as $r)
 	{
@@ -83,8 +87,8 @@ function printICal($listData, $data)
 			$a[] = "DUE;VALUE=DATE:".sprintf("%u%02u%02u", $dda[0], $dda[1], $dda[2]);
 		}
 		# Apple's iCal priorities: low-9, medium-5, high-1
-		if($r['prio'] > 0 && isset($mttToIcalPrio[$r['prio']])) $a[] = "PRIORITY:". $mttToIcalPrio[$r['prio']];
-		$a[] = "X-MTT-PRIORITY:". $r['prio'];
+		if($r['prio'] > 0 && isset($yttToIcalPrio[$r['prio']])) $a[] = "PRIORITY:". $yttToIcalPrio[$r['prio']];
+		$a[] = "X-YTT-PRIORITY:". $r['prio'];
 		
 		$descr = array();
 		if($r['tags'] != '') $descr[] = Lang::instance()->get('tags'). ": ". str_replace(',', ', ', $r['tags']);
@@ -96,7 +100,7 @@ function printICal($listData, $data)
 			$a[] = "COMPLETED:". gmdate('Ymd\THis\Z', $r['d_completed']);
 			#$a[] = "PERCENT-COMPLETE:100"; #used in Sunbird
 		}
-		if($r['tags'] != '') $a[] = utf8chunks("X-MTT-TAGS:". $r['tags']);
+		if($r['tags'] != '') $a[] = utf8chunks("X-YTT-TAGS:". $r['tags']);
 		$a[] = "END:VTODO\r\n";
 		$s .= implode("\r\n", $a);
 	}
@@ -111,7 +115,7 @@ function printICal($listData, $data)
 		$a[] = "DTSTAMP:". gmdate('Ymd\THis\Z', $r['d_edited']);
 		$a[] = "LAST-MODIFIED:". gmdate('Ymd\THis\Z', $r['d_edited']);
 		$a[] = utf8chunks("SUMMARY:". $r['title']);
-		if($r['prio'] > 0 && isset($mttToIcalPrio[$r['prio']])) $a[] = "PRIORITY:". $mttToIcalPrio[$r['prio']];
+		if($r['prio'] > 0 && isset($yttToIcalPrio[$r['prio']])) $a[] = "PRIORITY:". $yttToIcalPrio[$r['prio']];
 		$dda = explode('-', $r['duedate']);
 		$a[] = "DTSTART;VALUE=DATE:".sprintf("%u%02u%02u", $dda[0], $dda[1], $dda[2]);
 		$a[] = "DTEND;VALUE=DATE:".date('Ymd', mktime(1,1,1,$dda[1],$dda[2],$dda[0]) + 86400);

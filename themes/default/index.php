@@ -1,29 +1,41 @@
-<?php header("Content-type: text/html; charset=utf-8"); ?>
+<?php
+/*
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+*/
+
+header("Content-type: text/html; charset=utf-8");
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><?php mttinfo('title'); ?></title>
-	<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>style.css?v=<?=MTT_VERSION?>" media="all" />
+	<title><?php yttinfo('title'); ?></title>
+	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style.css?v=<?=YTT_VERSION?>" media="all" />
 	<?php if(Config::get('rtl')): ?>
-	<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>style_rtl.css?v=<?=MTT_VERSION?>" media="all" />
+	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style_rtl.css?v=<?=YTT_VERSION?>" media="all" />
 	<?php endif; ?>
 	<?php if(isset($_GET['pda'])): ?>
 	<meta name="viewport" id="viewport" content="width=device-width" />
-	<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>pda.css?v=<?=MTT_VERSION?>" media="all" />
+	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>pda.css?v=<?=YTT_VERSION?>" media="all" />
 	<?php else: ?>
-	<link rel="stylesheet" type="text/css" href="<?php mttinfo('template_url'); ?>print.css?v=<?=MTT_VERSION?>" media="print" />
+	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>print.css?v=<?=YTT_VERSION?>" media="print" />
 	<?php endif; ?>
 </head>
 
 <body>
 
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo.js?v=<?=MTT_VERSION?>"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo_lang.php?v=<?=MTT_VERSION?>"></script>
-<script type="text/javascript" src="<?php mttinfo('mtt_url'); ?>mytinytodo_ajax_storage.js?v=<?=MTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
 
 <script type="text/javascript">
 	$().ready(function(){
@@ -37,10 +49,10 @@
 
 		<?php endif; ?>
 
-		mytinytodo.mttUrl = "<?php mttinfo('mtt_url'); ?>";
-		mytinytodo.templateUrl = "<?php mttinfo('template_url'); ?>";
-		mytinytodo.db = new mytinytodoStorageAjax(mytinytodo);
-		mytinytodo.init({
+		yourtinytodo.yttUrl = "<?php yttinfo('ytt_url'); ?>";
+		yourtinytodo.templateUrl = "<?php yttinfo('template_url'); ?>";
+		yourtinytodo.db = new yourtinytodoStorageAjax(yourtinytodo);
+		yourtinytodo.init({
 			needAuth: <?php echo $needAuth ? "true" : "false"; ?>,
 			multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
 			admin: <?php echo is_admin() ? "true" : "false"; ?>,
@@ -61,9 +73,9 @@
 
 <div id="wrapper">
 <div id="container">
-<div id="mtt_body">
+<div id="ytt_body">
 
-<h2><?php mttinfo('title'); ?></h2>
+<h2><?php yttinfo('title'); ?></h2>
 
 <div id="loading"></div>
 
@@ -87,41 +99,41 @@
 <div id="page_tasks" style="display:none">
 
 	<div id="lists">
-		<ul class="mtt-tabs"></ul>
-		<div class="mtt-tabs-add-button" title="<?php _e('list_new'); ?>"><span></span></div>
+		<ul class="ytt-tabs"></ul>
+		<div class="ytt-tabs-add-button" title="<?php _e('list_new'); ?>"><span></span></div>
 		<div id="tabs_buttons">
-			<div class="mtt-tabs-select-button mtt-tabs-button" title="<?php _e('list_select'); ?>"><span></span></div>
+			<div class="ytt-tabs-select-button ytt-tabs-button" title="<?php _e('list_select'); ?>"><span></span></div>
 		</div>
-		<div id="list_all" class="mtt-tab mtt-tabs-alltasks mtt-tabs-hidden"><a href="#alltasks"><span><?php _e('alltasks'); ?></span></a><div class="list-action"></div></div>
+		<div id="list_all" class="ytt-tab ytt-tabs-alltasks ytt-tabs-hidden"><a href="#alltasks"><span><?php _e('alltasks'); ?></span></a><div class="list-action"></div></div>
 	</div>
 
 
 
-	<div id="toolbar" class="mtt-htabs">
+	<div id="toolbar" class="ytt-htabs">
 
 		<div id="htab_search">
-			<table class="mtt-searchbox"><tr><td>
-				<div class="mtt-searchbox-c">
+			<table class="ytt-searchbox"><tr><td>
+				<div class="ytt-searchbox-c">
 					<input type="text" name="search" value="" maxlength="250" id="search" autocomplete="off" />
-					<div class="mtt-searchbox-icon mtt-icon-search"></div>
-					<div id="search_close" class="mtt-searchbox-icon mtt-icon-cancelsearch"></div>
+					<div class="ytt-searchbox-icon ytt-icon-search"></div>
+					<div id="search_close" class="ytt-searchbox-icon ytt-icon-cancelsearch"></div>
 				</div>
 			</td></tr></table>
 		</div>
 
 		<div id="htab_newtask">
-			<table class="mtt-taskbox"><tr><td class="mtt-tb-cell">
-				<div class="mtt-tb-c">
+			<table class="ytt-taskbox"><tr><td class="ytt-tb-cell">
+				<div class="ytt-tb-c">
 					<form id="newtask_form" method="post" action="">
 						<label id="task_placeholder" class="placeholding" for="task">
 							<input type="text" name="task" value="" maxlength="250" id="task" autocomplete="off" />
 							<span><?php _e('htab_newtask');?></span>
 						</label>
-						<div id="newtask_submit" class="mtt-taskbox-icon mtt-icon-submittask" title="<?php _e('btn_add');?>"></div>
+						<div id="newtask_submit" class="ytt-taskbox-icon ytt-icon-submittask" title="<?php _e('btn_add');?>"></div>
 					</form>
 				</div>
 			</td>
-				<td><a href="#" id="newtask_adv" class="mtt-img-button" title="<?php _e('advanced_add');?>"><span></span></a></td>
+				<td><a href="#" id="newtask_adv" class="ytt-img-button" title="<?php _e('advanced_add');?>"><span></span></a></td>
 			</tr></table>
 		</div>
 
@@ -133,10 +145,10 @@
 
 
 	<h3>
-		<span id="taskview" class="mtt-menu-button"><span class="btnstr"><?php _e('tasks');?></span> (<span id="total">0</span>) <span class="arrdown"></span></span>
-		<span class="mtt-notes-showhide"><?php _e('notes');?> <a href="#" id="mtt-notes-show"><?php _e('notes_show');?></a> / <a href="#" id="mtt-notes-hide"><?php _e('notes_hide');?></a></span>
-		<span id="mtt_filters"></span>
-		<span id="tagcloudbtn" class="mtt-menu-button"><?php _e('tagcloud');?> <span class="arrdown2"></span></span>
+		<span id="taskview" class="ytt-menu-button"><span class="btnstr"><?php _e('tasks');?></span> (<span id="total">0</span>) <span class="arrdown"></span></span>
+		<span class="ytt-notes-showhide"><?php _e('notes');?> <a href="#" id="ytt-notes-show"><?php _e('notes_show');?></a> / <a href="#" id="ytt-notes-hide"><?php _e('notes_hide');?></a></span>
+		<span id="ytt_filters"></span>
+		<span id="tagcloudbtn" class="ytt-menu-button"><?php _e('tagcloud');?> <span class="arrdown2"></span></span>
 	</h3>
 
 	<div id="taskcontainer">
@@ -148,11 +160,11 @@
 
 <div id="page_taskedit" style="display:none">
 
-	<div><a href="#" class="mtt-back-button"><?php _e('go_back');?></a></div>
+	<div><a href="#" class="ytt-back-button"><?php _e('go_back');?></a></div>
 
-	<h3 class="mtt-inadd"><?php _e('add_task');?></h3>
-	<h3 class="mtt-inedit"><?php _e('edit_task');?>
-		<span id="taskedit-date" class="mtt-inedit">
+	<h3 class="ytt-inadd"><?php _e('add_task');?></h3>
+	<h3 class="ytt-inedit"><?php _e('edit_task');?>
+		<span id="taskedit-date" class="ytt-inedit">
 			(<span class="date-created" title="<?php _e('taskdate_created');?>"><span>&nbsp;</span></span><span class="date-completed" title="<?php _e('taskdate_completed');?>"> &mdash; <span>&nbsp;</span></span>)
 		</span>
 	</h3>
@@ -184,7 +196,7 @@
 		<div class="form-row" id="alltags" style="display:none;"><?php _e('alltags');?> <span class="tags-list">&nbsp;</span></div>
 		<div class="form-row form-bottom-buttons">
 			<input type="submit" value="<?php _e('save');?>" />
-			<input type="button" id="mtt_edit_cancel" class="mtt-back-button" value="<?php _e('cancel');?>" />
+			<input type="button" id="ytt_edit_cancel" class="ytt-back-button" value="<?php _e('cancel');?>" />
 		</div>
 	</form>
 
@@ -212,7 +224,7 @@
 	<span class="prio-pos prio-pos-2">+2</span>
 </div>
 
-<div id="taskviewcontainer" class="mtt-menu-container" style="display:none">
+<div id="taskviewcontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="view_tasks"><?php _e('tasks');?> (<span id="cnt_total">0</span>)</li>
 		<li id="view_past"><?php _e('f_past');?> (<span id="cnt_past">0</span>)</li>
@@ -222,7 +234,7 @@
 </div>
 
 <div id="tagcloud" style="display:none">
-	<a id="tagcloudcancel" class="mtt-img-button"><span>&nbsp;</span></a>
+	<a id="tagcloudcancel" class="ytt-img-button"><span>&nbsp;</span></a>
 	<div id="tagcloudload"></div>
 	<div id="tagcloudcontent"></div>
 </div>
@@ -231,44 +243,44 @@
 	$show_edit_options = (!isset($_SESSION['role']) || $_SESSION['role'] < 3);
 ?>
 
-<div id="listmenucontainer" class="mtt-menu-container" style="display:none">
+<div id="listmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
-		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list mtt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
-		<?php if($show_edit_options) {?><li class="mtt-menu-delimiter mtt-need-real-list"></li><?}?>
-		<?php if($show_edit_options) {?><li class="mtt-need-list mtt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
-		<li class="mtt-need-list mtt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
-		<li class="mtt-menu-delimiter mtt-need-real-list"></li>
-		<li class="mtt-need-list mtt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="mtt-sort-direction">&nbsp;</span></li>
-		<li class="mtt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div><?php _e('sortByDateCreated');?> <span class="mtt-sort-direction">&nbsp;</span></li>
-		<li class="mtt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div><?php _e('sortByPriority');?> <span class="mtt-sort-direction">&nbsp;</span></li>
-		<li class="mtt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div><?php _e('sortByDueDate');?> <span class="mtt-sort-direction">&nbsp;</span></li>
-		<li class="mtt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="mtt-sort-direction">&nbsp;</span></li>
-		<li class="mtt-menu-delimiter"></li>
-		<li class="mtt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list ytt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-menu-delimiter ytt-need-real-list"></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
+		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
+		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
+		<li class="ytt-need-list ytt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div><?php _e('sortByDateCreated');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div><?php _e('sortByPriority');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div><?php _e('sortByDueDate');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-menu-delimiter"></li>
+		<li class="ytt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
 	</ul>
 </div>
 
-<div id="listexportmenucontainer" class="mtt-menu-container" style="display:none">
+<div id="listexportmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
-		<li class="mtt-need-list mtt-need-real-list" id="btnExportCSV"><?php _e('list_export_csv');?></li>
-		<li class="mtt-need-list mtt-need-real-list" id="btnExportICAL"><?php _e('list_export_ical');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnExportCSV"><?php _e('list_export_csv');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnExportICAL"><?php _e('list_export_ical');?></li>
 	</ul>
 </div>
 
-<div id="taskcontextcontainer" class="mtt-menu-container" style="display:none">
+<div id="taskcontextcontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="cmenu_edit"><b><?php _e('action_edit');?></b></li>
 		<li id="cmenu_note"><?php _e('action_note');?></li>
-		<li id="cmenu_prio" class="mtt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div><?php _e('action_priority');?></li>
-		<li id="cmenu_move" class="mtt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div><?php _e('action_move');?></li>
+		<li id="cmenu_prio" class="ytt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div><?php _e('action_priority');?></li>
+		<li id="cmenu_move" class="ytt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div><?php _e('action_move');?></li>
 		<li id="cmenu_delete"><?php _e('action_delete');?></li>
 	</ul>
 </div>
 
-<div id="cmenupriocontainer" class="mtt-menu-container" style="display:none">
+<div id="cmenupriocontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="cmenu_prio:2"><div class="menu-icon"></div>+2</li>
 		<li id="cmenu_prio:1"><div class="menu-icon"></div>+1</li>
@@ -277,19 +289,19 @@
 	</ul>
 </div>
 
-<div id="cmenulistscontainer" class="mtt-menu-container" style="display:none">
+<div id="cmenulistscontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 	</ul>
 </div>
 
-<div id="slmenucontainer" class="mtt-menu-container" style="display:none">
+<div id="slmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
-		<li id="slmenu_list:-1" class="list-id--1 mtt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#alltasks"><?php _e('alltasks'); ?></a></li>
-		<li class="mtt-menu-delimiter slmenu-lists-begin mtt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>></li>
+		<li id="slmenu_list:-1" class="list-id--1 ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#alltasks"><?php _e('alltasks'); ?></a></li>
+		<li class="ytt-menu-delimiter slmenu-lists-begin ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>></li>
 	</ul>
 </div>
 
-<div id="createuser" style="display:none" class="mtt-menu-container">
+<div id="createuser" style="display:none" class="ytt-menu-container">
 	<form method="post" action="" name="createuserForm">
 		<label for="um_username"><?php _e('um_username');?></label>
 		<input type="text" name="um_username" id="um_username" value="" />
@@ -319,9 +331,9 @@
 <div id="space"></div>
 </div>
 
-<div id="mtt-menu-modal" class="mtt-menu-modal"></div>
+<div id="ytt-menu-modal" class="ytt-menu-modal"></div>
 
-<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.mytinytodo.net/">myTinyTodo</a></strong> <?=MTT_VERSION?> </div></div>
+<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?> </div></div>
 
 </div>
 </body>

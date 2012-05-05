@@ -1,4 +1,13 @@
 <?php
+/*
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+*/
 
 # Configuration goes here
 $config = array();
@@ -8,18 +17,18 @@ $config['db'] = '';
 
 # Specify these settings if you selected above to use Mysql
 $config['mysql.host'] = "localhost";
-$config['mysql.db'] = "mytinytodo";
+$config['mysql.db'] = "yytinytodo";
 $config['mysql.user'] = "user";
 $config['mysql.password'] = ""; 
 
 # Tables prefix
-$config['prefix'] = "mtt_";
+$config['prefix'] = "ytt_";
 
-# These two parameters are used when mytinytodo index.php called not from installation directory
+# These two parameters are used when yourtinytodo index.php called not from installation directory
 # 'url' - URL where index.php is called from (ex.: http://site.com/todo.php)
-# 'mtt_url' - directory URL where mytinytodo is installed (with trailing slash) (ex.: http://site.com/lib/mytinytodo/)
+# 'ytt_url' - directory URL where yourtinytodo is installed (with trailing slash) (ex.: http://site.com/lib/yourtinytodo/)
 $config['url'] = '';
-$config['mtt_url'] = ''; 
+$config['ytt_url'] = '';
 
 # Language pack
 $config['lang'] = "en";

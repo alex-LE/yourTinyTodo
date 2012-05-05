@@ -1,19 +1,22 @@
 <?php
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
-	Modified by Alexander Adam <info@alexander-adam.net> Copyright 2012
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-if(!defined('MTTPATH')) define('MTTPATH', dirname(__FILE__) .'/');
+if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
 
-require_once(MTTPATH. 'common.php');
-require_once(MTTPATH. 'db/config.php');
+require_once(YTTPATH. 'common.php');
+require_once(YTTPATH. 'db/config.php');
 
 ini_set('display_errors', 0);
 
-define('MTT_VERSION', '1.5');
+define('YTT_VERSION', '1.5');
 
 if(!isset($config)) global $config;
 Config::loadConfig($config);
@@ -26,7 +29,7 @@ if(Config::get('db') == 'mysql')
 {
 	try
 	{
-		require_once(MTTPATH. 'class.db.mysql.php');
+		require_once(YTTPATH. 'class.db.mysql.php');
 		$db = DBConnection::init(new Database_Mysql);
 		$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		$db->dq("SET NAMES utf8");
@@ -40,7 +43,7 @@ if(Config::get('db') == 'mysql')
 # PostgreSQL Database Connection
 elseif(Config::get('db') == 'postgres')
 {
-	require_once(MTTPATH. 'class.db.postgres.php');
+	require_once(YTTPATH. 'class.db.postgres.php');
 	$db = DBConnection::init(new Database_Postgres);
 	$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 	$db->dq("SET NAMES 'utf8'");
@@ -51,9 +54,9 @@ elseif(Config::get('db') == 'sqlite')
 {
 	try
 	{
-		require_once(MTTPATH. 'class.db.sqlite3.php');
+		require_once(YTTPATH. 'class.db.sqlite3.php');
 		$db = DBConnection::init(new Database_Sqlite3);
-		$db->connect(MTTPATH. 'db/todolist.db');
+		$db->connect(YTTPATH. 'db/todolist.db');
 	}
 	catch(Exception $e)
 	{
@@ -66,10 +69,10 @@ else {
 }
 $db->prefix = Config::get('prefix');
 
-require_once(MTTPATH. 'lang/class.default.php');
-require_once(MTTPATH. 'lang/'.Config::get('lang').'.php');
+require_once(YTTPATH. 'lang/class.default.php');
+require_once(YTTPATH. 'lang/'.Config::get('lang').'.php');
 
-$_mttinfo = array();
+$_yttinfo = array();
 
 $needAuth = (Config::get('password') != '' || Config::get('multiuser') == 1) ? 1 : 0;
 $multiUser = (Config::get('multiuser') == 1) ? 1 : 0;
@@ -77,7 +80,7 @@ if($needAuth && !isset($dontStartSession))
 {
 	if(Config::get('session') == 'files')
 	{
-		session_save_path(MTTPATH. 'tmp/sessions');
+		session_save_path(YTTPATH. 'tmp/sessions');
 		ini_set('session.gc_maxlifetime', '1209600'); # 14 days session file minimum lifetime
 		ini_set('session.gc_probability', 1);
 		ini_set('session.gc_divisor', 10);
@@ -86,7 +89,7 @@ if($needAuth && !isset($dontStartSession))
 	ini_set('session.use_cookies', true);
 	ini_set('session.use_only_cookies', true);
 	session_set_cookie_params(1209600, url_dir(Config::get('url')=='' ? $_SERVER['REQUEST_URI'] : Config::get('url'))); # 14 days session cookie lifetime
-	session_name('mtt-session');
+	session_name('ytt-session');
 	session_start();
 }
 
@@ -156,38 +159,38 @@ function __($s)
 	return Lang::instance()->get($s);
 }
 
-function mttinfo($v)
+function yttinfo($v)
 {
-	global $_mttinfo;
-	if(!isset($_mttinfo[$v])) {
-		echo get_mttinfo($v);
+	global $_yttinfo;
+	if(!isset($_yttinfo[$v])) {
+		echo get_yttinfo($v);
 	} else {
-		echo $_mttinfo[$v];
+		echo $_yttinfo[$v];
 	}
 }
 
-function get_mttinfo($v)
+function get_yttinfo($v)
 {
-	global $_mttinfo;
-	if(isset($_mttinfo[$v])) return $_mttinfo[$v];
+	global $_yttinfo;
+	if(isset($_yttinfo[$v])) return $_yttinfo[$v];
 	switch($v)
 	{
 		case 'template_url':
-			$_mttinfo['template_url'] = get_mttinfo('mtt_url'). 'themes/'. Config::get('template') . '/';
-			return $_mttinfo['template_url'];
+			$_yttinfo['template_url'] = get_yttinfo('ytt_url'). 'themes/'. Config::get('template') . '/';
+			return $_yttinfo['template_url'];
 		case 'url':
-			$_mttinfo['url'] = Config::get('url');
-			if($_mttinfo['url'] == '')
-				$_mttinfo['url'] = 'http://'.$_SERVER['HTTP_HOST'] .($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').
+			$_yttinfo['url'] = Config::get('url');
+			if($_yttinfo['url'] == '')
+				$_yttinfo['url'] = 'http://'.$_SERVER['HTTP_HOST'] .($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').
 									url_dir(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME']);
-			return $_mttinfo['url'];
-		case 'mtt_url':
-			$_mttinfo['mtt_url'] = Config::get('mtt_url');
-			if($_mttinfo['mtt_url'] == '') $_mttinfo['mtt_url'] = url_dir(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME']);
-			return $_mttinfo['mtt_url'];
+			return $_yttinfo['url'];
+		case 'ytt_url':
+			$_yttinfo['ytt_url'] = Config::get('ytt_url');
+			if($_yttinfo['ytt_url'] == '') $_yttinfo['ytt_url'] = url_dir(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME']);
+			return $_yttinfo['ytt_url'];
 		case 'title':
-			$_mttinfo['title'] = (Config::get('title') != '') ? htmlarray(Config::get('title')) : __('My Tiny Todolist');
-			return $_mttinfo['title'];
+			$_yttinfo['title'] = (Config::get('title') != '') ? htmlarray(Config::get('title')) : __('Your Tiny Todolist');
+			return $_yttinfo['title'];
 	}
 }
 

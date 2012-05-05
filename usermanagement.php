@@ -1,9 +1,13 @@
 <?php
 
 /*
-	This file is part of myTinyTodo.
-	(C) Copyright 2012 Alexander Adam <info@alexander-adam.net>
-	Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+This file is part of yourTinyTodo by the yourTinyTodo community.
+Copyrights for portions of this file are retained by their owners.
+
+Based on myTinyTodo by Max Pozdeev
+(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 require_once('./init.php');
@@ -54,7 +58,7 @@ function getUserListFromDB()
 
 header('Content-type:text/html; charset=utf-8');
 ?>
-<div><a href="#" class="mtt-back-button"><?php _e('go_back');?></a></div>
+<div><a href="#" class="ytt-back-button"><?php _e('go_back');?></a></div>
 
 <h3><?php _e('um_header');?></h3>
 
@@ -62,7 +66,7 @@ header('Content-type:text/html; charset=utf-8');
 
 <a href="#" class="createuserBtn" id="createuserBtn"><?php _e('um_createuser');?></a>
 
-<table class="mtt-usermanagement-table">
+<table class="ytt-usermanagement-table">
 	<tr>
 		<th><?php _e('um_username');?></th>
 		<th><?php _e('um_email');?></th>
