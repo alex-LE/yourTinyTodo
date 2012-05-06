@@ -1,13 +1,17 @@
 <?php
 
 /*
-This file is part of yourTinyTodo by the yourTinyTodo community.
-Copyrights for portions of this file are retained by their owners.
+        yourTinyTodo language pack
+        Language: Deutsch
+        Original name: Deutsch
 
-Based on myTinyTodo by Max Pozdeev
-(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+        This file is part of yourTinyTodo by the yourTinyTodo community.
+        Copyrights for portions of this file are retained by their owners.
 
-Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
+        Based on myTinyTodo by Max Pozdeev
+        (C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
+
+        Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 class Lang extends DefaultLang
