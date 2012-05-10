@@ -365,7 +365,8 @@ li.ytt-item-hidden { display:none; }
 
 .ytt-page-manageusers a.createuserBtn {margin:20px 0; display: block;}
 #createuser label {display: block; width:150px; float:left; text-align: left}
-#createuser input,select {display: block; width:200px; margin:3px 0}
+#createuser > form > input {display: block; width:200px; margin:3px 0}
+#createuser > form > select {display: block; width:200px; margin:3px 0}
 #createuser #createuserSubmit {width:auto; margin-left: 150px}
 #createuser {
     height:140px;width:430px;
