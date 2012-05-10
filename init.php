@@ -18,6 +18,8 @@ ini_set('display_errors', 0);
 
 define('YTT_VERSION', '1.5');
 
+define('DEBUG_MODE', true);
+
 if(!isset($config)) global $config;
 Config::loadConfig($config);
 unset($config);

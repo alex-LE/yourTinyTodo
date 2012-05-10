@@ -1005,4 +1005,10 @@ function getUserListsSimple()
 	return $a;
 }
 
+function addNotification($text) {
+	$db = DBConnection::instance();
+	$user_id = (int)$_SESSION['userid'];
+	$q = $db->dq("INSERT INTO {$db->prefix}notifications (user_id, text) VALUES (?, ?)", array($user_id, $text));
+}
+
 ?>

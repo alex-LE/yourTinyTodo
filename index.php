@@ -32,4 +32,6 @@ if(isset($_SERVER['HTTP_USER_AGENT']))
 
 require(TEMPLATEPATH. 'index.php');
 
-?>
+if(DEBUG_MODE) {
+	echo '<pre>'.print_r($_SESSION,true).'</pre>';
+}
