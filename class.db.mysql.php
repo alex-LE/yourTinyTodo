@@ -155,12 +155,12 @@ class Database_Mysql
 
 	function quote($s)
 	{
-		return '\''. addslashes($s). '\'';
+		return '\''. mysql_real_escape_string($s). '\'';
 	}
 
 	function quoteForLike($format, $s)
 	{
-		$s = str_replace(array('%','_'), array('\%','\_'), addslashes($s));
+		$s = str_replace(array('%','_'), array('\%','\_'), mysql_real_escape_string($s));
 		return '\''. sprintf($format, $s). '\'';
 	}
 

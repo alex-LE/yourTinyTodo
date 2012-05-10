@@ -155,12 +155,12 @@ class Database_Postgres
 
 	function quote($s)
 	{
-		return '\''. addslashes($s). '\'';
+		return '\''. pg_escape_string($s). '\'';
 	}
 
 	function quoteForLike($format, $s)
 	{
-		$s = str_replace(array('%','_'), array('\%','\_'), addslashes($s));
+		$s = str_replace(array('%','_'), array('\%','\_'), pg_escape_string($s));
 		return '\''. sprintf($format, $s). '\'';
 	}
 
