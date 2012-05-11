@@ -1,5 +1,4 @@
 <?php
-
 /*
 This file is part of yourTinyTodo by the yourTinyTodo community.
 Copyrights for portions of this file are retained by their owners.
@@ -10,13 +9,21 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-class DatabaseResult_Sqlite3
+class DatabaseResult_Sqlite3 implements IDatabaseResult
 {
 	private $parent;
 	private $q;
 	var $query;
 	var $prefix;
+	var $rows = NULL;
+	var $affected = NULL;
 
+	/**
+	 * @param $query
+	 * @param $h Database
+	 * @param int $resultless
+	 * @throws Exception
+	 */
 	function __construct($query, &$h, $resultless = 0)
 	{
 		$this->parent = $h;
@@ -52,22 +59,46 @@ class DatabaseResult_Sqlite3
 		return $this->q->fetch(PDO::FETCH_ASSOC);
 	}
 
+	function rows()
+	{
+		if (!is_null($this -> rows)) return $this->rows;
+		$this->rows = mysql_num_rows($this->q);
+		return $this->rows;
+	}
+
+	function affected()
+	{
+		if(is_null($this->affected))
+		{
+			$this->affected = mysql_affected_rows($this->parent->dbh);
+		}
+		return $this->affected;
+	}
 }
 
-class Database_Sqlite3
+class Database_Sqlite3 extends Database
 {
-	var $dbh;
-	var $affected = null;
-	var $lastQuery;
+	/**
+	 * @var $dbh PDO
+	 */
+	public $dbh;
 
 	function __construct()
 	{
 	}
 
-	function connect($filename)
+	/**
+	 * @param $host = filename of sqlite file
+	 * @param null $user not used
+	 * @param null $pass not used
+	 * @param null $db not used
+	 * @return bool
+	 * @throws Exception
+	 */
+	function connect($host, $user = null, $pass = null, $db = null)
 	{
 		try {
-			$this->dbh = new PDO("sqlite:$filename");
+			$this->dbh = new PDO("sqlite:$host");
 		}
 		catch(PDOException $e) {
 			throw new Exception($e->getMessage());
@@ -150,7 +181,7 @@ class Database_Sqlite3
 		return $this->dbh->quote(sprintf($format, $s)). " ESCAPE '\'";
 	}
 
-	function last_insert_id()
+	function last_insert_id($tablename = null)
 	{
 		return $this->dbh->lastInsertId();
 	}
@@ -162,6 +193,39 @@ class Database_Sqlite3
 		if($q === false) return false;
 		else return true;
 	}
-}
 
-?>
+	function error()
+	{
+		return $this->dbh->errorInfo();
+	}
+
+	public function setAffected($affected)
+	{
+		$this->affected = $affected;
+	}
+
+	public function getAffected()
+	{
+		return $this->affected;
+	}
+
+	public function setDbh($dbh)
+	{
+		$this->dbh = $dbh;
+	}
+
+	public function getDbh()
+	{
+		return $this->dbh;
+	}
+
+	public function setLastQuery($lastQuery)
+	{
+		$this->lastQuery = $lastQuery;
+	}
+
+	public function getLastQuery()
+	{
+		return $this->lastQuery;
+	}
+}

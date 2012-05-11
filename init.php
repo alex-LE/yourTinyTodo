@@ -13,6 +13,8 @@ if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
 
 require_once(YTTPATH. 'common.php');
 require_once(YTTPATH. 'db/config.php');
+require_once(YTTPATH. 'core/Database.class.php');
+require_once(YTTPATH. 'core/Lang.class.php');
 
 ini_set('display_errors', 0);
 
@@ -32,7 +34,7 @@ if(Config::get('db') == 'mysql')
 	try
 	{
 		require_once(YTTPATH. 'class.db.mysql.php');
-		$db = DBConnection::init(new Database_Mysql);
+		$db = DBConnection::init(new Database_Mysql());
 		$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		$db->dq("SET NAMES utf8");
 	}
@@ -46,7 +48,7 @@ if(Config::get('db') == 'mysql')
 elseif(Config::get('db') == 'postgres')
 {
 	require_once(YTTPATH. 'class.db.postgres.php');
-	$db = DBConnection::init(new Database_Postgres);
+	$db = DBConnection::init(new Database_Postgres());
 	$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 	$db->dq("SET NAMES 'utf8'");
 }
@@ -57,7 +59,7 @@ elseif(Config::get('db') == 'sqlite')
 	try
 	{
 		require_once(YTTPATH. 'class.db.sqlite3.php');
-		$db = DBConnection::init(new Database_Sqlite3);
+		$db = DBConnection::init(new Database_Sqlite3());
 		$db->connect(YTTPATH. 'db/todolist.db');
 	}
 	catch(Exception $e)
@@ -71,8 +73,9 @@ else {
 }
 $db->prefix = Config::get('prefix');
 
-require_once(YTTPATH. 'lang/class.default.php');
-require_once(YTTPATH. 'lang/'.Config::get('lang').'.php');
+require_once(YTTPATH. 'core/Lang.class.php');
+$lang = Lang::instance();
+$lang->loadLang(Config::get('lang'));
 
 $_yttinfo = array();
 
@@ -202,5 +205,3 @@ function jsonExit($data)
 	echo json_encode($data);
 	exit;
 }
-
-?>

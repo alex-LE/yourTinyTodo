@@ -9,6 +9,9 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
+error_reporting(E_ALL);
+ini_set('display_errors',1);
+
 require_once('./init.php');
 
 $lang = Lang::instance();
@@ -31,7 +34,3 @@ if(isset($_SERVER['HTTP_USER_AGENT']))
 }
 
 require(TEMPLATEPATH. 'index.php');
-
-if(DEBUG_MODE) {
-	echo '<pre>'.print_r($_SESSION,true).'</pre>';
-}
