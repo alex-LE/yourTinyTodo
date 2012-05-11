@@ -419,7 +419,7 @@ elseif($ver == YTT_VERSION)
 }
 else
 {
-	if(!in_array($ver, array('1.1','1.2','1.3.0','1.3.1'))) {
+	if(!in_array($ver, array('1.1','1.2','1.3.0','1.3.1','1.4'))) {
 		exitMessage("Can not update. Unsupported database version ($ver).");
 	}
 	if(!isset($_POST['update'])) {
