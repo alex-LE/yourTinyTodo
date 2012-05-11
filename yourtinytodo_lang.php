@@ -12,7 +12,7 @@ Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
 
 require_once(YTTPATH. 'db/config.php');
-require_once(YTTPATH. 'lang/class.default.php');
+require_once(YTTPATH. 'core/Lang.class.php');
 require_once(YTTPATH. 'lang/'. $config['lang']. '.php');
 
 header('Content-type: text/javascript; charset=utf-8');

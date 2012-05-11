@@ -419,14 +419,14 @@ elseif($ver == YTT_VERSION)
 }
 else
 {
-	if(!in_array($ver, array('1.1','1.2','1.3.0','1.3.1'))) {
+	if(!in_array($ver, array('1.1','1.2','1.3.0','1.3.1','1.4'))) {
 		exitMessage("Can not update. Unsupported database version ($ver).");
 	}
 	if(!isset($_POST['update'])) {
-		exitMessage("Update database v$ver
-		<form name=frm method=post><input type=hidden name=update value=1><input type=hidden name=tz value=-1><input type=submit value=' Update '></form>
-		<script type=\"text/javascript\">var tz = -1 * (new Date()).getTimezoneOffset(); document.frm.tz.value = tz;</script>
-		");
+		exitMessage('Update database v'.$ver.'
+		<form name="frm"" method="post"><input type="hidden" name="update" value="1"><input type="hidden" name="tz" value="-1"><input type="submit" value=" Update "></form>
+		<script type="text/javascript">var tz = -1 * (new Date()).getTimezoneOffset(); document.frm.tz.value = tz;</script>
+		');
 	}
 
 	# update process
@@ -457,7 +457,7 @@ else
 		update_131_14($db, $dbtype);
 	}
 }
-echo "Done<br/><br/> <b>Attention!</b> Delete this file for security reasons.";
+echo "Done<br/><br/><b>Attention!</b> Delete this file for security reasons.";
 printFooter();
 
 
@@ -1056,5 +1056,3 @@ function update_14_15($db, $dbtype)
 	$db->ex("COMMIT");
 }
 ### end of 1.5 #####
-
-?>
