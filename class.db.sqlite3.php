@@ -68,6 +68,7 @@ class Database_Sqlite3
 	{
 		try {
 			$this->dbh = new PDO("sqlite:$filename");
+			$this->dbh->sqliteCreateFunction('concat', 'sqlite_udf_concat', 1);
 		}
 		catch(PDOException $e) {
 			throw new Exception($e->getMessage());
@@ -162,6 +163,11 @@ class Database_Sqlite3
 		if($q === false) return false;
 		else return true;
 	}
+}
+
+function sqlite_udf_concat($str1, $str2)
+{
+	return $str1 . $str2;
 }
 
 ?>
