@@ -24,31 +24,20 @@ function getUserListFromDB()
 {
 	global $db;
 	$q = $db->dq("SELECT * FROM {$db->prefix}users");
-	if($q->rows() > 0)
-	{
-		while($r = $q->fetch_assoc($q))
-		{
-			?>
-			<tr>
-				<td valign="left" class="username"><?php echo $r['username'] ?></td>
-				<td valign="left" class="email"><?php echo $r['email'] ?></td>
-				<td valign="left" class="role"><?php echo _e('um_rolename_'.$r['role']) ?></td>
-				<td>
-					<a href="#" class="edituser" rel="<?php echo $r['id'] ?>"><?php _e('action_edit') ?></a>
-					<?php if($r['id'] != $_SESSION['userid']) { ?>
-					&nbsp;|&nbsp;
-					<a href="#" class="deleteuser" rel="<?php echo $r['id'] ?>"><?php _e('action_delete') ?></a>
-					<?php } ?>
-				</td>
-			</tr>
-			<?
-		}
-	}
-	else
+	while($r = $q->fetch_assoc($q))
 	{
 		?>
 		<tr>
-			<td colspan="4"><?php _e('um_nousers'); ?></td>
+			<td valign="left" class="username"><?php echo $r['username'] ?></td>
+			<td valign="left" class="email"><?php echo $r['email'] ?></td>
+			<td valign="left" class="role"><?php echo _e('um_rolename_'.$r['role']) ?></td>
+			<td>
+				<a href="#" class="edituser" rel="<?php echo $r['id'] ?>"><?php _e('action_edit') ?></a>
+				<?php if($r['id'] != $_SESSION['userid']) { ?>
+				&nbsp;|&nbsp;
+				<a href="#" class="deleteuser" rel="<?php echo $r['id'] ?>"><?php _e('action_delete') ?></a>
+				<?php } ?>
+			</td>
 		</tr>
 		<?
 	}

@@ -16,6 +16,7 @@ class DatabaseResult_Sqlite3
 	private $q;
 	var $query;
 	var $prefix;
+	var $rows = NULL;
 
 	function __construct($query, &$h, $resultless = 0)
 	{
@@ -51,7 +52,6 @@ class DatabaseResult_Sqlite3
 	{
 		return $this->q->fetch(PDO::FETCH_ASSOC);
 	}
-
 }
 
 class Database_Sqlite3
@@ -68,7 +68,8 @@ class Database_Sqlite3
 	{
 		try {
 			$this->dbh = new PDO("sqlite:$filename");
-			$this->dbh->sqliteCreateFunction('concat', 'sqlite_udf_concat', 1);
+			$this->dbh->sqliteCreateFunction('concat', 'sqlite_udf_concat', 2);
+			$this->dbh->sqliteCreateFunction('md5', 'sqlite_udf_md5', 1);
 		}
 		catch(PDOException $e) {
 			throw new Exception($e->getMessage());
@@ -170,4 +171,8 @@ function sqlite_udf_concat($str1, $str2)
 	return $str1 . $str2;
 }
 
+function sqlite_udf_md5($a)
+{
+	return md5($a);
+}
 ?>

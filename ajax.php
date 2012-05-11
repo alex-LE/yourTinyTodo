@@ -299,9 +299,10 @@ elseif(isset($_POST['login']))
 		$password = _post('password');
 		$username = _post('username');
 		$result = $db->dq("SELECT role,id FROM {$db->prefix}users WHERE username = ? AND MD5(CONCAT(?,uuid)) = password", array($username, $password) );
-		if($result && $result->rows() == 1) {
+		$row = $result->fetch_assoc();
+		if($result && is_array($row) && count($row) > 0) {
 			$t['logged'] = 1;
-			$row = $result->fetch_assoc();
+
 			session_regenerate_id(1);
 			$_SESSION['logged'] = 1;
 			$_SESSION['userid'] = $row['id'];
@@ -561,7 +562,8 @@ elseif(isset($_GET['createuser']))
 	}
 
 	$result = $db->dq("SELECT * FROM {$db->prefix}users WHERE username = ?", array($username));
-	if($result->rows() > 0)
+	$row = $result->fetch_assoc();
+	if($result && is_array($row) && count($row) > 0)
 	{
 		jsonExit(array('error' => 2)); // username already exists
 	}
@@ -597,15 +599,16 @@ elseif(isset($_GET['edituser']))
 	}
 
 	$result = $db->dq("SELECT * FROM {$db->prefix}users WHERE username = ? AND id != ?", array($username,$userid));
-	if($result->rows() > 0)
+	$row = $result->fetch_assoc();
+	if($result && is_array($row) && count($row) > 0)
 	{
 		jsonExit(array('error' => 2)); // username already exists
 	}
 
 	$result = $db->dq("SELECT uuid FROM {$db->prefix}users WHERE id = ?", array($userid));
-	if($result && $result->rows() == 1) {
+	$row = $result->fetch_assoc();
+	if($result && is_array($row) && count($row) > 0) {
 		if(!empty($password)) {
-			$row = $result->fetch_assoc();
 			$uuid = $row['uuid'];
 			$updateresult = $db->dq("UPDATE {$db->prefix}users SET username= ?, password = ?, email = ?, role = ? WHERE id = ?",
 				array($username, hashPassword($password, $uuid), $email, $role, $userid) );
