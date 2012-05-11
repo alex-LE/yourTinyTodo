@@ -51,6 +51,13 @@ class DatabaseResult_Mysql
 	{
 		return mysql_fetch_assoc($this->q);
 	}
+
+	function rows()
+	{
+		if (!is_null($this -> rows)) return $this->rows;
+		$this->rows = mysql_num_rows($this->q);
+		return $this->rows;
+	}
 }
 
 class Database_Mysql
