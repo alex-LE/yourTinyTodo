@@ -56,13 +56,6 @@ class DatabaseResult_Posgres implements IDatabaseResult
 	{
 		return pg_fetch_assoc($this->q);
 	}
-
-	function rows()
-	{
-		if (!is_null($this -> rows)) return $this->rows;
-		$this->rows = pg_num_rows($this->q);
-		return $this->rows;
-	}
 }
 
 class Database_Postgres extends Database

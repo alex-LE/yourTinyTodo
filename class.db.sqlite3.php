@@ -49,6 +49,11 @@ class DatabaseResult_Sqlite3 implements IDatabaseResult
 		}
 	}
 
+	function affected()
+	{
+		return $this->parent->affected;
+	}
+
 	function fetch_row()
 	{
 		return $this->q->fetch(PDO::FETCH_NUM);
@@ -59,21 +64,6 @@ class DatabaseResult_Sqlite3 implements IDatabaseResult
 		return $this->q->fetch(PDO::FETCH_ASSOC);
 	}
 
-	function rows()
-	{
-		if (!is_null($this -> rows)) return $this->rows;
-		$this->rows = mysql_num_rows($this->q);
-		return $this->rows;
-	}
-
-	function affected()
-	{
-		if(is_null($this->affected))
-		{
-			$this->affected = mysql_affected_rows($this->parent->dbh);
-		}
-		return $this->affected;
-	}
 }
 
 class Database_Sqlite3 extends Database
@@ -99,6 +89,8 @@ class Database_Sqlite3 extends Database
 	{
 		try {
 			$this->dbh = new PDO("sqlite:$host");
+			$this->dbh->sqliteCreateFunction('concat', 'sqlite_udf_concat', 2);
+			$this->dbh->sqliteCreateFunction('md5', 'sqlite_udf_md5', 1);
 		}
 		catch(PDOException $e) {
 			throw new Exception($e->getMessage());
@@ -198,34 +190,13 @@ class Database_Sqlite3 extends Database
 	{
 		return $this->dbh->errorInfo();
 	}
+}
+function sqlite_udf_concat($str1, $str2)
+{
+	return $str1 . $str2;
+}
 
-	public function setAffected($affected)
-	{
-		$this->affected = $affected;
-	}
-
-	public function getAffected()
-	{
-		return $this->affected;
-	}
-
-	public function setDbh($dbh)
-	{
-		$this->dbh = $dbh;
-	}
-
-	public function getDbh()
-	{
-		return $this->dbh;
-	}
-
-	public function setLastQuery($lastQuery)
-	{
-		$this->lastQuery = $lastQuery;
-	}
-
-	public function getLastQuery()
-	{
-		return $this->lastQuery;
-	}
+function sqlite_udf_md5($a)
+{
+	return md5($a);
 }

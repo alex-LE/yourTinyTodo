@@ -304,9 +304,10 @@ elseif(isset($_POST['login']))
 		$password = _post('password');
 		$username = _post('username');
 		$result = $db->dq("SELECT role,id FROM {$db->prefix}users WHERE username = ? AND MD5(CONCAT(?,uuid)) = password", array($username, $password) );
-		if($result && $result->rows() == 1) {
+		$row = $result->fetch_assoc();
+		if($result && is_array($row) && count($row) > 0) {
 			$t['logged'] = 1;
-			$row = $result->fetch_assoc();
+
 			session_regenerate_id(1);
 			$_SESSION['logged'] = 1;
 			$_SESSION['userid'] = $row['id'];
@@ -566,7 +567,8 @@ elseif(isset($_GET['createuser']))
 	}
 
 	$result = $db->dq("SELECT * FROM {$db->prefix}users WHERE username = ?", array($username));
-	if($result->rows() > 0)
+	$row = $result->fetch_assoc();
+	if($result && is_array($row) && count($row) > 0)
 	{
 		jsonExit(array('error' => 2)); // username already exists
 	}
@@ -602,15 +604,16 @@ elseif(isset($_GET['edituser']))
 	}
 
 	$result = $db->dq("SELECT * FROM {$db->prefix}users WHERE username = ? AND id != ?", array($username,$userid));
-	if($result->rows() > 0)
+	$row = $result->fetch_assoc();
+	if($result && is_array($row) && count($row) > 0)
 	{
 		jsonExit(array('error' => 2)); // username already exists
 	}
 
 	$result = $db->dq("SELECT uuid FROM {$db->prefix}users WHERE id = ?", array($userid));
-	if($result && $result->rows() == 1) {
+	$row = $result->fetch_assoc();
+	if($result && is_array($row) && count($row) > 0) {
 		if(!empty($password)) {
-			$row = $result->fetch_assoc();
 			$uuid = $row['uuid'];
 			$updateresult = $db->dq("UPDATE {$db->prefix}users SET username= ?, password = ?, email = ?, role = ? WHERE id = ?",
 				array($username, hashPassword($password, $uuid), $email, $role, $userid) );
@@ -702,9 +705,10 @@ function check_read_access($listId = null)
 	if($listId !== null)
 	{
 		$id = $db->sq("SELECT id FROM {$db->prefix}lists WHERE id=? AND published=1", array($listId));
-		if($id) return;
+		if($id) return true;
 	}
 	jsonExit( array('total'=>0, 'list'=>array(), 'denied'=>1) );
+	return false;
 }
 
 function have_write_access($listId = null)
@@ -1030,8 +1034,6 @@ function getUserListsSimple()
  */
 function addNotification($text, $type, $list_id = null, $task_id = null) {
 	// only add Notifications if we are on multi user mode
-	echo __LINE__;
-	return;
 	if(Config::get('multiuser') == 1) {
 		try {
 			Notification::add($text, $type, $list_id, $task_id);

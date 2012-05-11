@@ -74,8 +74,7 @@ else {
 $db->prefix = Config::get('prefix');
 
 require_once(YTTPATH. 'core/Lang.class.php');
-$lang = Lang::instance();
-$lang->loadLang(Config::get('lang'));
+require_once(YTTPATH. 'lang/'.Config::get('lang').'.php');
 
 $_yttinfo = array();
 
@@ -197,6 +196,8 @@ function get_yttinfo($v)
 			$_yttinfo['title'] = (Config::get('title') != '') ? htmlarray(Config::get('title')) : __('Your Tiny Todolist');
 			return $_yttinfo['title'];
 	}
+
+	return false;
 }
 
 function jsonExit($data)
