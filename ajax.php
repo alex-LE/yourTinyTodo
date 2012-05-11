@@ -144,6 +144,9 @@ elseif(isset($_GET['newTask']))
 		}
 	}
 	$db->ex("COMMIT");
+
+	addNotification('New Task ("'.$title.'") created', Notification::NOTIFICATION_TYPE_TASK_CREATED, $listId);
+
 	$r = $db->sqa("SELECT * FROM {$db->prefix}todolist WHERE id=$id");
 	$t['list'][] = prepareTaskRow($r);
 	$t['total'] = 1;
@@ -181,6 +184,8 @@ elseif(isset($_GET['fullNewTask']))
 		}
 	}
 	$db->ex("COMMIT");
+	addNotification('New Task ("'.$title.'") created', Notification::NOTIFICATION_TYPE_TASK_CREATED, $listId);
+
 	$r = $db->sqa("SELECT * FROM {$db->prefix}todolist WHERE id=$id");
 	$t['list'][] = prepareTaskRow($r);
 	$t['total'] = 1;
@@ -935,7 +940,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 	throw new Exception("$error: '$errstr' in $errfile:$errline", -1);
 }
 
-function myExceptionHandler($e)
+function myExceptionHandler(Exception $e)
 {
 	if(-1 == $e->getCode()) {
 		echo $e->getMessage()."\n". $e->getTraceAsString();
@@ -945,16 +950,28 @@ function myExceptionHandler($e)
 	exit;
 }
 
+/**
+ * @param $id
+ * @return mixed
+ * @todo delete unused tags?
+ */
 function deleteTask($id)
 {
 	check_write_access();
 	$db = DBConnection::instance();
+
+	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
+	$list_id = $db->sq("SELECT list_id FROM {$db->prefix}todolist WHERE id=$id");
+
 	$db->ex("BEGIN");
 	$db->ex("DELETE FROM {$db->prefix}tag2task WHERE task_id=$id");
 	//TODO: delete unused tags?
 	$db->dq("DELETE FROM {$db->prefix}todolist WHERE id=$id");
 	$affected = $db->affected();
 	$db->ex("COMMIT");
+
+	addNotification('Task ("'.$title.'") deleted', Notification::NOTIFICATION_TYPE_TASK_CHANGED, $list_id, $title);
+
 	return $affected;
 }
 
@@ -1005,10 +1022,21 @@ function getUserListsSimple()
 	return $a;
 }
 
-function addNotification($text) {
-	$db = DBConnection::instance();
-	$user_id = (int)$_SESSION['userid'];
-	$q = $db->dq("INSERT INTO {$db->prefix}notifications (user_id, text) VALUES (?, ?)", array($user_id, $text));
+/**
+ * @param $text string
+ * @param $type string Notification type
+ * @param $list_id integer|null
+ * @param $task_id integer|null
+ */
+function addNotification($text, $type, $list_id = null, $task_id = null) {
+	// only add Notifications if we are on multi user mode
+	echo __LINE__;
+	return;
+	if(Config::get('multiuser') == 1) {
+		try {
+			Notification::add($text, $type, $list_id, $task_id);
+		} catch(Exception $e) {
+			var_dump($e->getMessage());
+		}
+	}
 }
-
-?>
