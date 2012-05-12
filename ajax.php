@@ -146,7 +146,7 @@ elseif(isset($_GET['newTask']))
 	}
 	$db->ex("COMMIT");
 
-	addNotification('New Task ("'.$title.'") created', Notification::NOTIFICATION_TYPE_TASK_CREATED, $listId);
+	addNotification(_r('n_task_created', $title), Notification::NOTIFICATION_TYPE_TASK_CREATED, $listId);
 
 	$r = $db->sqa("SELECT * FROM {$db->prefix}todolist WHERE id=$id");
 	$t['list'][] = prepareTaskRow($r);
@@ -185,7 +185,7 @@ elseif(isset($_GET['fullNewTask']))
 		}
 	}
 	$db->ex("COMMIT");
-	addNotification('New Task ("'.$title.'") created', Notification::NOTIFICATION_TYPE_TASK_CREATED, $listId);
+	addNotification(_r('n_task_created', $title), Notification::NOTIFICATION_TYPE_TASK_CREATED, $listId);
 
 	$r = $db->sqa("SELECT * FROM {$db->prefix}todolist WHERE id=$id");
 	$t['list'][] = prepareTaskRow($r);
@@ -212,6 +212,10 @@ elseif(isset($_GET['completeTask']))
 	$dateCompleted = $compl ? time() : 0;
 	$db->dq("UPDATE {$db->prefix}todolist SET compl=$compl,ow=$ow,d_completed=?,d_edited=? WHERE id=$id",
 				array($dateCompleted, time()) );
+
+	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
+	addNotification(_r('n_task_completed', $title), Notification::NOTIFICATION_TYPE_TASK_COMPLETED, $listId, $id);
+
 	$t = array();
 	$t['total'] = 1;
 	$r = $db->sqa("SELECT * FROM {$db->prefix}todolist WHERE id=$id");
@@ -225,6 +229,11 @@ elseif(isset($_GET['editNote']))
 	stop_gpc($_POST);
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
 	$db->dq("UPDATE {$db->prefix}todolist SET note=?,d_edited=? WHERE id=$id", array($note, time()) );
+
+	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
+	$listId = (int)$db->sq("SELECT list_id FROM {$db->prefix}todolist WHERE id=$id");
+	addNotification(_r('n_task_changed_comment', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
+
 	$t = array();
 	$t['total'] = 1;
 	$t['list'][] = array('id'=>$id, 'note'=>nl2br(escapeTags($note)), 'noteText'=>(string)$note);
@@ -259,6 +268,9 @@ elseif(isset($_GET['editTask']))
 	$db->dq("UPDATE {$db->prefix}todolist SET title=?,note=?,prio=?,tags=?,tags_ids=?,duedate=?,d_edited=? WHERE id=$id",
 			array($title, $note, $prio, $tags, $tags_ids, $duedate, time()) );
 	$db->ex("COMMIT");
+
+	addNotification(_r('n_task_changed_all', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
+
 	$r = $db->sqa("SELECT * FROM {$db->prefix}todolist WHERE id=$id");
 	if($r) {
 		$t['list'][] = prepareTaskRow($r);
@@ -363,6 +375,11 @@ elseif(isset($_GET['setPrio']))
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
 	$db->ex("UPDATE {$db->prefix}todolist SET prio=$prio,d_edited=? WHERE id=$id", array(time()) );
+
+	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
+	$listId = (int)$db->sq("SELECT list_id FROM {$db->prefix}todolist WHERE id=$id");
+	addNotification(_r('n_task_changed_priority', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
+
 	$t = array();
 	$t['total'] = 1;
 	$t['list'][] = array('id'=>$id, 'prio'=>$prio);
@@ -412,6 +429,9 @@ elseif(isset($_GET['addList']))
 	$db->dq("INSERT INTO {$db->prefix}lists (uuid,name,ow,d_created,d_edited) VALUES (?,?,?,?,?)",
 				array(generateUUID(), $name, $ow, time(), time()) );
 	$id = $db->last_insert_id($db->prefix.'lists');
+
+	addNotification(_r('n_list_added', $name), Notification::NOTIFICATION_TYPE_LIST_ADDED, $id);
+
 	$t['total'] = 1;
 	$r = $db->sqa("SELECT * FROM {$db->prefix}lists WHERE id=$id");
 	$t['list'][] = prepareList($r);
@@ -424,9 +444,13 @@ elseif(isset($_GET['renameList']))
 	$t = array();
 	$t['total'] = 0;
 	$id = (int)_post('list');
+	$old_name = $db->sq("SELECT name FROM {$db->prefix}lists WHERE id=$id");
 	$name = str_replace(array('"',"'",'<','>','&'),array('','','','',''),trim(_post('name')));
 	$db->dq("UPDATE {$db->prefix}lists SET name=?,d_edited=? WHERE id=$id", array($name, time()) );
 	$t['total'] = $db->affected();
+
+	addNotification(_r('n_list_renamed', array($old_name, $name)), Notification::NOTIFICATION_TYPE_LIST_RENAMED, $id);
+
 	$r = $db->sqa("SELECT * FROM {$db->prefix}lists WHERE id=$id");
 	$t['list'][] = prepareList($r);
 	jsonExit($t);
@@ -438,9 +462,14 @@ elseif(isset($_GET['deleteList']))
 	$t = array();
 	$t['total'] = 0;
 	$id = (int)_post('list');
+	$name = $db->sq("SELECT name FROM {$db->prefix}lists WHERE id=$id");
+
 	$db->ex("BEGIN");
 	$db->ex("DELETE FROM {$db->prefix}lists WHERE id=$id");
 	$t['total'] = $db->affected();
+
+	addNotification(_r('n_list_deleted', $name), Notification::NOTIFICATION_TYPE_LIST_DELETED, $id);
+
 	if($t['total']) {
 		$db->ex("DELETE FROM {$db->prefix}tag2task WHERE list_id=$id");
 		$db->ex("DELETE FROM {$db->prefix}todolist WHERE list_id=$id");
@@ -656,6 +685,26 @@ elseif(isset($_GET['deleteuser']))
 	{
 		jsonExit(array('error' => 2)); // error
 	}
+}
+elseif(isset($_GET['markread']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$notificationid = (int)_post('yttnotificationid');
+	$result = $db->dq("UPDATE {$db->prefix}notifications SET shown = 1 WHERE id = ?", array($notificationid));
+	if($result->affected())
+	{
+		jsonExit(array('error' => 0)); // done
+	}
+	else
+	{
+		jsonExit(array('error' => 1)); // error
+	}
+}
+elseif(isset($_GET['countNotifications']))
+{
+	$notifications_count = (Config::get('multiuser') == 1)?Notification::getUnreadCount():0;
+	jsonExit(array('count' => $notifications_count));
 }
 
 ###################################################################################################
@@ -970,12 +1019,11 @@ function deleteTask($id)
 
 	$db->ex("BEGIN");
 	$db->ex("DELETE FROM {$db->prefix}tag2task WHERE task_id=$id");
-	//TODO: delete unused tags?
 	$db->dq("DELETE FROM {$db->prefix}todolist WHERE id=$id");
 	$affected = $db->affected();
 	$db->ex("COMMIT");
 
-	addNotification('Task ("'.$title.'") deleted', Notification::NOTIFICATION_TYPE_TASK_CHANGED, $list_id, $id);
+	addNotification(_r('n_task_deleted', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $list_id, $id);
 
 	return $affected;
 }
