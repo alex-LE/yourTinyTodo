@@ -190,8 +190,17 @@ yourtinytodoStorageAjax.prototype =
 	deleteUser: function(params, callback)
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?deleteuser', { yttuserid:params.userid }, callback, 'json');
-	}
+	},
 
+    markread: function(params, callback)
+	{
+		$.post(this.ytt.yttUrl+'ajax.php?markread', { yttnotificationid:params.yttnotificationid }, callback, 'json');
+	},
+
+    countNotifications: function(params, callback)
+    {
+        $.getJSON(this.ytt.yttUrl+'ajax.php?countNotifications&rnd='+Math.random(), callback);
+    }
 };
 
 })();

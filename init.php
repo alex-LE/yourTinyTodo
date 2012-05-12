@@ -10,6 +10,7 @@ Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
+if(!defined('YTTCOREPATH')) define('YTTCOREPATH', YTTPATH.'core/');
 
 require_once(YTTPATH. 'common.php');
 require_once(YTTPATH. 'db/config.php');
@@ -34,7 +35,7 @@ if(Config::get('db') == 'mysql')
 {
 	try
 	{
-		require_once(YTTPATH. 'class.db.mysql.php');
+		require_once(YTTCOREPATH . 'db/class.db.mysql.php');
 		$db = DBConnection::init(new Database_Mysql());
 		$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		$db->dq("SET NAMES utf8");
@@ -48,7 +49,7 @@ if(Config::get('db') == 'mysql')
 # PostgreSQL Database Connection
 elseif(Config::get('db') == 'postgres')
 {
-	require_once(YTTPATH. 'class.db.postgres.php');
+	require_once(YTTCOREPATH . 'db/class.db.postgres.php');
 	$db = DBConnection::init(new Database_Postgres());
 	$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 	$db->dq("SET NAMES 'utf8'");
@@ -59,7 +60,7 @@ elseif(Config::get('db') == 'sqlite')
 {
 	try
 	{
-		require_once(YTTPATH. 'class.db.sqlite3.php');
+		require_once(YTTCOREPATH . 'db/class.db.sqlite3.php');
 		$db = DBConnection::init(new Database_Sqlite3());
 		$db->connect(YTTPATH. 'db/todolist.db');
 	}
@@ -165,6 +166,14 @@ function _e($s)
 function __($s)
 {
 	return Lang::instance()->get($s);
+}
+
+function _r($s, $params) {
+	if(is_array($params)) {
+		return vsprintf(Lang::instance()->get($s), $params);
+	} else {
+		return vsprintf(Lang::instance()->get($s), array($params));
+	}
 }
 
 function yttinfo($v)

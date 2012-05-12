@@ -1,4 +1,3 @@
-<<<<<<< HEAD:core/Lang.class.php
 <?
 class DefaultLang {
 	protected $js = array();
@@ -33,6 +32,7 @@ class DefaultLang {
 		'um_createerror3' => "Unable to create user",
 		'um_updateerror1' => "Unable to update user",
 		'um_deleteerror1' => "Unable to delete user",
+		'n_deleteerror1' => "Unable to mark notification as read",
 	);
 
 	private $default_inc = array
@@ -161,28 +161,28 @@ class DefaultLang {
 		'um_createuser' => "Create user",
 		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
 
+		/* notifications */
+		'n_task_created' => 'New Task "%s" created',
+		'n_task_deleted' => 'Task "%s" deleted',
+		'n_task_completed' => 'Task "%s" completed',
+		'n_task_changed_priority' => 'Task "%s" changed (Priority)',
+		'n_task_changed_comment' => 'Task "%s" changed (Comment)',
+		'n_task_changed_all' => 'Task "%s" changed',
+		'n_list_added' => 'List "%s" created',
+		'n_list_renamed' => 'List "%s" renamed in "%s"',
+		'n_list_deleted' => 'List "%s" deleted',
+
 	);
 
 	/**
 	 * @static
-	 * @return Lang
+	 * @return DefaultLang
 	 */
 	static public function instance() {
 		if (null === self::$instance) {
-			self::$instance = new self;
+			self::$instance = new Lang();
 		}
 		return self::$instance;
-	}
-
-	public function loadLang($lang) {
-		if(file_exists(YTTPATH.'lang/'.strtolower($lang).'.php')) {
-			require_once(YTTPATH.'lang/'.strtolower($lang).'.php');
-		} else {
-			require_once(YTTPATH.'lang/en.php');
-		}
-		global $lang_js, $lang_inc;
-		$this->js = $lang_js;
-		$this->inc = $lang_inc;
 	}
 
 	function makeJS()

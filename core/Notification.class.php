@@ -4,7 +4,11 @@ require_once(YTTPATH. 'core/NotificationListener.class.php');
 class Notification {
 
 	const NOTIFICATION_TYPE_TASK_CREATED = 1;
-	const NOTIFICATION_TYPE_TASK_CHANGED = 1;
+	const NOTIFICATION_TYPE_TASK_CHANGED = 2;
+	const NOTIFICATION_TYPE_TASK_COMPLETED = 3;
+	const NOTIFICATION_TYPE_LIST_ADDED = 4;
+	const NOTIFICATION_TYPE_LIST_DELETED = 5;
+	const NOTIFICATION_TYPE_LIST_RENAMED = 6;
 
 	public static function add($text, $type, $list_id = null, $task_id = null) {
 		$db = DBConnection::instance();
@@ -20,6 +24,22 @@ class Notification {
 			case Notification::NOTIFICATION_TYPE_TASK_CHANGED:
 				$listeners = array_merge($listeners, NoticficationListener_List::findByListenerTypeAndValue(NotificationListener::LISTENER_TYPE_LIST, $list_id));
 				$listeners = array_merge($listeners, NoticficationListener_List::findByListenerTypeAndValue(NotificationListener::LISTENER_TYPE_TASK, $task_id));
+				break;
+
+			case Notification::NOTIFICATION_TYPE_TASK_COMPLETED:
+				$listeners = array_merge($listeners, NoticficationListener_List::findByListenerTypeAndValue(NotificationListener::LISTENER_TYPE_LIST, $list_id));
+				$listeners = array_merge($listeners, NoticficationListener_List::findByListenerTypeAndValue(NotificationListener::LISTENER_TYPE_TASK, $task_id));
+				break;
+
+			case Notification::NOTIFICATION_TYPE_LIST_ADDED:
+				break;
+
+			case Notification::NOTIFICATION_TYPE_LIST_DELETED:
+				$listeners = array_merge($listeners, NoticficationListener_List::findByListenerTypeAndValue(NotificationListener::LISTENER_TYPE_LIST, $list_id));
+				break;
+
+			case Notification::NOTIFICATION_TYPE_LIST_RENAMED:
+				$listeners = array_merge($listeners, NoticficationListener_List::findByListenerTypeAndValue(NotificationListener::LISTENER_TYPE_LIST, $list_id));
 				break;
 
 			default:

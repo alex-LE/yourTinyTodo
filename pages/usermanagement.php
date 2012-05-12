@@ -10,7 +10,7 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-require_once('./init.php');
+require_once('../init.php');
 
 $lang = Lang::instance();
 $db = DBConnection::instance();

@@ -545,14 +545,14 @@ function testConnect(&$error)
 	{
 		if(Config::get('db') == 'mysql')
 		{
-			require_once(YTTPATH. 'class.db.mysql.php');
+			require_once(YTTPATH . 'class.db.mysql.php');
 			$db = new Database_Mysql;
 			$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		
 		}
 		else if(Config::get('db') == 'postgres')
 		{
-			require_once(YTTPATH. 'class.db.postgres.php');
+			require_once(YTTPATH . 'class.db.postgres.php');
 			$db = new Database_Postgres;
 			$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 		}
@@ -563,7 +563,7 @@ function testConnect(&$error)
 
 			if(!is_writable(YTTPATH. 'db/')) throw new Exception("database directory ('db') is not writable");
 
-			require_once(YTTPATH. 'class.db.sqlite3.php');
+			require_once(YTTPATH . 'class.db.sqlite3.php');
 			$db = new Database_Sqlite3;
 			$db->connect(YTTPATH. 'db/todolist.db');
 		}

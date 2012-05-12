@@ -40,6 +40,7 @@ class Lang extends DefaultLang
 		'um_createerror3' => "Benutzer konnte nicht angelegt werden",
 		'um_updateerror1' => "Benutzer konnte nicht geändert werden",
 		'um_deleteerror1' => "Benutzer konnte nicht gelöscht werden",
+		'n_deleteerror1' => "Konnte Benachrichtigung nicht als gelesen markieren",
 	);
 
 	var $inc = array
@@ -168,7 +169,19 @@ class Lang extends DefaultLang
 		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
 
 		/* notifications */
-		'n_new_task' => 'Neue Aufgabe "%s" erstellt',
+		'n_task_created' => 'Neue Aufgabe "%s" erstellt',
 		'n_task_deleted' => 'Aufgabe "%s" gelöscht',
+		'n_task_completed' => 'Aufgabe "%s" abgeschlossen',
+		'n_task_changed_priority' => 'Aufgabe "%s" wurde geändert (Priorität)',
+		'n_task_changed_comment' => 'Aufgabe "%s" wurde geändert (Kommentar)',
+		'n_task_changed_all' => 'Aufgabe "%s" wurde geändert',
+		'n_list_added' => 'Liste "%s" erstellt',
+		'n_list_renamed' => 'Liste "%s" in "%s" umbenannt',
+		'n_list_deleted' => 'Liste "%s" gelöscht',
+		'n_created' => 'Erstellt',
+		'n_description' => 'Beschreibung',
+		'n_user' => 'Benutzer',
+		'n_mark_read' => 'als gelesen markieren',
+		'n_mark_all_read' => 'alle als gelesen markieren',
 	);
 }

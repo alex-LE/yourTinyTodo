@@ -482,6 +482,13 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			}
 		});
 
+        // Notifications
+        $("#notifications").live('click', showNotificationList);
+        $('.markread').live('click', function() {
+            var notification_id = $(this).attr('rel');
+            markNotificationRead(notification_id);
+        });
+
         // User management
         $("#manageusers").live('click', showUserManagement);
         $('#createuserBtn').live('click', function(){
@@ -2263,7 +2270,7 @@ function logout()
 function showSettings()
 {
 	if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'settings') return false;
-	$('#page_ajax').load(_ytt.yttUrl+'settings.php?ajax=yes',null,function(){ 
+	$('#page_ajax').load(_ytt.yttUrl+'pages/settings.php?ajax=yes',null,function(){
 		//showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
 		_ytt.pageSet('ajax','settings');
 	})
@@ -2276,12 +2283,24 @@ function saveSettings(frm)
 	var params = { save:'ajax' };
 	$(frm).find("input:text,input:password,input:checked,select").filter(":enabled").each(function() { params[this.name || '__'] = this.value; }); 
 	$(frm).find(":submit").attr('disabled','disabled').blur();
-	$.post(_ytt.yttUrl+'settings.php', params, function(json){
+	$.post(_ytt.yttUrl+'pages/settings.php', params, function(json){
 		if(json.saved) {
 			flashInfo(_ytt.lang.get('settingsSaved'));
 			setTimeout('window.location.reload();', 1000);
 		}
 	}, 'json');
+}
+
+/**
+ * Notifications
+ */
+function showNotificationList() {
+    if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'notifications') return false;
+    $('#page_ajax').load(_ytt.yttUrl+'pages/notifications.php?ajax=yes',null,function(){
+        //showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
+        _ytt.pageSet('ajax','notifications');
+    })
+    return false;
 }
 
 /*
@@ -2290,7 +2309,7 @@ function saveSettings(frm)
 function showUserManagement()
 {
     if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'manageusers') return false;
-    $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+    $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
         //showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
         _ytt.pageSet('ajax','manageusers');
     })
@@ -2321,7 +2340,7 @@ function createUser()
                 $('#um_email').val('');
                 $('#um_role').val('');
                 flashInfo(_ytt.lang.get('um_usercreated'));
-                $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
 
                 })
                 break;
@@ -2368,7 +2387,7 @@ function editUser(clickeditem, step) {
                     $('#um_role').val('');
                     $('#um_userid').val('');
                     _ytt.menus.createuser.close();
-                    $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                    $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
                         flashInfo(_ytt.lang.get('um_userupdated'));
                     })
                     break;
@@ -2391,11 +2410,34 @@ function deleteUser(userid)
                 break;
 
             case 0:
-                $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
                     flashInfo(_ytt.lang.get('um_userdeleted'));
                 })
                 break;
         }
+    });
+}
+
+function markNotificationRead(notificationid)
+{
+    _ytt.db.request('markread', { yttnotificationid:notificationid }, function(json){
+        switch(json.error)
+        {
+            case 1:
+                flashError(_ytt.lang.get('n_deleteerror1'));
+                break;
+
+            case 0:
+                $('#notification_row_'+notificationid).fadeOut('normal', function(){ $(this).remove() });
+                refreshNotificationCounter();
+                break;
+        }
+    });
+}
+
+function refreshNotificationCounter() {
+    _ytt.db.request('countNotifications', { }, function(json){
+        $('#notification_counter').html(json.count);
     });
 }
 
