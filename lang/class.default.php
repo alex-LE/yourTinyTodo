@@ -165,6 +165,7 @@ class DefaultLang
 		'um_rolename_3' => "read only",
 		'um_nousers' => "No users available",
 		'um_createuser' => "Create user",
+		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
 
 	);
 
