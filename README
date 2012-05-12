@@ -1,6 +1,6 @@
 Simple way to manage your todo list in AJAX style.
 Written in PHP and jQuery.
-Data stored in SQLite or MySQL database.
+Data stored in SQLite, MySQL or PostgreSQL database.
 Distributed under the GNU GPL License.
 
 yourTinyTodo - by the yourTinyTodo community
