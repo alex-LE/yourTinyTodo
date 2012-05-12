@@ -15,6 +15,7 @@ require_once(YTTPATH. 'common.php');
 require_once(YTTPATH. 'db/config.php');
 require_once(YTTPATH. 'core/Database.class.php');
 require_once(YTTPATH. 'core/Lang.class.php');
+require_once(YTTPATH. 'core/Notification.class.php');
 
 ini_set('display_errors', 0);
 
@@ -80,6 +81,7 @@ $_yttinfo = array();
 
 $needAuth = (Config::get('password') != '' || Config::get('multiuser') == 1) ? 1 : 0;
 $multiUser = (Config::get('multiuser') == 1) ? 1 : 0;
+
 if($needAuth && !isset($dontStartSession))
 {
 	if(Config::get('session') == 'files')
@@ -96,6 +98,8 @@ if($needAuth && !isset($dontStartSession))
 	session_name('ytt-session');
 	session_start();
 }
+
+$notifications_count = (Config::get('multiuser') == 1)?Notification::getUnreadCount():false;
 
 function is_logged()
 {
