@@ -80,17 +80,26 @@ header("Content-type: text/html; charset=utf-8");
 <div id="loading"></div>
 
 <div id="bar">
-	<div id="msg"><span class="msg-text"></span><div class="msg-details"></div></div>
+	<div id="msg">
+		<span class="msg-text"></span>
+		<div class="msg-details"></div>
+	</div>
 	<div class="bar-menu">
- <span class="menu-owner" style="display:none">
-   <a href="#settings" id="settings"><?php _e('a_settings');?></a>
- </span>
+		<? if(false !== $notifications_count) {?>
+ 		<span class="menu-owner" style="display:none;position: relative;">
+   			<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter"><?=$notifications_count?></span></a>
+ 		</span>
+		<?}?>
 		<span class="bar-delim" style="display:none"> | </span>
- <span id="bar_auth">
-  <span id="bar_public" style="display:none"><?php _e('public_tasks');?> |</span>
-  <a href="#login" id="bar_login" class="nodecor"><u><?php _e('a_login');?></u> <span class="arrdown"></span></a>
-  <a href="#logout" id="bar_logout"><?php _e('a_logout');?></a>
- </span>
+ 		<span class="menu-owner" style="display:none">
+   			<a href="#settings" id="settings"><?php _e('a_settings');?></a>
+ 		</span>
+		<span class="bar-delim" style="display:none"> | </span>
+ 		<span id="bar_auth">
+  			<span id="bar_public" style="display:none"><?php _e('public_tasks');?> |</span>
+  			<a href="#login" id="bar_login" class="nodecor"><u><?php _e('a_login');?></u> <span class="arrdown"></span></a>
+  			<a href="#logout" id="bar_logout"><?php _e('a_logout');?></a>
+ 		</span>
 	</div>
 </div>
 

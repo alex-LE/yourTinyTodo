@@ -113,6 +113,7 @@ class Lang extends DefaultLang
 		'alltags_show' => "Alle anzeigen",
 		'alltags_hide' => "Alle ausblenden",
 		'a_settings' => "Einstellungen",
+		'a_notifications' => "Benachrichtigungen",
 		'rss_feed' => "RSS Feed",
 		'feed_title' => "%s",
 		'feed_completed_tasks' => "Abgeschlossene Tasks",

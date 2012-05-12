@@ -129,6 +129,7 @@ elseif(isset($_GET['newTask']))
 	if($title == '') {
 		jsonExit($t);
 	}
+
 	if(Config::get('autotag')) $tags .= ','._post('tag');
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}todolist WHERE list_id=$listId AND compl=0");
 	$db->ex("BEGIN");
@@ -974,7 +975,7 @@ function deleteTask($id)
 	$affected = $db->affected();
 	$db->ex("COMMIT");
 
-	addNotification('Task ("'.$title.'") deleted', Notification::NOTIFICATION_TYPE_TASK_CHANGED, $list_id, $title);
+	addNotification('Task ("'.$title.'") deleted', Notification::NOTIFICATION_TYPE_TASK_CHANGED, $list_id, $id);
 
 	return $affected;
 }
