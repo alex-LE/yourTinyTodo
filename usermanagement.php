@@ -17,7 +17,8 @@ $db = DBConnection::instance();
 
 if(($needAuth && !is_logged()) || !is_admin())
 {
-	die("Access denied!<br/> Disable password protection or Log in.");
+	echo _e('access_denied');
+	exit();
 }
 
 function getUserListFromDB()
