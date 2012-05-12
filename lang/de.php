@@ -166,5 +166,8 @@ class Lang extends DefaultLang
 		'um_nousers' => "Keine Benutzer vorhanden",
 		'um_createuser' => "Benutzer anlegen",
 
+		/* notifications */
+		'n_new_task' => 'Neue Aufgabe "%s" erstellt',
+		'n_task_deleted' => 'Aufgabe "%s" gelöscht',
 	);
 }

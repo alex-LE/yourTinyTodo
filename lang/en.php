@@ -166,5 +166,8 @@ class Lang extends DefaultLang
 		'um_nousers' => "No users available",
 		'um_createuser' => "Create user",
 
+		/* notifications */
+		'n_new_task' => 'New Task "%s" created',
+		'n_task_deleted' => 'Task "%s" deleted',
 	);
 }
