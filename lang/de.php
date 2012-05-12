@@ -164,6 +164,6 @@ class Lang extends DefaultLang
 		'um_rolename_3' => "nur Lesen",
 		'um_nousers' => "Keine Benutzer vorhanden",
 		'um_createuser' => "Benutzer anlegen",
-		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
+		'access_denied' => "Zugriff verweigert!<br/>Passwortschutz abschalten oder einloggen.",
 	);
 }
