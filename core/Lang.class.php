@@ -171,7 +171,11 @@ class DefaultLang {
 		'n_list_added' => 'List "%s" created',
 		'n_list_renamed' => 'List "%s" renamed in "%s"',
 		'n_list_deleted' => 'List "%s" deleted',
-
+		'n_created' => 'Created',
+		'n_description' => 'Description',
+		'n_user' => 'Username',
+		'n_mark_read' => 'mark as read',
+		'n_mark_all_read' => 'mark all as read',
 	);
 
 	/**

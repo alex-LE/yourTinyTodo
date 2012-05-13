@@ -488,6 +488,9 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
             var notification_id = $(this).attr('rel');
             markNotificationRead(notification_id);
         });
+        $('#markallasread').live('click', function() {
+            markAllNotificationRead();
+        });
 
         // User management
         $("#manageusers").live('click', showUserManagement);
@@ -2435,8 +2438,28 @@ function markNotificationRead(notificationid)
     });
 }
 
+function markAllNotificationRead(notificationid)
+{
+    _ytt.db.request('markallasread', { }, function(json){
+        switch(json.error)
+        {
+            case 1:
+                flashError(_ytt.lang.get('n_deleteerror1'));
+                break;
+
+            case 0:
+                $('.notification_row').fadeOut('normal', function(){ $(this).remove() });
+                refreshNotificationCounter();
+                break;
+        }
+    });
+}
+
 function refreshNotificationCounter() {
     _ytt.db.request('countNotifications', { }, function(json){
+        if(parseInt(json.count) == 0) {
+            $('#notification_counter').hide();
+        }
         $('#notification_counter').html(json.count);
     });
 }
