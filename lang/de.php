@@ -110,6 +110,7 @@ class Lang extends DefaultLang
 		'list_export_csv' => "CSV",
 		'list_export_ical' => "iCalendar",
 		'list_rssfeed' => "RSS Feed",
+		'list_notifications' => "Benachrichtigen bei Änderungen",
 		'alltags' => "Alle Tags:",
 		'alltags_show' => "Alle anzeigen",
 		'alltags_hide' => "Alle ausblenden",

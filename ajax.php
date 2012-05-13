@@ -104,6 +104,14 @@ elseif(isset($_GET['loadTasks']))
 		$bitwise = (_get('compl') == 0) ? 'taskview & ~1' : 'taskview | 1';
 		$db->dq("UPDATE {$db->prefix}lists SET taskview=$bitwise WHERE id=$listId");
 	}
+
+	if((_get('setNotification',null) === '0' || _get('setNotification',null) === '1') && have_write_access($listId)) {
+		if(_get('setNotification') == 1) {
+			NotificationListener::enableNotification(NotificationListener::LISTENER_TYPE_LIST, $listId);
+		} else {
+			NotificationListener::disableNotification(NotificationListener::LISTENER_TYPE_LIST, $listId);
+		}
+	}
 	jsonExit($t);
 }
 elseif(isset($_GET['newTask']))
@@ -736,6 +744,10 @@ function prepareTaskRow($r)
 	$dCreated = timestampToDatetime($r['d_created']);
 	$dCompleted = $r['d_completed'] ? timestampToDatetime($r['d_completed']) : '';
 
+	$db = DBConnection::instance();
+	$current_user_id = (int)$_SESSION['userid'];
+	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$r['id']." AND user_id=".$current_user_id);
+
 	return array(
 		'id' => $r['id'],
 		'title' => escapeTags($r['title']),
@@ -749,6 +761,7 @@ function prepareTaskRow($r)
 		'dateCompletedInline' => $r['d_completed'] ? htmlarray(formatTime($formatCompletedInline, $r['d_completed'])) : '',
 		'dateCompletedInlineTitle' => htmlarray(sprintf($lang->get('taskdate_inline_completed'), $dCompleted)),
 		'compl' => (int)$r['compl'],
+		'notification' => ($notification_id > 0)?1:0,
 		'prio' => $r['prio'],
 		'note' => nl2br(escapeTags($r['note'])),
 		'noteText' => (string)$r['note'],
@@ -1069,6 +1082,11 @@ function moveTask($id, $listId)
 function prepareList($row)
 {
 	$taskview = (int)$row['taskview'];
+
+	$db = DBConnection::instance();
+	$current_user_id = (int)$_SESSION['userid'];
+	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$row['id']." AND user_id=".$current_user_id);
+
 	return array(
 		'id' => $row['id'],
 		'name' => htmlarray($row['name']),
@@ -1077,6 +1095,7 @@ function prepareList($row)
 		'showCompl' => $taskview & 1 ? 1 : 0,
 		'showNotes' => $taskview & 2 ? 1 : 0,
 		'hidden' => $taskview & 4 ? 1 : 0,
+		'notification' => $notification_id > 0 ? 1 : 0,
 	);
 }
 
