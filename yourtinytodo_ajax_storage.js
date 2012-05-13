@@ -47,6 +47,8 @@ yourtinytodoStorageAjax.prototype =
 		if(params.search && params.search != '') q += '&s='+encodeURIComponent(params.search);
 		if(params.tag && params.tag != '') q += '&t='+encodeURIComponent(params.tag);
 		if(params.setCompl && params.setCompl != 0) q += '&setCompl=1';
+		if(params.notification != null && params.notification == 1) q += '&setNotification=1';
+		if(params.notification != null && params.notification == 0) q += '&setNotification=0';
 		q += '&rnd='+Math.random();
 
 /*		$.getJSON(ytt.yttUrl+'ajax.php?loadTasks&list='+params.list+'&compl='+params.compl+'&sort='+params.sort+'&tz='+params.tz+q, function(json){

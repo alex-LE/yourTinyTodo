@@ -109,6 +109,8 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
 
+        if(!flag.multiUser) $('#btnNotifications').hide();
+
 		this.parseAnchor();
 
 		// handlers
@@ -846,7 +848,8 @@ function loadTasks(opts)
 		sort: curList.sort,
 		search: filter.search,
 		tag: _ytt.filter.getTags(true),
-		setCompl: opts.setCompl
+		setCompl: opts.setCompl,
+        notification: opts.notification
 	}, function(json){
 		taskList.length = 0;
 		taskOrder.length = 0;
@@ -1244,6 +1247,7 @@ function listMenuClick(el, menu)
 		case 'btnExportICAL': exportCurList('ical'); break;
 		case 'btnRssFeed': feedCurList(); break;
 		case 'btnShowCompleted': showCompletedToggle(); break;
+		case 'btnNotifications': showNotificationsToggle(); break;
 		case 'btnClearCompleted': clearCompleted(); break;
 		case 'sortByHand': setSort(0); break;
 		case 'sortByPrio': setSort(curList.sort==1 ? 101 : 1); break;
@@ -1908,6 +1912,8 @@ function tabmenuOnListSelected(list)
 	}
 	if(list.showCompl) $('#btnShowCompleted').addClass('ytt-item-checked');
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
+    if(list.notification) $('#btnNotifications').addClass('ytt-item-checked');
+    else $('#btnNotifications').removeClass('ytt-item-checked');
 };
 
 
@@ -1930,6 +1936,15 @@ function showCompletedToggle()
 	if(act) $('#btnShowCompleted').addClass('ytt-item-checked');
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
 	loadTasks({setCompl:1});
+};
+
+function showNotificationsToggle()
+{
+	var act = curList.notification ? 0 : 1;
+	curList.notification = tabLists.get(curList.id).notification = act;
+	if(act) $('#btnNotifications').addClass('ytt-item-checked');
+	else $('#btnNotifications').removeClass('ytt-item-checked');
+	loadTasks({notification:act});
 };
 
 function clearCompleted()

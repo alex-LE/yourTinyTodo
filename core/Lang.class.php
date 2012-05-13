@@ -103,6 +103,7 @@ class DefaultLang {
 		'list_export_csv' => "CSV",
 		'list_export_ical' => "iCalendar",
 		'list_rssfeed' => "RSS Feed",
+		'list_notifications' => "Notify on change",
 		'alltags' => "All tags:",
 		'alltags_show' => "Show all",
 		'alltags_hide' => "Hide all",

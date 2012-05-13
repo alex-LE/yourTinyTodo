@@ -32,6 +32,28 @@ class NotificationListener {
 	 */
 	private $value;
 
+	public static function enableNotification($type, $value) {
+		$db = DBConnection::instance();
+		$current_user_id = (int)$_SESSION['userid'];
+		if(!in_array($type, array(NotificationListener::LISTENER_TYPE_GLOBAL,NotificationListener::LISTENER_TYPE_LIST,NotificationListener::LISTENER_TYPE_TASK))) {
+			return false;
+		}
+
+		$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id." AND value=$value");
+
+		$db->dq("INSERT INTO {$db->prefix}notification_listeners (user_id, type, value) VALUES (?, ?, ?)", array($current_user_id, $type, $value));
+	}
+
+	public static function disableNotification($type, $value) {
+		$db = DBConnection::instance();
+		$current_user_id = (int)$_SESSION['userid'];
+		if(!in_array($type, array(NotificationListener::LISTENER_TYPE_GLOBAL,NotificationListener::LISTENER_TYPE_LIST,NotificationListener::LISTENER_TYPE_TASK))) {
+			return false;
+		}
+
+		$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id." AND value=$value");
+	}
+
 	public function setUserid($userid)
 	{
 		$this->userid = $userid;

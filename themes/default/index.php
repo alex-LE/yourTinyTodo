@@ -269,6 +269,8 @@ header("Content-type: text/html; charset=utf-8");
 		<li class="ytt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="ytt-sort-direction">&nbsp;</span></li>
 		<li class="ytt-menu-delimiter"></li>
 		<li class="ytt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
+		<li class="ytt-menu-delimiter"></li>
+		<li class="ytt-need-list" id="btnNotifications"><div class="menu-icon"></div><?php _e('list_notifications');?></li>
 	</ul>
 </div>
 
