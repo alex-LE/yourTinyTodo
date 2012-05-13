@@ -182,6 +182,6 @@ class Lang extends DefaultLang
 		'n_description' => 'Beschreibung',
 		'n_user' => 'Benutzer',
 		'n_mark_read' => 'als gelesen markieren',
-		'n_mark_all_read' => 'alle als gelesen markieren',
+		'n_mark_all_read' => 'alle gelesen',
 	);
 }

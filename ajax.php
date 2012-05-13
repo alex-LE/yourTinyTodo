@@ -691,7 +691,23 @@ elseif(isset($_GET['markread']))
 	check_write_access();
 	stop_gpc($_POST);
 	$notificationid = (int)_post('yttnotificationid');
-	$result = $db->dq("UPDATE {$db->prefix}notifications SET shown = 1 WHERE id = ?", array($notificationid));
+	$current_user_id = (int)$_SESSION['userid'];
+	$result = $db->dq("UPDATE {$db->prefix}notifications SET shown = 1 WHERE id = ? AND user_id = ?", array($notificationid, $current_user_id));
+	if($result->affected())
+	{
+		jsonExit(array('error' => 0)); // done
+	}
+	else
+	{
+		jsonExit(array('error' => 1)); // error
+	}
+}
+elseif(isset($_GET['markallasread']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$current_user_id = (int)$_SESSION['userid'];
+	$result = $db->dq("UPDATE {$db->prefix}notifications SET shown = 1 WHERE user_id = ?", array($current_user_id));
 	if($result->affected())
 	{
 		jsonExit(array('error' => 0)); // done

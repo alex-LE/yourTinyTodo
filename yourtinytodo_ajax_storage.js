@@ -197,6 +197,11 @@ yourtinytodoStorageAjax.prototype =
 		$.post(this.ytt.yttUrl+'ajax.php?markread', { yttnotificationid:params.yttnotificationid }, callback, 'json');
 	},
 
+    markallasread: function(params, callback)
+	{
+        $.getJSON(this.ytt.yttUrl+'ajax.php?markallasread&rnd='+Math.random(), callback);
+	},
+
     countNotifications: function(params, callback)
     {
         $.getJSON(this.ytt.yttUrl+'ajax.php?countNotifications&rnd='+Math.random(), callback);
