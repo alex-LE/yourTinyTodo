@@ -169,6 +169,7 @@ elseif(isset($_GET['fullNewTask']))
 	$title = trim(_post('title'));
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
 	$prio = (int)_post('prio');
+	$duration = (float)str_replace(',','.',_post('duration'));
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
 	$duedate = parse_duedate(trim(_post('duedate')));
@@ -181,8 +182,8 @@ elseif(isset($_GET['fullNewTask']))
 	if(Config::get('autotag')) $tags .= ','._post('tag');
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}todolist WHERE list_id=$listId AND compl=0");
 	$db->ex("BEGIN");
-	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate) VALUES(?,?,?,?,?,?,?,?,?)",
-				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate) );
+	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate,duration) VALUES(?,?,?,?,?,?,?,?,?,?)",
+				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate, $duration) );
 	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
 	{
@@ -254,6 +255,7 @@ elseif(isset($_GET['editTask']))
 	stop_gpc($_POST);
 	$title = trim(_post('title'));
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
+	$duration = (float)str_replace(',','.',_post('duration'));
 	$prio = (int)_post('prio');
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
@@ -273,8 +275,8 @@ elseif(isset($_GET['editTask']))
 		$tags_ids = implode(',',$aTags['ids']);
 		addTaskTags($id, $aTags['ids'], $listId);
 	}
-	$db->dq("UPDATE {$db->prefix}todolist SET title=?,note=?,prio=?,tags=?,tags_ids=?,duedate=?,d_edited=? WHERE id=$id",
-			array($title, $note, $prio, $tags, $tags_ids, $duedate, time()) );
+	$db->dq("UPDATE {$db->prefix}todolist SET title=?,note=?,prio=?,tags=?,tags_ids=?,duedate=?,d_edited=?,duration=? WHERE id=$id",
+			array($title, $note, $prio, $tags, $tags_ids, $duedate, time(), $duration) );
 	$db->ex("COMMIT");
 
 	addNotification(_r('n_task_changed_all', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
@@ -780,6 +782,7 @@ function prepareTaskRow($r)
 		'dueStr' => htmlarray($r['compl'] && $dueA['timestamp'] ? formatTime($formatCompletedInline, $dueA['timestamp']) : $dueA['str']),
 		'dueInt' => date2int($r['duedate']),
 		'dueTitle' => htmlarray(sprintf($lang->get('taskdate_inline_duedate'), $dueA['formatted'])),
+		'duration' => (empty($r['duration']))?'':$r['duration'],
 	);
 }
 

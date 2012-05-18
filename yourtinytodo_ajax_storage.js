@@ -78,7 +78,7 @@ yourtinytodoStorageAjax.prototype =
 	editTask: function(params, callback)
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?editTask='+params.id,
-			{ id:params.id, title:params.title, note:params.note, prio:params.prio, tags:params.tags, duedate:params.duedate },
+			{ id:params.id, title:params.title, note:params.note, prio:params.prio, tags:params.tags, duedate:params.duedate, duration:params.duration },
 			callback, 'json');
 	},
 
