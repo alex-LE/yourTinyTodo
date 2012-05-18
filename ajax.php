@@ -594,8 +594,8 @@ elseif(isset($_GET['createuser']))
 	stop_gpc($_POST);
 	$username = _post('yttusername');
 	$password = _post('yttpassword');
-	$email = _post('email');
-	$role = (int)_post('role');
+	$email = _post('yttemail');
+	$role = (int)_post('yttrole');
 
 
 	// check input
@@ -630,9 +630,10 @@ elseif(isset($_GET['edituser']))
 	stop_gpc($_POST);
 	$username = _post('yttusername');
 	$password = _post('yttpassword');
-	$email = _post('email');
-	$role = (int)_post('role');
+	$email = _post('yttemail');
+	$role = (int)_post('yttrole');
 	$userid = (int)_post('yttuserid');
+	$notification = (int)_post('yttnotification');
 
 
 	// check input
@@ -661,6 +662,12 @@ elseif(isset($_GET['edituser']))
 		}
 	} else {
 		jsonExit(array('error' => 1)); // data invalid
+	}
+
+	if($notification == 1) {
+		NotificationListener::enableNotification(NotificationListener::LISTENER_TYPE_GLOBAL, null, false, $userid);
+	} else {
+		NotificationListener::disableNotification(NotificationListener::LISTENER_TYPE_GLOBAL, null, $userid);
 	}
 
 	if($updateresult)

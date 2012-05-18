@@ -40,6 +40,8 @@ class Lang extends DefaultLang
 		'um_createerror3' => "Benutzer konnte nicht angelegt werden",
 		'um_updateerror1' => "Benutzer konnte nicht geändert werden",
 		'um_deleteerror1' => "Benutzer konnte nicht gelöscht werden",
+		'um_notification_on' => "aktiviert",	// needs to be the same like in default_inc!!
+		'um_notification_off' => "deaktiviert",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Konnte Benachrichtigung nicht als gelesen markieren",
 	);
 
@@ -161,6 +163,9 @@ class Lang extends DefaultLang
 		'um_username' => "Benutzername",
 		'um_email' => "E-Mail",
 		'um_role' => "Zugriffs-Level",
+		'um_notification' => "Globale Benachrichtigungen",
+		'um_notification_on' => "aktiviert",
+		'um_notification_off' => "deaktiviert",
 		'um_password' => "Passwort",
 		'um_rolename_1' => "Administrator",
 		'um_rolename_2' => "Lesen/Schreiben",

@@ -32,26 +32,51 @@ class NotificationListener {
 	 */
 	private $value;
 
-	public static function enableNotification($type, $value) {
+	public static function enableNotification($type, $value = null, $take_care_of_global = true, $user_id = null) {
 		$db = DBConnection::instance();
-		$current_user_id = (int)$_SESSION['userid'];
+		$current_user_id = (empty($user_id))?(int)$_SESSION['userid']:$user_id;
 		if(!in_array($type, array(NotificationListener::LISTENER_TYPE_GLOBAL,NotificationListener::LISTENER_TYPE_LIST,NotificationListener::LISTENER_TYPE_TASK))) {
 			return false;
 		}
 
-		$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id." AND value=$value");
+		if($type != NotificationListener::LISTENER_TYPE_GLOBAL && empty($value)) {
+			return false;
+		}
 
-		$db->dq("INSERT INTO {$db->prefix}notification_listeners (user_id, type, value) VALUES (?, ?, ?)", array($current_user_id, $type, $value));
+		if($take_care_of_global && NotificationListener::hasGlobalNotifications($current_user_id)) {
+			return true;
+		}
+
+		if(empty($value)) {
+			$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id."");
+			$db->dq("INSERT INTO {$db->prefix}notification_listeners (user_id, type) VALUES (?, ?)", array($current_user_id, $type));
+		} else {
+			$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id." AND value=$value");
+			$db->dq("INSERT INTO {$db->prefix}notification_listeners (user_id, type, value) VALUES (?, ?, ?)", array($current_user_id, $type, $value));
+		}
 	}
 
-	public static function disableNotification($type, $value) {
+	public static function disableNotification($type, $value = null, $user_id = null) {
+		if($type != NotificationListener::LISTENER_TYPE_GLOBAL && empty($value)) {
+			return false;
+		}
+
 		$db = DBConnection::instance();
-		$current_user_id = (int)$_SESSION['userid'];
+		$current_user_id = (empty($user_id))?(int)$_SESSION['userid']:$user_id;
 		if(!in_array($type, array(NotificationListener::LISTENER_TYPE_GLOBAL,NotificationListener::LISTENER_TYPE_LIST,NotificationListener::LISTENER_TYPE_TASK))) {
 			return false;
 		}
 
-		$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id." AND value=$value");
+		if(empty($value)) {
+			$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id."");
+		} else {
+			$db->dq("DELETE FROM {$db->prefix}notification_listeners WHERE type = '".$type."' AND user_id = ".$current_user_id." AND value=$value");
+		}
+	}
+
+	public static function hasGlobalNotifications($userid) {
+		$db = DBConnection::instance();
+		return $db->sq("SELECT COUNT(*) FROM {$db->prefix}notification_listeners WHERE type = '".NotificationListener::LISTENER_TYPE_GLOBAL."' AND user_id = ".$userid) > 0;
 	}
 
 	public function setUserid($userid)

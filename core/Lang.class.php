@@ -32,6 +32,8 @@ class DefaultLang {
 		'um_createerror3' => "Unable to create user",
 		'um_updateerror1' => "Unable to update user",
 		'um_deleteerror1' => "Unable to delete user",
+		'um_notification_on' => "on",	// needs to be the same like in default_inc!!
+		'um_notification_off' => "off",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Unable to mark notification as read",
 	);
 
@@ -154,6 +156,9 @@ class DefaultLang {
 		'um_username' => "Username",
 		'um_email' => "E-Mail",
 		'um_role' => "Access-Level",
+		'um_notification' => "Global Notifications",
+		'um_notification_on' => "on",
+		'um_notification_off' => "off",
 		'um_password' => "Password",
 		'um_rolename_1' => "Administrator",
 		'um_rolename_2' => "Read/Write",
