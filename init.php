@@ -20,7 +20,7 @@ require_once(YTTPATH. 'core/Notification.class.php');
 
 ini_set('display_errors', 0);
 
-define('YTT_VERSION', '1.5');
+define('YTT_VERSION', '1.0a');
 
 define('DEBUG_MODE', true);
 
