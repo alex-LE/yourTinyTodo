@@ -1,5 +1,4 @@
 <?php
-
 /*
 This file is part of yourTinyTodo by the yourTinyTodo community.
 Copyrights for portions of this file are retained by their owners.
@@ -10,14 +9,21 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-class DatabaseResult_Sqlite3
+class DatabaseResult_Sqlite3 implements IDatabaseResult
 {
 	private $parent;
 	private $q;
 	var $query;
 	var $prefix;
 	var $rows = NULL;
+	var $affected = NULL;
 
+	/**
+	 * @param $query
+	 * @param $h Database
+	 * @param int $resultless
+	 * @throws Exception
+	 */
 	function __construct($query, &$h, $resultless = 0)
 	{
 		$this->parent = $h;
@@ -43,6 +49,11 @@ class DatabaseResult_Sqlite3
 		}
 	}
 
+	function affected()
+	{
+		return $this->parent->affected;
+	}
+
 	function fetch_row()
 	{
 		return $this->q->fetch(PDO::FETCH_NUM);
@@ -52,22 +63,32 @@ class DatabaseResult_Sqlite3
 	{
 		return $this->q->fetch(PDO::FETCH_ASSOC);
 	}
+
 }
 
-class Database_Sqlite3
+class Database_Sqlite3 extends Database
 {
-	var $dbh;
-	var $affected = null;
-	var $lastQuery;
+	/**
+	 * @var $dbh PDO
+	 */
+	public $dbh;
 
 	function __construct()
 	{
 	}
 
-	function connect($filename)
+	/**
+	 * @param $host = filename of sqlite file
+	 * @param null $user not used
+	 * @param null $pass not used
+	 * @param null $db not used
+	 * @return bool
+	 * @throws Exception
+	 */
+	function connect($host, $user = null, $pass = null, $db = null)
 	{
 		try {
-			$this->dbh = new PDO("sqlite:$filename");
+			$this->dbh = new PDO("sqlite:$host");
 			$this->dbh->sqliteCreateFunction('concat', 'sqlite_udf_concat', 2);
 			$this->dbh->sqliteCreateFunction('md5', 'sqlite_udf_md5', 1);
 		}
@@ -152,7 +173,7 @@ class Database_Sqlite3
 		return $this->dbh->quote(sprintf($format, $s)). " ESCAPE '\'";
 	}
 
-	function last_insert_id()
+	function last_insert_id($tablename = null)
 	{
 		return $this->dbh->lastInsertId();
 	}
@@ -164,8 +185,12 @@ class Database_Sqlite3
 		if($q === false) return false;
 		else return true;
 	}
-}
 
+	function error()
+	{
+		return $this->dbh->errorInfo();
+	}
+}
 function sqlite_udf_concat($str1, $str2)
 {
 	return $str1 . $str2;
@@ -175,4 +200,3 @@ function sqlite_udf_md5($a)
 {
 	return md5($a);
 }
-?>

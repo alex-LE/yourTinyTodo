@@ -40,6 +40,9 @@ class Lang extends DefaultLang
 		'um_createerror3' => "Benutzer konnte nicht angelegt werden",
 		'um_updateerror1' => "Benutzer konnte nicht geändert werden",
 		'um_deleteerror1' => "Benutzer konnte nicht gelöscht werden",
+		'um_notification_on' => "aktiviert",	// needs to be the same like in default_inc!!
+		'um_notification_off' => "deaktiviert",	// needs to be the same like in default_inc!!
+		'n_deleteerror1' => "Konnte Benachrichtigung nicht als gelesen markieren",
 	);
 
 	var $inc = array
@@ -109,10 +112,12 @@ class Lang extends DefaultLang
 		'list_export_csv' => "CSV",
 		'list_export_ical' => "iCalendar",
 		'list_rssfeed' => "RSS Feed",
+		'list_notifications' => "Benachrichtigen bei Änderungen",
 		'alltags' => "Alle Tags:",
 		'alltags_show' => "Alle anzeigen",
 		'alltags_hide' => "Alle ausblenden",
 		'a_settings' => "Einstellungen",
+		'a_notifications' => "Benachrichtigungen",
 		'rss_feed' => "RSS Feed",
 		'feed_title' => "%s",
 		'feed_completed_tasks' => "Abgeschlossene Tasks",
@@ -158,6 +163,9 @@ class Lang extends DefaultLang
 		'um_username' => "Benutzername",
 		'um_email' => "E-Mail",
 		'um_role' => "Zugriffs-Level",
+		'um_notification' => "Globale Benachrichtigungen",
+		'um_notification_on' => "aktiviert",
+		'um_notification_off' => "deaktiviert",
 		'um_password' => "Passwort",
 		'um_rolename_1' => "Administrator",
 		'um_rolename_2' => "Lesen/Schreiben",
@@ -165,5 +173,21 @@ class Lang extends DefaultLang
 		'um_nousers' => "Keine Benutzer vorhanden",
 		'um_createuser' => "Benutzer anlegen",
 		'access_denied' => "Zugriff verweigert!<br/>Passwortschutz abschalten oder einloggen.",
+
+		/* notifications */
+		'n_task_created' => 'Neue Aufgabe "%s" erstellt',
+		'n_task_deleted' => 'Aufgabe "%s" gelöscht',
+		'n_task_completed' => 'Aufgabe "%s" abgeschlossen',
+		'n_task_changed_priority' => 'Aufgabe "%s" wurde geändert (Priorität)',
+		'n_task_changed_comment' => 'Aufgabe "%s" wurde geändert (Kommentar)',
+		'n_task_changed_all' => 'Aufgabe "%s" wurde geändert',
+		'n_list_added' => 'Liste "%s" erstellt',
+		'n_list_renamed' => 'Liste "%s" in "%s" umbenannt',
+		'n_list_deleted' => 'Liste "%s" gelöscht',
+		'n_created' => 'Erstellt',
+		'n_description' => 'Beschreibung',
+		'n_user' => 'Benutzer',
+		'n_mark_read' => 'als gelesen markieren',
+		'n_mark_all_read' => 'alle gelesen',
 	);
 }

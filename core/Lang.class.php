@@ -1,19 +1,11 @@
-<?php
-
-/*
-This file is part of yourTinyTodo by the yourTinyTodo community.
-Copyrights for portions of this file are retained by their owners.
-
-Based on myTinyTodo by Max Pozdeev
-(C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
-
-Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
-*/
-
-class DefaultLang
-{
-	protected static $instance;
+<?
+class DefaultLang {
+	protected $js = array();
 	protected $rtl = 0;
+	protected $inc = array();
+	private $lang;
+
+	static private $instance = null;
 
 	private $default_js = array
 	(
@@ -40,6 +32,9 @@ class DefaultLang
 		'um_createerror3' => "Unable to create user",
 		'um_updateerror1' => "Unable to update user",
 		'um_deleteerror1' => "Unable to delete user",
+		'um_notification_on' => "on",	// needs to be the same like in default_inc!!
+		'um_notification_off' => "off",	// needs to be the same like in default_inc!!
+		'n_deleteerror1' => "Unable to mark notification as read",
 	);
 
 	private $default_inc = array
@@ -108,12 +103,14 @@ class DefaultLang
 		'list_select' => "Select list",
 		'list_export' => "Export",
 		'list_export_csv' => "CSV",
-		'list_export_ical' => "iCalendar",		
+		'list_export_ical' => "iCalendar",
 		'list_rssfeed' => "RSS Feed",
+		'list_notifications' => "Notify on change",
 		'alltags' => "All tags:",
 		'alltags_show' => "Show all",
 		'alltags_hide' => "Hide all",
 		'a_settings' => "Settings",
+		'a_notifications' => "Notifications",
 		'rss_feed' => "RSS Feed",
 		'feed_title' => "%s",
 		'feed_completed_tasks' => "Completed tasks",
@@ -159,6 +156,9 @@ class DefaultLang
 		'um_username' => "Username",
 		'um_email' => "E-Mail",
 		'um_role' => "Access-Level",
+		'um_notification' => "Global Notifications",
+		'um_notification_on' => "on",
+		'um_notification_off' => "off",
 		'um_password' => "Password",
 		'um_rolename_1' => "Administrator",
 		'um_rolename_2' => "Read/Write",
@@ -167,10 +167,33 @@ class DefaultLang
 		'um_createuser' => "Create user",
 		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
 
+		/* notifications */
+		'n_task_created' => 'New Task "%s" created',
+		'n_task_deleted' => 'Task "%s" deleted',
+		'n_task_completed' => 'Task "%s" completed',
+		'n_task_changed_priority' => 'Task "%s" changed (Priority)',
+		'n_task_changed_comment' => 'Task "%s" changed (Comment)',
+		'n_task_changed_all' => 'Task "%s" changed',
+		'n_list_added' => 'List "%s" created',
+		'n_list_renamed' => 'List "%s" renamed in "%s"',
+		'n_list_deleted' => 'List "%s" deleted',
+		'n_created' => 'Created',
+		'n_description' => 'Description',
+		'n_user' => 'Username',
+		'n_mark_read' => 'mark as read',
+		'n_mark_all_read' => 'mark all as read',
 	);
 
-	var $js = array();
-	var $inc = array();
+	/**
+	 * @static
+	 * @return DefaultLang
+	 */
+	static public function instance() {
+		if (null === self::$instance) {
+			self::$instance = new Lang();
+		}
+		return self::$instance;
+	}
 
 	function makeJS()
 	{
@@ -187,12 +210,11 @@ class DefaultLang
 		$a['daysLong'] = $this->get('days_long');
 		$a['monthsLong'] = $this->get('months_long');
 		foreach(array('tags','tasks','f_past','f_today','f_soon') as $v)
-			$a[$v]=$this->get($v); 
+			$a[$v]=$this->get($v);
 		return json_encode($a);
 	}
 
-	function get($key)
-	{
+	function get($key) {
 		if(isset($this->inc[$key]))
 			return $this->inc[$key];
 		if(isset($this->default_inc[$key]))
@@ -200,20 +222,7 @@ class DefaultLang
 		return $key;
 	}
 
-	function rtl()
-	{
+	function rtl() {
 		return $this->rtl ? 1 : 0;
 	}
-
-	public static function instance()
-	{
-        if (!isset(self::$instance)) {
-			//$c = __CLASS__;
-			$c = 'Lang';
-			self::$instance = new $c;
-        }
-		return self::$instance;	
-	}
 }
-
-?>

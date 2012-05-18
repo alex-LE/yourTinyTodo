@@ -10,13 +10,19 @@ Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
 if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
+if(!defined('YTTCOREPATH')) define('YTTCOREPATH', YTTPATH.'core/');
 
 require_once(YTTPATH. 'common.php');
 require_once(YTTPATH. 'db/config.php');
+require_once(YTTPATH. 'core/Database.class.php');
+require_once(YTTPATH. 'core/Lang.class.php');
+require_once(YTTPATH. 'core/Notification.class.php');
 
 ini_set('display_errors', 0);
 
 define('YTT_VERSION', '1.5');
+
+define('DEBUG_MODE', true);
 
 if(!isset($config)) global $config;
 Config::loadConfig($config);
@@ -29,8 +35,8 @@ if(Config::get('db') == 'mysql')
 {
 	try
 	{
-		require_once(YTTPATH. 'class.db.mysql.php');
-		$db = DBConnection::init(new Database_Mysql);
+		require_once(YTTCOREPATH . 'db/class.db.mysql.php');
+		$db = DBConnection::init(new Database_Mysql());
 		$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		$db->dq("SET NAMES utf8");
 	}
@@ -43,8 +49,8 @@ if(Config::get('db') == 'mysql')
 # PostgreSQL Database Connection
 elseif(Config::get('db') == 'postgres')
 {
-	require_once(YTTPATH. 'class.db.postgres.php');
-	$db = DBConnection::init(new Database_Postgres);
+	require_once(YTTCOREPATH . 'db/class.db.postgres.php');
+	$db = DBConnection::init(new Database_Postgres());
 	$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 	$db->dq("SET NAMES 'utf8'");
 }
@@ -54,8 +60,8 @@ elseif(Config::get('db') == 'sqlite')
 {
 	try
 	{
-		require_once(YTTPATH. 'class.db.sqlite3.php');
-		$db = DBConnection::init(new Database_Sqlite3);
+		require_once(YTTCOREPATH . 'db/class.db.sqlite3.php');
+		$db = DBConnection::init(new Database_Sqlite3());
 		$db->connect(YTTPATH. 'db/todolist.db');
 	}
 	catch(Exception $e)
@@ -69,13 +75,14 @@ else {
 }
 $db->prefix = Config::get('prefix');
 
-require_once(YTTPATH. 'lang/class.default.php');
+require_once(YTTPATH. 'core/Lang.class.php');
 require_once(YTTPATH. 'lang/'.Config::get('lang').'.php');
 
 $_yttinfo = array();
 
 $needAuth = (Config::get('password') != '' || Config::get('multiuser') == 1) ? 1 : 0;
 $multiUser = (Config::get('multiuser') == 1) ? 1 : 0;
+
 if($needAuth && !isset($dontStartSession))
 {
 	if(Config::get('session') == 'files')
@@ -92,6 +99,8 @@ if($needAuth && !isset($dontStartSession))
 	session_name('ytt-session');
 	session_start();
 }
+
+$notifications_count = (Config::get('multiuser') == 1)?Notification::getUnreadCount():false;
 
 function is_logged()
 {
@@ -159,6 +168,14 @@ function __($s)
 	return Lang::instance()->get($s);
 }
 
+function _r($s, $params) {
+	if(is_array($params)) {
+		return vsprintf(Lang::instance()->get($s), $params);
+	} else {
+		return vsprintf(Lang::instance()->get($s), array($params));
+	}
+}
+
 function yttinfo($v)
 {
 	global $_yttinfo;
@@ -192,6 +209,8 @@ function get_yttinfo($v)
 			$_yttinfo['title'] = (Config::get('title') != '') ? htmlarray(Config::get('title')) : __('Your Tiny Todolist');
 			return $_yttinfo['title'];
 	}
+
+	return false;
 }
 
 function jsonExit($data)
@@ -200,5 +219,3 @@ function jsonExit($data)
 	echo json_encode($data);
 	exit;
 }
-
-?>

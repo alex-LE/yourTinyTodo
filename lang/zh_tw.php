@@ -126,7 +126,7 @@ class Lang extends DefaultLang
 		'set_title_descr' => "(如果想變更預設標題名稱。)",
 		'set_language' => "語言",
 		'set_protection' => "密碼保護",
-		'set_enabled_single' => "單人模式 (僅需要ㄧ組密碼)",
+		'set_enabled_single' => "單人模式 (僅需要一組密碼)",
 		'set_enabled_multi' => "多人模式",
 		'set_manage_users' => "管理使用者",
 		'set_enabled' => "開啟",
@@ -164,6 +164,22 @@ class Lang extends DefaultLang
 		'um_rolename_3' => "唯讀",
 		'um_nousers' => "沒有任何使用者",
 		'um_createuser' => "建立使用者",
+		'access_denied' => "拒絕存取!<br/>請登入或停用密碼保護",
 
+		/* notifications */
+		'n_task_created' => '新任務 "%s" 已建立',
+		'n_task_deleted' => '任務 "%s" 已刪除',
+		'n_task_completed' => '任務 "%s" 完成Task',
+		'n_task_changed_priority' => '任務 "%s" 修改 (優先權)',
+		'n_task_changed_comment' => '任務 "%s" 修改 (評論)',
+		'n_task_changed_all' => '任務 "%s" 修改',
+		'n_list_added' => '清單 "%s" 已建立',
+		'n_list_renamed' => '清單 "%s" 重新命名為 "%s"',
+		'n_list_deleted' => '清單 "%s" 刪除',
+		'n_created' => '建立',
+		'n_description' => '描述',
+		'n_user' => '使用者名稱',
+		'n_mark_read' => '標示為已讀取',
+		'n_mark_all_read' => '標示所有為讀取',
 	);
 }

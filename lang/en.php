@@ -40,6 +40,9 @@ class Lang extends DefaultLang
 		'um_createerror3' => "Unable to create user",
 		'um_updateerror1' => "Unable to update user",
 		'um_deleteerror1' => "Unable to delete user",
+		'um_notification_on' => "on",	// needs to be the same like in default_inc!!
+		'um_notification_off' => "off",	// needs to be the same like in default_inc!!
+		'n_deleteerror1' => "Unable to mark notification as read",
 	);
 
 	var $inc = array
@@ -109,10 +112,12 @@ class Lang extends DefaultLang
 		'list_export_csv' => "CSV",
 		'list_export_ical' => "iCalendar",
 		'list_rssfeed' => "RSS Feed",
+		'list_notifications' => "Notify on change",
 		'alltags' => "All tags:",
 		'alltags_show' => "Show all",
 		'alltags_hide' => "Hide all",
 		'a_settings' => "Settings",
+		'a_notifications' => "Notifications",
 		'rss_feed' => "RSS Feed",
 		'feed_title' => "%s",
 		'feed_completed_tasks' => "Completed tasks",
@@ -158,6 +163,9 @@ class Lang extends DefaultLang
 		'um_username' => "Username",
 		'um_email' => "E-Mail",
 		'um_role' => "Access-Level",
+		'um_notification' => "Global Notifications",
+		'um_notification_on' => "on",
+		'um_notification_off' => "off",
 		'um_password' => "Password",
 		'um_rolename_1' => "Administrator",
 		'um_rolename_2' => "Read/Write",
@@ -165,5 +173,21 @@ class Lang extends DefaultLang
 		'um_nousers' => "No users available",
 		'um_createuser' => "Create user",
 		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
+
+		/* notifications */
+		'n_task_created' => 'New Task "%s" created',
+		'n_task_deleted' => 'Task "%s" deleted',
+		'n_task_completed' => 'Task "%s" completed',
+		'n_task_changed_priority' => 'Task "%s" changed (Priority)',
+		'n_task_changed_comment' => 'Task "%s" changed (Comment)',
+		'n_task_changed_all' => 'Task "%s" changed',
+		'n_list_added' => 'List "%s" created',
+		'n_list_renamed' => 'List "%s" renamed in "%s"',
+		'n_list_deleted' => 'List "%s" deleted',
+		'n_created' => 'Created',
+		'n_description' => 'Description',
+		'n_user' => 'Username',
+		'n_mark_read' => 'mark as read',
+		'n_mark_all_read' => 'mark all as read',
 	);
 }

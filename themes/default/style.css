@@ -363,13 +363,19 @@ li.ytt-item-hidden { display:none; }
 .ytt-usermanagement-table th { text-align:left; width:210px; padding-left:8px; }
 .ytt-usermanagement-table a { font-size:0.8em; }
 
+.ytt-notification-table { width:100%; border-collapse:collapse; }
+.ytt-notification-table th, .ytt-notification-table td { border-bottom:1px solid #dedede; padding:8px; vertical-align:top; }
+.ytt-notification-table th { text-align:left; width:210px; padding-left:8px; }
+.ytt-notification-table a { font-size:0.8em; }
+.ytt-notification-table .markread { background: url(images/mzl.png); display:block; height:16px; width:16px; }
+
 .ytt-page-manageusers a.createuserBtn {margin:20px 0; display: block;}
-#createuser label {display: block; width:150px; float:left; text-align: left}
-#createuser > form > input {display: block; width:200px; margin:3px 0}
-#createuser > form > select {display: block; width:200px; margin:3px 0}
-#createuser #createuserSubmit {width:auto; margin-left: 150px}
-#createuser {
-    height:140px;width:430px;
+#ytt-createuser label {display: block; width:150px; float:left; text-align: left}
+#ytt-createuser > form > input {display: block; width:200px; margin:3px 0}
+#ytt-createuser > form > select {display: block; width:200px; margin:3px 0}
+#ytt-createuser #createuserSubmit {width:auto; margin-left: 150px}
+#ytt-createuser {
+    height:170px;width:430px;
     overflow: hidden; z-index:100; background-color:#f9f9f9; border:1px solid #cccccc; padding:5px;
     width:100%; max-width:450px; margin:0px 7px 7px 7px; text-align:center;
     -moz-box-shadow:1px 2px 5px rgba(0,0,0,0.5); -webkit-box-shadow:1px 2px 5px rgba(0,0,0,0.5);
@@ -387,4 +393,42 @@ li.ytt-item-hidden { display:none; }
     -moz-transition: opacity 500ms ease-in;
     transition: opacity 500ms ease-in;
     display: none;
+}
+
+#notifications {
+    margin-right: 20px;
+    display: inline-block;
+}
+
+#notification_counter {
+    display:block;
+    border:1px solid #FFFFFF;
+    background-color: #e30c15;
+    -webkit-box-shadow: 0 2px 3px #000000;
+    /* webkit browser*/
+    -moz-box-shadow: 0 2px 3px #000000;
+    /* firefox */
+    box-shadow: 0 2px 3px #000000;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    color:#FFFFFF;
+    font-weight: bold;
+    text-align: center;
+    position:absolute;
+    right:5px;
+    top:-6px;
+    min-width: 15px;
+    font-size: 9px;
+    padding: 0 2px;
+}
+
+.ytt-clear {
+    clear:both;
+}
+
+#um_notification {
+    margin:15px 0!important;
+    text-align: left;
+    width:20px!important;
 }
