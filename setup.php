@@ -10,7 +10,7 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-define('YTT_VERSION', '1.5');
+define('YTT_VERSION', 'ytt1.0a');
 
 set_exception_handler('myExceptionHandler');
 
@@ -419,7 +419,7 @@ elseif($ver == YTT_VERSION)
 }
 else
 {
-	if(!in_array($ver, array('1.1','1.2','1.3.0','1.3.1','1.4'))) {
+	if(!in_array($ver, array('mtt1.1','mtt1.2','mtt1.3.0','mtt1.3.1','mtt1.4'))) {
 		exitMessage("Can not update. Unsupported database version ($ver).");
 	}
 	if(!isset($_POST['update'])) {
@@ -430,26 +430,26 @@ else
 	}
 
 	# update process
-	if($ver == '1.4')
+	if($ver == 'mtt1.4')
 	{
 		update_14_15($db, $dbtype);
 	}
-	if($ver == '1.3.1')
+	if($ver == 'mtt1.3.1')
 	{
 		update_131_14($db, $dbtype);
 	}
-	if($ver == '1.3.0')
+	if($ver == 'mtt1.3.0')
 	{
 		update_130_131($db, $dbtype);
 		update_131_14($db, $dbtype);
 	}
-	if($ver == '1.2')
+	if($ver == 'mtt1.2')
 	{
 		update_12_13($db, $dbtype);
 		update_130_131($db, $dbtype);
 		update_131_14($db, $dbtype);
 	}
-	elseif($ver == '1.1')
+	elseif($ver == 'mtt1.1')
 	{
 		update_11_12($db, $dbtype);
 		update_12_13($db, $dbtype);
@@ -465,9 +465,9 @@ function get_ver($db, $dbtype)
 {
 	if(!$db || $dbtype == '') return '';
 	if(!$db->table_exists($db->prefix.'todolist')) return '';
-	$v = '1.0';
+	$v = 'mtt1.0';
 	if(!$db->table_exists($db->prefix.'tags')) return $v;
-	$v = '1.1';
+	$v = 'mtt1.1';
 	if($dbtype == 'mysql') {
 		if(!has_field_mysql($db, $db->prefix.'todolist', 'duedate')) return $v;
 	} elseif($dbtype == 'postgres') {
@@ -475,9 +475,9 @@ function get_ver($db, $dbtype)
 	} else {
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'duedate')) return $v;
 	}
-	$v = '1.2';
+	$v = 'mtt1.2';
 	if(!$db->table_exists($db->prefix.'lists')) return $v;
-	$v = '1.3.0';
+	$v = 'mtt1.3.0';
 	if($dbtype == 'mysql') {
 		if(!has_field_mysql($db, $db->prefix.'todolist', 'd_completed')) return $v;
 	} elseif($dbtype == 'postgres') {
@@ -485,7 +485,7 @@ function get_ver($db, $dbtype)
 	} else {
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'd_completed')) return $v;
 	}
-	$v = '1.3.1';
+	$v = 'mtt1.3.1';
 	if($dbtype == 'mysql') {
 		if(!has_field_mysql($db, $db->prefix.'todolist', 'd_edited')) return $v;
 	} elseif($dbtype == 'postgres') {
@@ -493,10 +493,10 @@ function get_ver($db, $dbtype)
 	} else {
 		if(!has_field_sqlite($db, $db->prefix.'todolist', 'd_edited')) return $v;
 	}
-	$v = '1.4';
+	$v = 'mtt1.4';
 	if(!$db->table_exists($db->prefix.'users')) return $v;
 
-	$v = '1.5';
+	$v = 'ytt1.0a';
 	return $v;
 }
 
