@@ -192,6 +192,10 @@ header("Content-type: text/html; charset=utf-8");
 			<span class="h"><?php _e('due');?> </span>
 			<input name="duedate" id="duedate" value="" class="in100" title="Y-M-D, M/D/Y, D.M.Y, M/D, D.M" autocomplete="off" />
 		</div>
+		<div class="form-row form-row-short">
+			<span class="h"><?php _e('duration');?> </span>
+			<input name="duration" id="duration" value="" class="in35" title="" autocomplete="off" />&nbsp;<?php _e('hour_sign');?>
+		</div>
 		<div class="form-row-short-end"></div>
 		<div class="form-row"><div class="h"><?php _e('task');?></div> <input type="text" name="task" value="" class="in500" maxlength="250" /></div>
 		<div class="form-row"><div class="h"><?php _e('note');?></div> <textarea name="note" class="in500"></textarea></div>

@@ -93,6 +93,8 @@ class Lang extends DefaultLang
 		'f_past' => "Overdue",
 		'f_today' => "Today and tomorrow",
 		'f_soon' => "Soon",
+		'duration' => "Duration",
+		'hour_sign' => "h",
 		'action_edit' => "Edit",
 		'action_note' => "Edit Note",
 		'action_delete' => "Delete",

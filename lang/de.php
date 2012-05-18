@@ -93,6 +93,8 @@ class Lang extends DefaultLang
 		'f_past' => "Überfällig",
 		'f_today' => "Heute und morgen",
 		'f_soon' => "Bald",
+		'duration' => "Dauer",
+		'hour_sign' => "h",
 		'action_edit' => "Bearbeiten",
 		'action_note' => "Notiz bearbeiten",
 		'action_delete' => "Löschen",

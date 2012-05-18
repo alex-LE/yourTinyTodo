@@ -1362,6 +1362,7 @@ function editTask(id)
 	form.tags.value = item.tags.split(',').join(', ');
 	form.duedate.value = item.duedate;
 	form.prio.value = item.prio;
+	form.duration.value = item.duration;
 	$('#taskedit-date .date-created>span').text(item.date);
 	if(item.compl) $('#taskedit-date .date-completed').show().find('span').text(item.dateCompleted);
 	else $('#taskedit-date .date-completed').hide();
@@ -1419,7 +1420,7 @@ function saveTask(form)
 		return submitFullTask(form);
 
 	_ytt.db.request('editTask', {id:form.id.value, title: form.task.value, note:form.note.value,
-		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value},
+		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duration:form.duration.value},
 		function(json){
 			if(!parseInt(json.total)) return;
 			var item = json.list[0];

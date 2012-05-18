@@ -222,6 +222,7 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
 .invisible { visibility:hidden; }
 .in500 { width:500px; color:#444444; }
 .in100 { width:100px; color:#444444; }
+.in35 { width:35px; color:#444444; }
 .task-note span a { color:#777777; }
 .task-note span a:hover { color:#af0000; }
 
