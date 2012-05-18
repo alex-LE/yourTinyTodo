@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -101,6 +101,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.needAuth = options.needAuth ? true : false;
 		flag.isLogged = options.isLogged ? true : false;
 		flag.multiUser = options.multiUser ? true : false;
+		flag.globalNotifications = options.globalNotifications ? true : false;
 		flag.readOnly = options.readOnly ? true : false;
 		flag.admin = options.admin ? true : false;
 		flag.userId = options.userId;
@@ -109,7 +110,9 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
 
-        if(!flag.multiUser) $('#btnNotifications').hide();
+        if(!flag.multiUser) {
+            $('#btnNotifications').hide();
+        }
 
 		this.parseAnchor();
 
@@ -679,9 +682,13 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	
 	pageBack: function()
 	{
-		if(this.pages.current.page == 'tasks') return false;
+		console.log(this.pages.current.page, this.pages.prev);
+        if(this.pages.current.page == 'tasks') return false;
 		var prev = this.pages.current;
 		this.pages.current = this.pages.prev.pop();
+        if(this.pages.current.pageClass == 'settings') {
+            this.pages.current = this.pages.prev.pop(); // do it a second time, usermanagement will als be opened as ajax page, so go back will close both
+        }
 		showhide($('#page_'+ this.pages.current.page), $('#page_'+ prev.page).removeClass('ytt-page-'+prev.page.pageClass));
 		$(window).scrollTop(this.pages.current.lastScrollTop);
 	},
@@ -1207,7 +1214,7 @@ function tabSelect(elementOrId)
 		$('#list_'+id).addClass('ytt-tabs-selected').removeClass('ytt-tabs-hidden');
 		$('#listmenucontainer .ytt-need-real-list').removeClass('ytt-item-hidden');
 	}
-	
+
 	if(curList.id != id)
 	{
 		if(id == -1) $('#ytt_body').addClass('show-all-tasks');
@@ -1914,6 +1921,12 @@ function tabmenuOnListSelected(list)
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
     if(list.notification) $('#btnNotifications').addClass('ytt-item-checked');
     else $('#btnNotifications').removeClass('ytt-item-checked');
+    if(flag.globalNotifications) {
+        $('#btnNotifications').addClass('ytt-item-disabled');
+        $('#btnNotifications').removeClass('ytt-item-checked');
+    } else {
+        $('#btnNotifications').removeClass('ytt-item-disabled');
+    }
 };
 
 
@@ -2368,13 +2381,18 @@ function createUser()
 
 function editUser(clickeditem, step) {
     if(step == 0) { // load data to form
-        if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('createuser', {adjustWidth:true, modal:true});
+        if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('ytt-createuser', {adjustWidth:true, modal:true});
         _ytt.menus.createuser.show(clickeditem);
 
         $('#um_userid').val($(clickeditem).attr('rel'));
         $('#um_username').val($(clickeditem).parent().parent().find('td.username').html());
         $('#um_email').val($(clickeditem).parent().parent().find('td.email').html());
         $("#um_role > option:contains('"+$(clickeditem).parent().parent().find('td.role').html()+"')").attr('selected',true);
+        if($(clickeditem).parent().parent().find('td.notification').html() == _ytt.lang.get('um_notification_on')) {
+            $('#um_notification').attr('checked', 'checked');
+        } else {
+            $('#um_notification').removeAttr('checked');
+        }
 
         if($(clickeditem).attr('rel') == flag.userId) {
             $("#um_role").attr('disabled','disabled');
@@ -2383,7 +2401,19 @@ function editUser(clickeditem, step) {
         }
 
     } else {        // send form
-        _ytt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
+        _ytt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val(), notification:$('#um_notification').is(':checked')?1:0 }, function(json){
+
+            if($('#um_userid').val() == flag.userId) {
+                if($('#um_notification').is(':checked')) {
+                    flag.globalNotifications = true;
+                    $('#btnNotifications').addClass('ytt-item-disabled');
+                    $('#btnNotifications').removeClass('ytt-item-checked');
+                } else {
+                    flag.globalNotifications = false;
+                    $('#btnNotifications').removeClass('ytt-item-disabled');
+                }
+            }
+
             switch(json.error)
             {
                 case 1:

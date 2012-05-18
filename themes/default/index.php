@@ -55,6 +55,7 @@ header("Content-type: text/html; charset=utf-8");
 		yourtinytodo.init({
 			needAuth: <?php echo $needAuth ? "true" : "false"; ?>,
 			multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
+			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 			admin: <?php echo is_admin() ? "true" : "false"; ?>,
 			readOnly: <?php echo is_readonly() ? "true" : "false"; ?>,
 			userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
@@ -312,7 +313,7 @@ header("Content-type: text/html; charset=utf-8");
 	</ul>
 </div>
 
-<div id="createuser" style="display:none" class="ytt-menu-container">
+<div id="ytt-createuser" style="display:none" class="ytt-menu-container">
 	<form method="post" action="" name="createuserForm">
 		<label for="um_username"><?php _e('um_username');?></label>
 		<input type="text" name="um_username" id="um_username" value="" />
@@ -323,7 +324,10 @@ header("Content-type: text/html; charset=utf-8");
 		<label for="um_password"><?php _e('um_password');?></label>
 		<input type="password" name="um_password" id="um_password" value="" />
 
-		<label for="um_role"><?php _e('um_role');?></label>
+		<label for="um_notification"><?php _e('um_notification');?></label>
+		<input type="checkbox" name="um_notification" id="um_notification" value="1" />
+
+		<label for="um_role" class="ytt-clear"><?php _e('um_role');?></label>
 		<select name="um_role" id="um_role">
 			<option value="1"><?php _e('um_rolename_1')?></option>
 			<option value="2"><?php _e('um_rolename_2')?></option>

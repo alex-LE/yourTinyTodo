@@ -181,12 +181,12 @@ yourtinytodoStorageAjax.prototype =
 
 	createUser: function(params, callback)
 	{
-		$.post(this.ytt.yttUrl+'ajax.php?createuser', { yttusername:params.username, yttpassword:params.password, email:params.email, role:params.role }, callback, 'json');
+		$.post(this.ytt.yttUrl+'ajax.php?createuser', { yttusername:params.username, yttpassword:params.password, yttemail:params.email, yttrole:params.role }, callback, 'json');
 	},
 
 	editUser: function(params, callback)
 	{
-		$.post(this.ytt.yttUrl+'ajax.php?edituser', { yttuserid:params.userid, yttusername:params.username, yttpassword:params.password, email:params.email, role:params.role }, callback, 'json');
+		$.post(this.ytt.yttUrl+'ajax.php?edituser', { yttuserid:params.userid, yttusername:params.username, yttpassword:params.password, yttemail:params.email, yttrole:params.role, yttnotification:params.notification }, callback, 'json');
 	},
 
 	deleteUser: function(params, callback)
