@@ -10,7 +10,7 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-require_once('./init.php');
+require_once('../init.php');
 
 $lang = Lang::instance();
 $db = DBConnection::instance();
@@ -32,6 +32,7 @@ function getUserListFromDB()
 			<td valign="left" class="username"><?php echo $r['username'] ?></td>
 			<td valign="left" class="email"><?php echo $r['email'] ?></td>
 			<td valign="left" class="role"><?php echo _e('um_rolename_'.$r['role']) ?></td>
+			<td valign="left" class="notification"><?php echo (NotificationListener::hasGlobalNotifications($r['id']))?_e('um_notification_on'):_e('um_notification_off') ?></td>
 			<td>
 				<a href="#" class="edituser" rel="<?php echo $r['id'] ?>"><?php _e('action_edit') ?></a>
 				<?php if($r['id'] != $_SESSION['userid']) { ?>
@@ -61,6 +62,7 @@ header('Content-type:text/html; charset=utf-8');
 		<th><?php _e('um_username');?></th>
 		<th><?php _e('um_email');?></th>
 		<th><?php _e('um_role');?></th>
+		<th><?php _e('um_notification');?></th>
 		<th></th>
 	</tr>
 	<?php getUserListFromDB(); ?>

@@ -1,5 +1,4 @@
 <?php
-
 /*
 This file is part of yourTinyTodo by the yourTinyTodo community.
 Copyrights for portions of this file are retained by their owners.
@@ -10,9 +9,11 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-class DatabaseResult_Mysql
+class DatabaseResult_Mysql implements IDatabaseResult
 {
-
+	/**
+	 * @var Database
+	 */
 	var $parent;
 	var $q;
 	var $query;
@@ -20,6 +21,12 @@ class DatabaseResult_Mysql
 	var $affected = NULL;
 	var $prefix = '';
 
+	/**
+	 * @param $query
+	 * @param $h Database
+	 * @param int $resultless
+	 * @throws Exception
+	 */
 	function __construct($query, &$h, $resultless = 0)
 	{
 		$this->parent = $h;
@@ -60,16 +67,13 @@ class DatabaseResult_Mysql
 	}
 }
 
-class Database_Mysql
+class Database_Mysql extends Database
 {
-	var $dbh;
-	var $error_str;
-
 	function __construct()
 	{
 	}
 
-	function connect($host, $user, $pass, $db)
+	function connect($host, $user = null, $pass = null, $db = null)
 	{
 		if(!$this->dbh = @mysql_connect($host,$user,$pass))
 		{
@@ -82,7 +86,7 @@ class Database_Mysql
 		return true;
 	}
 
-	function last_insert_id()
+	function last_insert_id($tablename = null)
 	{
 		return mysql_insert_id($this->dbh);
 	}	
@@ -172,5 +176,3 @@ class Database_Mysql
 		else return true;
 	}
 }
-
-?>

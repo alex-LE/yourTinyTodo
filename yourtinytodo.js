@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -101,6 +101,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.needAuth = options.needAuth ? true : false;
 		flag.isLogged = options.isLogged ? true : false;
 		flag.multiUser = options.multiUser ? true : false;
+		flag.globalNotifications = options.globalNotifications ? true : false;
 		flag.readOnly = options.readOnly ? true : false;
 		flag.admin = options.admin ? true : false;
 		flag.userId = options.userId;
@@ -108,6 +109,10 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
+
+        if(!flag.multiUser) {
+            $('#btnNotifications').hide();
+        }
 
 		this.parseAnchor();
 
@@ -482,6 +487,16 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			}
 		});
 
+        // Notifications
+        $("#notifications").live('click', showNotificationList);
+        $('.markread').live('click', function() {
+            var notification_id = $(this).attr('rel');
+            markNotificationRead(notification_id);
+        });
+        $('#markallasread').live('click', function() {
+            markAllNotificationRead();
+        });
+
         // User management
         $("#manageusers").live('click', showUserManagement);
         $('#createuserBtn').live('click', function(){
@@ -667,9 +682,13 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	
 	pageBack: function()
 	{
-		if(this.pages.current.page == 'tasks') return false;
+		console.log(this.pages.current.page, this.pages.prev);
+        if(this.pages.current.page == 'tasks') return false;
 		var prev = this.pages.current;
 		this.pages.current = this.pages.prev.pop();
+        if(this.pages.current.pageClass == 'settings') {
+            this.pages.current = this.pages.prev.pop(); // do it a second time, usermanagement will als be opened as ajax page, so go back will close both
+        }
 		showhide($('#page_'+ this.pages.current.page), $('#page_'+ prev.page).removeClass('ytt-page-'+prev.page.pageClass));
 		$(window).scrollTop(this.pages.current.lastScrollTop);
 	},
@@ -836,7 +855,8 @@ function loadTasks(opts)
 		sort: curList.sort,
 		search: filter.search,
 		tag: _ytt.filter.getTags(true),
-		setCompl: opts.setCompl
+		setCompl: opts.setCompl,
+        notification: opts.notification
 	}, function(json){
 		taskList.length = 0;
 		taskOrder.length = 0;
@@ -1194,7 +1214,7 @@ function tabSelect(elementOrId)
 		$('#list_'+id).addClass('ytt-tabs-selected').removeClass('ytt-tabs-hidden');
 		$('#listmenucontainer .ytt-need-real-list').removeClass('ytt-item-hidden');
 	}
-	
+
 	if(curList.id != id)
 	{
 		if(id == -1) $('#ytt_body').addClass('show-all-tasks');
@@ -1234,6 +1254,7 @@ function listMenuClick(el, menu)
 		case 'btnExportICAL': exportCurList('ical'); break;
 		case 'btnRssFeed': feedCurList(); break;
 		case 'btnShowCompleted': showCompletedToggle(); break;
+		case 'btnNotifications': showNotificationsToggle(); break;
 		case 'btnClearCompleted': clearCompleted(); break;
 		case 'sortByHand': setSort(0); break;
 		case 'sortByPrio': setSort(curList.sort==1 ? 101 : 1); break;
@@ -1898,6 +1919,14 @@ function tabmenuOnListSelected(list)
 	}
 	if(list.showCompl) $('#btnShowCompleted').addClass('ytt-item-checked');
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
+    if(list.notification) $('#btnNotifications').addClass('ytt-item-checked');
+    else $('#btnNotifications').removeClass('ytt-item-checked');
+    if(flag.globalNotifications) {
+        $('#btnNotifications').addClass('ytt-item-disabled');
+        $('#btnNotifications').removeClass('ytt-item-checked');
+    } else {
+        $('#btnNotifications').removeClass('ytt-item-disabled');
+    }
 };
 
 
@@ -1920,6 +1949,15 @@ function showCompletedToggle()
 	if(act) $('#btnShowCompleted').addClass('ytt-item-checked');
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
 	loadTasks({setCompl:1});
+};
+
+function showNotificationsToggle()
+{
+	var act = curList.notification ? 0 : 1;
+	curList.notification = tabLists.get(curList.id).notification = act;
+	if(act) $('#btnNotifications').addClass('ytt-item-checked');
+	else $('#btnNotifications').removeClass('ytt-item-checked');
+	loadTasks({notification:act});
 };
 
 function clearCompleted()
@@ -2263,7 +2301,7 @@ function logout()
 function showSettings()
 {
 	if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'settings') return false;
-	$('#page_ajax').load(_ytt.yttUrl+'settings.php?ajax=yes',null,function(){ 
+	$('#page_ajax').load(_ytt.yttUrl+'pages/settings.php?ajax=yes',null,function(){
 		//showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
 		_ytt.pageSet('ajax','settings');
 	})
@@ -2276,12 +2314,24 @@ function saveSettings(frm)
 	var params = { save:'ajax' };
 	$(frm).find("input:text,input:password,input:checked,select").filter(":enabled").each(function() { params[this.name || '__'] = this.value; }); 
 	$(frm).find(":submit").attr('disabled','disabled').blur();
-	$.post(_ytt.yttUrl+'settings.php', params, function(json){
+	$.post(_ytt.yttUrl+'pages/settings.php', params, function(json){
 		if(json.saved) {
 			flashInfo(_ytt.lang.get('settingsSaved'));
 			setTimeout('window.location.reload();', 1000);
 		}
 	}, 'json');
+}
+
+/**
+ * Notifications
+ */
+function showNotificationList() {
+    if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'notifications') return false;
+    $('#page_ajax').load(_ytt.yttUrl+'pages/notifications.php?ajax=yes',null,function(){
+        //showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
+        _ytt.pageSet('ajax','notifications');
+    })
+    return false;
 }
 
 /*
@@ -2290,7 +2340,7 @@ function saveSettings(frm)
 function showUserManagement()
 {
     if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'manageusers') return false;
-    $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+    $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
         //showhide($('#page_ajax').addClass('ytt-page-settings'), $('#page_tasks'));
         _ytt.pageSet('ajax','manageusers');
     })
@@ -2321,7 +2371,7 @@ function createUser()
                 $('#um_email').val('');
                 $('#um_role').val('');
                 flashInfo(_ytt.lang.get('um_usercreated'));
-                $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
 
                 })
                 break;
@@ -2331,13 +2381,18 @@ function createUser()
 
 function editUser(clickeditem, step) {
     if(step == 0) { // load data to form
-        if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('createuser', {adjustWidth:true, modal:true});
+        if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('ytt-createuser', {adjustWidth:true, modal:true});
         _ytt.menus.createuser.show(clickeditem);
 
         $('#um_userid').val($(clickeditem).attr('rel'));
         $('#um_username').val($(clickeditem).parent().parent().find('td.username').html());
         $('#um_email').val($(clickeditem).parent().parent().find('td.email').html());
         $("#um_role > option:contains('"+$(clickeditem).parent().parent().find('td.role').html()+"')").attr('selected',true);
+        if($(clickeditem).parent().parent().find('td.notification').html() == _ytt.lang.get('um_notification_on')) {
+            $('#um_notification').attr('checked', 'checked');
+        } else {
+            $('#um_notification').removeAttr('checked');
+        }
 
         if($(clickeditem).attr('rel') == flag.userId) {
             $("#um_role").attr('disabled','disabled');
@@ -2346,7 +2401,19 @@ function editUser(clickeditem, step) {
         }
 
     } else {        // send form
-        _ytt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val() }, function(json){
+        _ytt.db.request('editUser', { userid:$('#um_userid').val(), username:$('#um_username').val(), password: $('#um_password').val(), email: $('#um_email').val(), role:$('#um_role').val(), notification:$('#um_notification').is(':checked')?1:0 }, function(json){
+
+            if($('#um_userid').val() == flag.userId) {
+                if($('#um_notification').is(':checked')) {
+                    flag.globalNotifications = true;
+                    $('#btnNotifications').addClass('ytt-item-disabled');
+                    $('#btnNotifications').removeClass('ytt-item-checked');
+                } else {
+                    flag.globalNotifications = false;
+                    $('#btnNotifications').removeClass('ytt-item-disabled');
+                }
+            }
+
             switch(json.error)
             {
                 case 1:
@@ -2368,7 +2435,7 @@ function editUser(clickeditem, step) {
                     $('#um_role').val('');
                     $('#um_userid').val('');
                     _ytt.menus.createuser.close();
-                    $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                    $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
                         flashInfo(_ytt.lang.get('um_userupdated'));
                     })
                     break;
@@ -2391,11 +2458,54 @@ function deleteUser(userid)
                 break;
 
             case 0:
-                $('#page_ajax').load(_ytt.yttUrl+'usermanagement.php?ajax=yes',null,function(){
+                $('#page_ajax').load(_ytt.yttUrl+'pages/usermanagement.php?ajax=yes',null,function(){
                     flashInfo(_ytt.lang.get('um_userdeleted'));
                 })
                 break;
         }
+    });
+}
+
+function markNotificationRead(notificationid)
+{
+    _ytt.db.request('markread', { yttnotificationid:notificationid }, function(json){
+        switch(json.error)
+        {
+            case 1:
+                flashError(_ytt.lang.get('n_deleteerror1'));
+                break;
+
+            case 0:
+                $('#notification_row_'+notificationid).fadeOut('normal', function(){ $(this).remove() });
+                refreshNotificationCounter();
+                break;
+        }
+    });
+}
+
+function markAllNotificationRead(notificationid)
+{
+    _ytt.db.request('markallasread', { }, function(json){
+        switch(json.error)
+        {
+            case 1:
+                flashError(_ytt.lang.get('n_deleteerror1'));
+                break;
+
+            case 0:
+                $('.notification_row').fadeOut('normal', function(){ $(this).remove() });
+                refreshNotificationCounter();
+                break;
+        }
+    });
+}
+
+function refreshNotificationCounter() {
+    _ytt.db.request('countNotifications', { }, function(json){
+        if(parseInt(json.count) == 0) {
+            $('#notification_counter').hide();
+        }
+        $('#notification_counter').html(json.count);
     });
 }
 

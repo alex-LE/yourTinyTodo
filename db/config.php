@@ -19,7 +19,7 @@ $config['db'] = '';
 $config['mysql.host'] = "localhost";
 $config['mysql.db'] = "yytinytodo";
 $config['mysql.user'] = "user";
-$config['mysql.password'] = ""; 
+$config['mysql.password'] = "";
 
 # Tables prefix
 $config['prefix'] = "ytt_";

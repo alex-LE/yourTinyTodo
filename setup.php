@@ -423,10 +423,10 @@ else
 		exitMessage("Can not update. Unsupported database version ($ver).");
 	}
 	if(!isset($_POST['update'])) {
-		exitMessage("Update database v$ver
-		<form name=frm method=post><input type=hidden name=update value=1><input type=hidden name=tz value=-1><input type=submit value=' Update '></form>
-		<script type=\"text/javascript\">var tz = -1 * (new Date()).getTimezoneOffset(); document.frm.tz.value = tz;</script>
-		");
+		exitMessage('Update database v'.$ver.'
+		<form name="frm"" method="post"><input type="hidden" name="update" value="1"><input type="hidden" name="tz" value="-1"><input type="submit" value=" Update "></form>
+		<script type="text/javascript">var tz = -1 * (new Date()).getTimezoneOffset(); document.frm.tz.value = tz;</script>
+		');
 	}
 
 	# update process
@@ -457,7 +457,7 @@ else
 		update_131_14($db, $dbtype);
 	}
 }
-echo "Done<br/><br/> <b>Attention!</b> Delete this file for security reasons.";
+echo "Done<br/><br/><b>Attention!</b> Delete this file for security reasons.";
 printFooter();
 
 
@@ -543,16 +543,18 @@ function testConnect(&$error)
 {
 	try
 	{
+		require_once(YTTPATH . 'core/Database.class.php');
+		require_once(YTTPATH . 'core/interfaces/databaseresult.interface.php');
 		if(Config::get('db') == 'mysql')
 		{
-			require_once(YTTPATH. 'class.db.mysql.php');
+			require_once(YTTPATH . 'core/db/class.db.mysql.php');
 			$db = new Database_Mysql;
 			$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
 		
 		}
 		else if(Config::get('db') == 'postgres')
 		{
-			require_once(YTTPATH. 'class.db.postgres.php');
+			require_once(YTTPATH . 'core/db/class.db.postgres.php');
 			$db = new Database_Postgres;
 			$db->connect(Config::get('postgres.host'), Config::get('postgres.user'), Config::get('postgres.password'), Config::get('postgres.db'));
 		}
@@ -563,7 +565,7 @@ function testConnect(&$error)
 
 			if(!is_writable(YTTPATH. 'db/')) throw new Exception("database directory ('db') is not writable");
 
-			require_once(YTTPATH. 'class.db.sqlite3.php');
+			require_once(YTTPATH . 'core/db/class.db.sqlite3.php');
 			$db = new Database_Sqlite3;
 			$db->connect(YTTPATH. 'db/todolist.db');
 		}
@@ -1056,5 +1058,3 @@ function update_14_15($db, $dbtype)
 	$db->ex("COMMIT");
 }
 ### end of 1.5 #####
-
-?>

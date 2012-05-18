@@ -55,6 +55,7 @@ header("Content-type: text/html; charset=utf-8");
 		yourtinytodo.init({
 			needAuth: <?php echo $needAuth ? "true" : "false"; ?>,
 			multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
+			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 			admin: <?php echo is_admin() ? "true" : "false"; ?>,
 			readOnly: <?php echo is_readonly() ? "true" : "false"; ?>,
 			userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
@@ -80,17 +81,26 @@ header("Content-type: text/html; charset=utf-8");
 <div id="loading"></div>
 
 <div id="bar">
-	<div id="msg"><span class="msg-text"></span><div class="msg-details"></div></div>
+	<div id="msg">
+		<span class="msg-text"></span>
+		<div class="msg-details"></div>
+	</div>
 	<div class="bar-menu">
- <span class="menu-owner" style="display:none">
-   <a href="#settings" id="settings"><?php _e('a_settings');?></a>
- </span>
+		<? if(false !== $notifications_count) {?>
+ 		<span class="menu-owner" style="display:none;position: relative;">
+   			<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter"><?=$notifications_count?></span></a>
+ 		</span>
+		<?}?>
 		<span class="bar-delim" style="display:none"> | </span>
- <span id="bar_auth">
-  <span id="bar_public" style="display:none"><?php _e('public_tasks');?> |</span>
-  <a href="#login" id="bar_login" class="nodecor"><u><?php _e('a_login');?></u> <span class="arrdown"></span></a>
-  <a href="#logout" id="bar_logout"><?php _e('a_logout');?></a>
- </span>
+ 		<span class="menu-owner" style="display:none">
+   			<a href="#settings" id="settings"><?php _e('a_settings');?></a>
+ 		</span>
+		<span class="bar-delim" style="display:none"> | </span>
+ 		<span id="bar_auth">
+  			<span id="bar_public" style="display:none"><?php _e('public_tasks');?> |</span>
+  			<a href="#login" id="bar_login" class="nodecor"><u><?php _e('a_login');?></u> <span class="arrdown"></span></a>
+  			<a href="#logout" id="bar_logout"><?php _e('a_logout');?></a>
+ 		</span>
 	</div>
 </div>
 
@@ -260,6 +270,8 @@ header("Content-type: text/html; charset=utf-8");
 		<li class="ytt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="ytt-sort-direction">&nbsp;</span></li>
 		<li class="ytt-menu-delimiter"></li>
 		<li class="ytt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
+		<li class="ytt-menu-delimiter"></li>
+		<li class="ytt-need-list" id="btnNotifications"><div class="menu-icon"></div><?php _e('list_notifications');?></li>
 	</ul>
 </div>
 
@@ -301,7 +313,7 @@ header("Content-type: text/html; charset=utf-8");
 	</ul>
 </div>
 
-<div id="createuser" style="display:none" class="ytt-menu-container">
+<div id="ytt-createuser" style="display:none" class="ytt-menu-container">
 	<form method="post" action="" name="createuserForm">
 		<label for="um_username"><?php _e('um_username');?></label>
 		<input type="text" name="um_username" id="um_username" value="" />
@@ -312,7 +324,10 @@ header("Content-type: text/html; charset=utf-8");
 		<label for="um_password"><?php _e('um_password');?></label>
 		<input type="password" name="um_password" id="um_password" value="" />
 
-		<label for="um_role"><?php _e('um_role');?></label>
+		<label for="um_notification"><?php _e('um_notification');?></label>
+		<input type="checkbox" name="um_notification" id="um_notification" value="1" />
+
+		<label for="um_role" class="ytt-clear"><?php _e('um_role');?></label>
 		<select name="um_role" id="um_role">
 			<option value="1"><?php _e('um_rolename_1')?></option>
 			<option value="2"><?php _e('um_rolename_2')?></option>

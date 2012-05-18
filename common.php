@@ -196,12 +196,21 @@ class DBConnection
 {
 	protected static $instance;
 
+	/**
+	 * @static
+	 * @param $instance
+	 * @return Database
+	 */
 	public static function init($instance)
 	{
 		self::$instance = $instance;
 		return $instance;
 	}
 
+	/**
+	 * @static
+	 * @return Database
+	 */
 	public static function instance()
 	{
         if (!isset(self::$instance)) {
@@ -217,5 +226,3 @@ function hashPassword($password, $salt)
 {
 	return md5($password.$salt);
 }
-
-?>

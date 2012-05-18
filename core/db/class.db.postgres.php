@@ -1,5 +1,4 @@
 <?php
-
 /*
 This file is part of yourTinyTodo by the yourTinyTodo community.
 Copyrights for portions of this file are retained by their owners.
@@ -10,7 +9,7 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-class DatabaseResult_Posgres
+class DatabaseResult_Posgres implements IDatabaseResult
 {
 
 	var $parent;
@@ -20,6 +19,12 @@ class DatabaseResult_Posgres
 	var $affected = NULL;
 	var $prefix = '';
 
+	/**
+	 * @param $query
+	 * @param $h Database
+	 * @param int $resultless
+	 * @throws Exception
+	 */
 	function __construct($query, &$h, $resultless = 0)
 	{
 		$this->parent = $h;
@@ -60,17 +65,18 @@ class DatabaseResult_Posgres
 	}
 }
 
-class Database_Postgres
+class Database_Postgres extends Database
 {
-	var $dbh;
-	var $error_str;
-	var $last_result;
+	/**
+	 * @var DatabaseResult_Posgres
+	 */
+	public $last_result;
 
 	function __construct()
 	{
 	}
 
-	function connect($host, $user, $pass, $db)
+	function connect($host, $user = null, $pass = null, $db = null)
 	{
 		if(!$this->dbh = pg_connect('host='.$host.' dbname='.$db.' user='.$user.' password='.$pass))
 		{
@@ -79,7 +85,7 @@ class Database_Postgres
 		return true;
 	}
 
-	function last_insert_id($tablename)
+	function last_insert_id($tablename = null)
 	{
 		$sql = "SELECT last_value FROM ".$tablename."_id_seq";
 		$result = pg_query($this->dbh, $sql);
@@ -123,6 +129,13 @@ class Database_Postgres
 		return $this->_dq($query, $p, 1);
 	}
 
+	/**
+	 * @param $query
+	 * @param null $p
+	 * @param int $resultless
+	 * @return DatabaseResult_Posgres
+	 * @throws Exception
+	 */
 	private function _dq($query, $p = NULL, $resultless = 0)
 	{
 		if(!isset($p)) $p = array();
@@ -174,5 +187,3 @@ class Database_Postgres
 		else return false;
 	}
 }
-
-?>

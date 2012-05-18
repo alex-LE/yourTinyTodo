@@ -47,6 +47,8 @@ yourtinytodoStorageAjax.prototype =
 		if(params.search && params.search != '') q += '&s='+encodeURIComponent(params.search);
 		if(params.tag && params.tag != '') q += '&t='+encodeURIComponent(params.tag);
 		if(params.setCompl && params.setCompl != 0) q += '&setCompl=1';
+		if(params.notification != null && params.notification == 1) q += '&setNotification=1';
+		if(params.notification != null && params.notification == 0) q += '&setNotification=0';
 		q += '&rnd='+Math.random();
 
 /*		$.getJSON(ytt.yttUrl+'ajax.php?loadTasks&list='+params.list+'&compl='+params.compl+'&sort='+params.sort+'&tz='+params.tz+q, function(json){
@@ -179,19 +181,33 @@ yourtinytodoStorageAjax.prototype =
 
 	createUser: function(params, callback)
 	{
-		$.post(this.ytt.yttUrl+'ajax.php?createuser', { yttusername:params.username, yttpassword:params.password, email:params.email, role:params.role }, callback, 'json');
+		$.post(this.ytt.yttUrl+'ajax.php?createuser', { yttusername:params.username, yttpassword:params.password, yttemail:params.email, yttrole:params.role }, callback, 'json');
 	},
 
 	editUser: function(params, callback)
 	{
-		$.post(this.ytt.yttUrl+'ajax.php?edituser', { yttuserid:params.userid, yttusername:params.username, yttpassword:params.password, email:params.email, role:params.role }, callback, 'json');
+		$.post(this.ytt.yttUrl+'ajax.php?edituser', { yttuserid:params.userid, yttusername:params.username, yttpassword:params.password, yttemail:params.email, yttrole:params.role, yttnotification:params.notification }, callback, 'json');
 	},
 
 	deleteUser: function(params, callback)
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?deleteuser', { yttuserid:params.userid }, callback, 'json');
-	}
+	},
 
+    markread: function(params, callback)
+	{
+		$.post(this.ytt.yttUrl+'ajax.php?markread', { yttnotificationid:params.yttnotificationid }, callback, 'json');
+	},
+
+    markallasread: function(params, callback)
+	{
+        $.getJSON(this.ytt.yttUrl+'ajax.php?markallasread&rnd='+Math.random(), callback);
+	},
+
+    countNotifications: function(params, callback)
+    {
+        $.getJSON(this.ytt.yttUrl+'ajax.php?countNotifications&rnd='+Math.random(), callback);
+    }
 };
 
 })();
