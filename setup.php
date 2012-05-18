@@ -195,6 +195,27 @@ if(!$ver)
 ) CHARSET=utf8 ");
 
 
+			$db->ex(
+"CREATE TABLE IF NOT EXISTS `ytt_notifications` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `shown` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+			$db->ex(
+"CREATE TABLE IF NOT EXISTS `ytt_notification_listeners` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `type` set('task','list','global') character set utf8 NOT NULL,
+  `value` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; ");
+
+
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
 		}
@@ -324,6 +345,48 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
     				ADD CONSTRAINT {$db->prefix}users_pkey PRIMARY KEY (id);
 				");
 
+			$db->ex(
+				"CREATE TABLE ytt_notifications (
+					id integer NOT NULL,
+					user_id integer,
+					text character varying,
+					created timestamp with time zone,
+					shown integer
+				);
+				CREATE SEQUENCE ytt_notifications_id_seq
+					START WITH 1
+					INCREMENT BY 1
+					NO MAXVALUE
+					NO MINVALUE
+					CACHE 1;
+				ALTER SEQUENCE ytt_notifications_id_seq OWNED BY mtt_notifications.id;
+				ALTER TABLE ytt_notifications ALTER COLUMN id SET DEFAULT nextval('mtt_notifications_id_seq'::regclass);
+				ALTER TABLE ONLY ytt_notifications
+    				ADD CONSTRAINT ytt_notifications_pkey PRIMARY KEY (id);
+
+				");
+
+
+			$db->ex(
+				"CREATE TABLE ytt_notification_listeners (
+					id integer NOT NULL,
+					user_id integer,
+					\"type\" character varying,
+					value integer
+				);
+				COMMENT ON COLUMN ytt_notification_listeners.\"type\" IS '''task'',''list'',''global''';
+				CREATE SEQUENCE ytt_notification_listeners_id_seq
+					START WITH 1
+					INCREMENT BY 1
+					NO MAXVALUE
+					NO MINVALUE
+					CACHE 1;
+				ALTER SEQUENCE ytt_notification_listeners_id_seq OWNED BY ytt_notification_listeners.id;
+				ALTER TABLE ytt_notification_listeners ALTER COLUMN id SET DEFAULT nextval('ytt_notification_listeners_id_seq'::regclass);
+				ALTER TABLE ONLY ytt_notification_listeners
+    				ADD CONSTRAINT ytt_notification_listeners_pkey PRIMARY KEY (id);
+				");
+
 			// Using || to concatenate in YTT is not recommeneded because there are
 			// database drivers for YTT that do not support the syntax, however
 			// they do support CONCAT(item1, item2) which we can replicate in
@@ -399,6 +462,9 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 			$db->ex("CREATE INDEX tag2task_list_id ON {$db->prefix}tag2task (list_id)");	/* for tagcloud */
 
 			$db->ex('CREATE TABLE '.$db->prefix.'users ("id" INTEGER PRIMARY KEY  NOT NULL , "uuid" VARCHAR, "username" VARCHAR, "password" VARCHAR, "email" VARCHAR, "d_created" INTEGER, "role" INTEGER)');
+
+			$db->ex('CREATE TABLE "ytt_notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
+			$db->ex('CREATE  TABLE "main"."ytt_notification_listeners" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "type" VARCHAR, "value" INTEGER)');
 
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
