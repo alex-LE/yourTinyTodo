@@ -41,6 +41,13 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 #authform label {font-size: 1em; font-weight: bold}
 #loading { float:left; padding-top:5px; background-color:#ffffff; display:none; padding-right:6px; width:16px; height:16px; background:url(images/loading1.gif) no-repeat; }
 
+#subbar {height:25px; text-align: right}
+#ytt-work-timer {display: none; color:red; font-weight: bold; font-size: 12px}
+#ytt-timer-pause, #ytt-timer-stop {padding-top: 2px}
+#ytt-timer-pause img, #ytt-timer-stop img, #ytt-timer-continue img {vertical-align: bottom;}
+#ytt-time {margin-right: 2px; display:inline-block;}
+#ytt-timer-continue {display: none;}
+
 #msg { float:left; }
 #msg .msg-text {  padding:1px 4px; font-weight:bold; cursor:pointer; }
 #msg .msg-details { padding:1px 4px; background-color:#fff; display:none; max-width:700px;  }
@@ -189,6 +196,10 @@ li.task-expanded .task-toggle { background-position:-80px -16px; }
 .task-tags .tag { font-size:0.8em; font-weight:bold; color:#333333; text-decoration:underline;  }
 .task-tags .tag:hover {  }
 .duedate { color:#333333; padding:0px; padding-left:1px; margin-left:5px;  }
+.ytt-progress { display:inline-block; margin-left: 5px; font-weight: bold; }
+    .ytt-progress-over {color:#FF0000}
+    .ytt-progress-near {color:#FF7700}
+    .ytt-progress-started {color:#008000}
 li.task-completed .duedate { /*font-size:0.8em;*/ display:none; }
 #tasklist li.soon .duedate { color:#008000; }
 #tasklist li.today .duedate { color:#FF0000; } 

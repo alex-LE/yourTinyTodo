@@ -207,6 +207,11 @@ yourtinytodoStorageAjax.prototype =
     countNotifications: function(params, callback)
     {
         $.getJSON(this.ytt.yttUrl+'ajax.php?countNotifications&rnd='+Math.random(), callback);
+    },
+
+    trackWorkTime: function(params, callback)
+    {
+        $.post(this.ytt.yttUrl+'ajax.php?trackWorkTime', { ytt_taskId:params.task_id, ytt_time:params.time }, callback, 'json');
     }
 };
 

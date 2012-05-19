@@ -38,6 +38,8 @@ var tabLists = {
 var curList = 0;
 var tagsList = [];
 
+var worktimer = {};
+
 var yourtinytodo = window.yourtinytodo = _ytt = {
 
 	theme: {
@@ -545,6 +547,22 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		this.addAction('listSelected', slmenuOnListSelected);
 		this.addAction('listHidden', slmenuOnListHidden);
 
+        // work timer
+        $('#ytt-timer-pause').live('click', function() {
+           pauseTimer();
+        });
+        $('#ytt-timer-continue').live('click', function() {
+            continueTimer();
+        });
+        $('#ytt-timer-stop').live('click', function() {
+            stopTimer();
+        });
+
+        if($.cookie('worktimer_start') != null) {
+            worktimer.startTime = Date.parse($.cookie('worktimer_start'));
+            continueTimer();
+        }
+
 		return this;
 	},
 
@@ -887,7 +905,7 @@ function prepareTaskStr(item, noteExp)
 		'<div class="task-actions"><a href="#" class="taskactionbtn"></a></div>'+"\n"+
 		'<div class="task-left"><div class="task-toggle"></div>'+
 		'<input type="checkbox" '+(flag.readOnly?'disabled="disabled"':'')+(item.compl?'checked="checked"':'')+'/></div>'+"\n"+
-		'<div class="task-middle"><div class="task-through-right">'+prepareDuedate(item)+
+		'<div class="task-middle"><div class="task-through-right">'+prepareProgress(item)+prepareDuedate(item)+
 		'<span class="task-date-completed"><span title="'+item.dateInlineTitle+'">'+item.dateInline+'</span>&#8212;'+
 		'<span title="'+item.dateCompletedInlineTitle+'">'+item.dateCompletedInline+'</span></span></div>'+"\n"+
 		'<div class="task-through">'+preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
@@ -948,6 +966,19 @@ function prepareDuedate(item)
 	return '<span class="duedate" title="'+item.dueTitle+'"><span class="duedate-arrow">→</span> '+item.dueStr+'</span>';
 };
 
+function prepareProgress(item)
+{
+    if(!item.progress) return '';
+    if(item.progress > 100) {
+        var css_class = 'ytt-progress-over';
+    } else if(item.progress >= 80) {
+        var css_class = 'ytt-progress-near';
+    } else {
+        var css_class = 'ytt-progress-started';
+    }
+
+    return '<span class="ytt-progress '+css_class+'">'+item.progress+'%</span>';
+};
 
 function submitNewTask(form)
 {
@@ -1830,6 +1861,7 @@ function taskContextClick(el, menu)
 		case 'cmenu_list':
 			if(menu.$caller && menu.$caller.attr('id')=='cmenu_move') moveTaskToList(taskId, value);
 			break;
+        case 'cmenu_work': startWorkTimer(taskId); break;
 	}
 };
 
@@ -2508,6 +2540,113 @@ function refreshNotificationCounter() {
         }
         $('#notification_counter').html(json.count);
     });
+}
+
+function startWorkTimer(taskId) {
+    $('#cmenu_work').addClass('ytt-item-disabled');
+    $('#ytt-work-timer').show();
+
+    worktimer.startTime = new Date();
+    worktimer.timerActive = true;
+    worktimer.timerTotal = 0;
+    worktimer.taskId = taskId;
+    saveTimerInCookie();
+
+    setTimeout(function() {
+        showTime();
+    }, 1000);
+}
+
+function stopTimer() {
+    var dDeltaTime = new Date();
+    dDeltaTime.setTime( new Date() - worktimer.startTime );
+    var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
+    var sSec = dDeltaTime.getSeconds(); // Sekundenanteil der Differenz
+    var sHours = Math.floor( dDeltaTime / 3600000 );
+
+    worktimer.timerActive = false;
+    worktimer.timerTotal = sSec + (sMin*60) + (sHours*3600);
+    var total_minutes = Math.ceil(worktimer.timerTotal / 60);
+
+    _ytt.db.request('trackWorkTime', { task_id:worktimer.taskId, time:total_minutes }, function(json){
+        $('#ytt-work-timer').hide();
+        worktimer.startTime = null;
+        worktimer.taskId = null;
+        $('#ytt-time').html('00:00:00');
+        $('#cmenu_work').removeClass('ytt-item-disabled');
+        $.cookie('worktimer_start', null);
+    });
+}
+
+function pauseTimer() {
+    var dDeltaTime = new Date();
+    dDeltaTime.setTime( new Date() - worktimer.startTime );
+    var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
+    var sSec = dDeltaTime.getSeconds(); // Sekundenanteil der Differenz
+    var sHours = Math.floor( dDeltaTime / 3600000 );
+
+    worktimer.timerTotal = sSec + (sMin*60) + (sHours*3600);
+
+    $('#ytt-timer-pause').toggle();
+    $('#ytt-timer-stop').toggle();
+    $('#ytt-timer-continue').toggle();
+
+    worktimer.timerActive = false;
+
+}
+
+function continueTimer() {
+
+    if(worktimer.timerTotal > 0) {
+        var a = new Date();
+        var mil_sec = a.getTime() - (worktimer.timerTotal * 1000);
+        var b = new Date();
+        b.setTime(mil_sec);
+        worktimer.startTime = b;
+        saveTimerInCookie();
+        $('#ytt-timer-pause').toggle();
+        $('#ytt-timer-stop').toggle();
+        $('#ytt-timer-continue').toggle();
+    } else { // it might come out of the cookie
+        $('#cmenu_work').addClass('ytt-item-disabled');
+        $('#ytt-work-timer').show();
+    }
+
+    worktimer.timerActive = true;
+
+    setTimeout(function() {
+        showTime();
+    }, 1000);
+}
+
+function showTime() {
+    if(!worktimer.timerActive) {
+        return;
+    }
+
+    var dDeltaTime = new Date();
+    dDeltaTime.setTime( new Date() - worktimer.startTime );
+
+    var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
+    var sSec = dDeltaTime.getSeconds(); // Sekundenanteil der Differenz
+    var sHours = Math.floor( dDeltaTime / 3600000 );
+
+    sHours = ( sHours < 10 ) ? "0" + sHours : sHours;
+    sMin = ( sMin < 10 ) ? "0" + sMin : sMin;
+    sSec = ( sSec < 10 ) ? "0" + sSec : sSec;
+
+    $('#ytt-time').html(sHours + ":" + sMin + ":" + sSec);
+
+    setTimeout(function() {
+        showTime();
+    }, 1000);
+}
+
+function saveTimerInCookie() {
+    var a = new Date();
+    a.setHours(a.getHours() + 10);
+
+    $.cookie('worktimer_start', worktimer.startTime, {expires: a});
 }
 
 })();
