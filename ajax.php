@@ -739,6 +739,15 @@ elseif(isset($_GET['countNotifications']))
 	$notifications_count = (Config::get('multiuser') == 1)?Notification::getUnreadCount():0;
 	jsonExit(array('count' => $notifications_count));
 }
+elseif(isset($_GET['trackWorkTime']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$taskid = (int)_post('ytt_taskId');
+	$time = (int)_post('ytt_time');
+	TimeTracker::trackTime($taskid, $time);
+	jsonExit(array('done' => 1));
+}
 
 ###################################################################################################
 
@@ -756,6 +765,11 @@ function prepareTaskRow($r)
 	$db = DBConnection::instance();
 	$current_user_id = (int)$_SESSION['userid'];
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$r['id']." AND user_id=".$current_user_id);
+
+	$progress = '';
+	if(!empty($r['duration'])) {
+		$progress = ceil((TimeTracker::getTaskTotal($r['id'])*100)/($r['duration']*60));
+	}
 
 	return array(
 		'id' => $r['id'],
@@ -783,6 +797,7 @@ function prepareTaskRow($r)
 		'dueInt' => date2int($r['duedate']),
 		'dueTitle' => htmlarray(sprintf($lang->get('taskdate_inline_duedate'), $dueA['formatted'])),
 		'duration' => (empty($r['duration']))?'':$r['duration'],
+		'progress' => $progress,
 	);
 }
 

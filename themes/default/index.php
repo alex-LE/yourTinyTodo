@@ -33,9 +33,11 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.cookie.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
+
 
 <script type="text/javascript">
 	$().ready(function(){
@@ -104,7 +106,14 @@ header("Content-type: text/html; charset=utf-8");
 	</div>
 </div>
 
-<br clear="all" />
+<div class="ytt-clear" id="subbar">
+	<span id="ytt-work-timer">
+		Timer: <span id="ytt-time">00:00:00</span>
+		<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"><img src="<?php yttinfo('template_url'); ?>images/control_pause.png" alt="<?=_e('timer_pause')?>" /></a>
+		<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"><img src="<?php yttinfo('template_url'); ?>images/control_stop.png" alt="<?=_e('timer_stop')?>" /></a>
+		<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"><img src="<?php yttinfo('template_url'); ?>images/control_play.png" alt="<?=_e('timer_continue')?>" /></a>
+	</span>
+</div>
 
 <div id="page_tasks" style="display:none">
 
@@ -289,6 +298,7 @@ header("Content-type: text/html; charset=utf-8");
 <div id="taskcontextcontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="cmenu_edit"><b><?php _e('action_edit');?></b></li>
+		<li id="cmenu_work"><b><?php _e('action_work');?></b></li>
 		<li id="cmenu_note"><?php _e('action_note');?></li>
 		<li id="cmenu_prio" class="ytt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div><?php _e('action_priority');?></li>
 		<li id="cmenu_move" class="ytt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div><?php _e('action_move');?></li>

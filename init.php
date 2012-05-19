@@ -17,6 +17,7 @@ require_once(YTTPATH. 'db/config.php');
 require_once(YTTPATH. 'core/Database.class.php');
 require_once(YTTPATH. 'core/Lang.class.php');
 require_once(YTTPATH. 'core/Notification.class.php');
+require_once(YTTPATH. 'core/TimeTracker.class.php');
 
 ini_set('display_errors', 0);
 
