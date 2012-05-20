@@ -10,38 +10,102 @@ Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 
 /*	default style	*/
 
-html { height:100%; overflow-y:scroll; }
-body { margin:0px; padding:0px;  height:100%; min-height:100%; background-color:#fff; font-family:arial; font-size:10pt; }
+html    { height:100%; }
+body   {
+    height:100%; min-height:100%;
+    background: url(images/bg_body.png) fixed;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    font: 14px/18px "Lucida Grande", Helvetica, Arial, sans-serif;
+    overflow-y: scroll;
+}
+
 #wrapper { margin:0px auto; max-width:950px;  height:100%; }
 #container { height:auto !important;height:100%;min-height:100%;    }
-#ytt_body { padding:8px; padding-bottom:16px; }
+#ytt_body { padding:8px 2px 16px; }
 
 
 td, th, input, textarea, select { font-family:arial; font-size:1em; }
 form { display: inline; }
 h2,h3 { margin:0; }
-h2 { font-size:1.5em; float:left; padding-right:10px; background-color:#ffffff; }
+h2 { font-size:1.5em; float:left; padding-right:10px; background: -moz-linear-gradient(top, #fff, #f0f0f0);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#f0f0f0)); }
 h3 { border-bottom:2px solid #B5D5FF; margin-bottom:10px; padding:6px 0; font-size:1.1em; }
 #page_tasks h3 { padding-left:4px; padding-right:4px; }
 a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 #space { height:30px; }
-#footer { height:30px; margin-top:-30px; }
-#footer_content { background-color:#b5d5ff; padding:5px; font-size:0.8em; }
-#footer_content a { color:#000000; }
+#footer { height:30px; margin-top:-28px; }
+#footer_content {
+    background-color:#666666; padding:5px; font-size:0.8em; color:#FFFFFF;
+    -webkit-border-top-left-radius: 8px;
+    -webkit-border-top-right-radius: 8px;
+    -moz-border-radius-topleft: 8px;
+    -moz-border-radius-topright: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+#footer_content a { color:#FFFFFF; }
 
-#bar { border-bottom:1px solid #b5d5ff; padding-bottom:5px; height:15px; }
-.bar-menu { float:right; }
+#function-bar {
+    background: -moz-linear-gradient(top, #fff, #f0f0f0);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#f0f0f0));
+    border-bottom: 1px solid #aaa;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 0;
+    z-index: 100;
+}
+
+    #function-bar h2 {
+        margin-left: 10px;
+        margin-top: 3px;
+    }
+
+    #function-bar #bar {
+        margin-right: 25px;
+        margin-top: 0;
+        overflow: hidden;
+        height:25px;
+    }
+
+#main {
+    background: #fff;
+    -moz-border-radius: 8px;
+    -moz-box-shadow: 0 0 10px #c1c1c1;
+    -webkit-border-radius: 8px;
+    -webkit-box-shadow: 0 0 10px #c1c1c1;
+    padding: 24px;
+    overflow: hidden;
+}
+
+.menuitem {
+    background-color: #666666;
+    border-radius: 4px 4px 4px 4px;
+    color: #FFFFFF;
+    font-size: 11px;
+    margin-left: 7px;
+    padding: 6px;
+}
+
+    .menuitem * {
+        color: #FFFFFF;
+    }
+
+.bar-menu { float:right; height: 25px; padding-top: 2px; }
 .nodecor { text-decoration:none; }
 #bar_logout { display:none; }
 #bar_auth { display:none; }
-#authform { overflow: hidden; z-index:100; background-color:#f9f9f9; border:1px solid #cccccc; padding:5px; width:160px; }
+#authform { overflow: hidden; z-index:100; background-color:#f9f9f9; border:1px solid #cccccc; padding:5px; width:160px; -moz-box-shadow: 0 0 10px #c1c1c1; -webkit-box-shadow: 0 0 10px #c1c1c1; }
 #authform div { padding:2px 0px; }
 #authform div.h { font-weight:bold; }
 #authform label {font-size: 1em; font-weight: bold}
 #loading { float:left; padding-top:5px; background-color:#ffffff; display:none; padding-right:6px; width:16px; height:16px; background:url(images/loading1.gif) no-repeat; }
 
-#subbar {height:25px; text-align: right}
+#subbar {height:25px; text-align: right; margin-top: 29px;}
 #ytt-work-timer {display: none; color:red; font-weight: bold; font-size: 12px}
 #ytt-timer-pause, #ytt-timer-stop {padding-top: 2px}
 #ytt-timer-pause img, #ytt-timer-stop img, #ytt-timer-continue img {vertical-align: bottom;}
@@ -186,7 +250,7 @@ li.task-expanded .task-toggle { background-position:-80px -16px; }
 .show-inline-date .task-date { display:inline; }
 .show-inline-date li.task-completed .task-date-completed { display:inline; }
 .show-inline-date li.task-completed .task-date { display:none; }
-.task-through { overflow:hidden; }
+.task-through { overflow:hidden; cursor: pointer }
 .task-through-right { float:right; }
 .task-title a { color:#000000; }
 .task-title a:hover { color:#af0000; }
@@ -200,6 +264,7 @@ li.task-expanded .task-toggle { background-position:-80px -16px; }
     .ytt-progress-over {color:#FF0000}
     .ytt-progress-near {color:#FF7700}
     .ytt-progress-started {color:#008000}
+    .inprogress {color:red;font-weight:bold;display:none}
 li.task-completed .duedate { /*font-size:0.8em;*/ display:none; }
 #tasklist li.soon .duedate { color:#008000; }
 #tasklist li.today .duedate { color:#FF0000; } 
@@ -223,12 +288,78 @@ li:hover a.taskactionbtn, a.taskactionbtn.ytt-menu-button-active { background-po
 #tasklist.filter-past li.past, #tasklist.filter-today li.today, #tasklist.filter-soon li.soon { display:block; }
 #tasklist.filter-past li.task-completed, #tasklist.filter-today li.task-completed, #tasklist.filter-soon li.task-completed { display:none; }
 
-.task-note-block { margin-left:2px; color:#777777; background:url(images/page_white_text.png) left  2px no-repeat; padding-left:19px; padding-top:2px; min-height:16px; margin-top:2px; display:none; }
+.task-note-block {
+    margin-left:2px;
+    color:#777777;
+    background:url(images/page_white_text.png) 3px 5px no-repeat;
+    padding:4px 4px 4px 25px;
+    min-height:16px;
+    margin-top:5px;
+    display:none;
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px 1px 1px 7px;
+}
+
 li.task-expanded .task-note-block { display:block; }
 li.task-completed .task-note-block .task-note { text-decoration:line-through; }
 .task-note-area { display:none; margin-bottom:5px; }
 .task-note-area textarea { color:#999999; width:100%; display:block; height:65px; }
 .task-note-actions { font-size:0.8em; }
+
+.task-progress-block {
+    display: none;
+    margin-left:2px;
+    margin-top: 5px;
+    padding:4px 4px 4px 25px;
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px 1px 1px 7px;
+    position: relative;
+    min-height: 45px;
+}
+li.task-expanded .task-progress-block { display:block; }
+.ytt-progress-bar {
+    display: block;
+    height:15px;
+    width:200px;
+    border: 1px solid #CCCCCC;
+    margin-left: 5px;
+}
+    .ytt-progress-percentbar {
+        height:15px;
+        width:0;
+        background: #008000;
+        display: block;
+    }
+
+.timercontrols {
+    position: absolute;
+    right:10px;
+    top:10px;
+    list-style-type: none;
+}
+
+    .timercontrols li {
+        display:block;
+        float:left;
+        border: 0 none !important;
+    }
+
+.startWork {
+    background: url(images/clock.png) no-repeat;
+    padding-left: 20px;
+    font-size: 10px;
+    padding-bottom: 5px;
+}
+
+.logTime {
+    background: url(images/control_play.png) no-repeat;
+    padding-left: 20px;
+    font-size: 10px;
+    padding-bottom: 5px;
+}
+
 .hidden { display:none; }
 .invisible { visibility:hidden; }
 .in500 { width:500px; color:#444444; }
@@ -408,18 +539,16 @@ li.ytt-item-hidden { display:none; }
 }
 
 #notifications {
-    margin-right: 20px;
     display: inline-block;
 }
 
 #notification_counter {
+    /*
     display:block;
     border:1px solid #FFFFFF;
     background-color: #e30c15;
     -webkit-box-shadow: 0 2px 3px #000000;
-    /* webkit browser*/
     -moz-box-shadow: 0 2px 3px #000000;
-    /* firefox */
     box-shadow: 0 2px 3px #000000;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -433,7 +562,21 @@ li.ytt-item-hidden { display:none; }
     min-width: 15px;
     font-size: 9px;
     padding: 0 2px;
+    z-index: 110;
+    */
+    color: #FFFFFF;
+    display: inline-block;
+    font-weight: bold;
+    margin-left: 4px;
 }
+
+    #notification_counter.hasone {
+        color:red;
+    }
+
+    #notification_counter.nothing {
+
+    }
 
 .ytt-clear {
     clear:both;

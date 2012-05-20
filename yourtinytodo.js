@@ -379,6 +379,12 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			return false;
 		});
 
+        $('#tasklist .task-through').live('click', function(){
+            var id = getLiTaskId(this);
+            if(id) $('#taskrow_'+id).toggleClass('task-expanded');
+            return false;
+        });
+
 		$('#tasklist .tag').live('click', function(event){
 			clearTimeout(_ytt.timers.previewtag);
 			$('#tasklist li').removeClass('not-in-tagpreview');
@@ -557,11 +563,11 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
         $('#ytt-timer-stop').live('click', function() {
             stopTimer();
         });
-
-        if($.cookie('worktimer_start') != null) {
-            worktimer.startTime = Date.parse($.cookie('worktimer_start'));
-            continueTimer();
-        }
+        $('.startWork').live('click', function() {
+            var taskId = $(this).attr('rel');
+            $(this).parent().find('.inprogress').toggle();
+            startWorkTimer(taskId)
+        });
 
 		return this;
 	},
@@ -891,33 +897,55 @@ function loadTasks(opts)
 		}
 		refreshTaskCnt();
 		$('#tasklist').html(tasks);
+        tasksLoaded();
 	});
 };
 
+function tasksLoaded() {
+    if($.cookie('worktimer_start') != null) {
+        worktimer.startTime = Date.parse($.cookie('worktimer_start'));
+        worktimer.taskId = $.cookie('worktimer_task');
+        continueTimer();
+    }
+}
 
 function prepareTaskStr(item, noteExp)
 {
 	// &mdash; = &#8212; = —
 	var id = item.id;
 	var prio = item.prio;
-	return '<li id="taskrow_'+id+'" class="' + (item.compl?'task-completed ':'') + item.dueClass + (item.note!=''?' task-has-note':'') +
-				((curList.showNotes && item.note != '') || noteExp ? ' task-expanded' : '') + prepareTagsClass(item.tags_ids) + '">' +
-		'<div class="task-actions"><a href="#" class="taskactionbtn"></a></div>'+"\n"+
-		'<div class="task-left"><div class="task-toggle"></div>'+
-		'<input type="checkbox" '+(flag.readOnly?'disabled="disabled"':'')+(item.compl?'checked="checked"':'')+'/></div>'+"\n"+
-		'<div class="task-middle"><div class="task-through-right">'+prepareProgress(item)+prepareDuedate(item)+
-		'<span class="task-date-completed"><span title="'+item.dateInlineTitle+'">'+item.dateInline+'</span>&#8212;'+
-		'<span title="'+item.dateCompletedInlineTitle+'">'+item.dateCompletedInline+'</span></span></div>'+"\n"+
-		'<div class="task-through">'+preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
-		(curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
-		prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span></div>'+
-		'<div class="task-note-block">'+
-			'<div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
-			'<div id="tasknotearea'+id+'" class="task-note-area"><textarea id="notetext'+id+'"></textarea>'+
-				'<span class="task-note-actions"><a href="#" class="ytt-action-note-save">'+_ytt.lang.get('actionNoteSave')+
-				'</a> | <a href="#" class="ytt-action-note-cancel">'+_ytt.lang.get('actionNoteCancel')+'</a></span></div>'+
-		'</div>'+
-		"</div></li>\n";
+	return  '    <li id="taskrow_'+id+'" class="' + (item.compl?'task-completed ':'') + item.dueClass + (item.note!=''?' task-has-note':'') +
+				        ((curList.showNotes && item.note != '') || noteExp ? ' task-expanded' : '') + prepareTagsClass(item.tags_ids) + '">' +
+		    '       <div class="task-actions"><a href="#" class="taskactionbtn"></a></div>'+"\n"+
+		    '       <div class="task-left">' +
+            '           <div class="task-toggle"></div>'+
+		    '           <input type="checkbox" '+(flag.readOnly?'disabled="disabled"':'')+(item.compl?'checked="checked"':'')+'/>' +
+            '       </div>'+"\n"+
+		    '       <div class="task-middle">' +
+            '           <div class="task-through-right">'+prepareDuedate(item)+
+		    '               <span class="task-date-completed">' +
+            '                   <span title="'+item.dateInlineTitle+'">'+item.dateInline+'</span>&#8212;'+
+		    '                   <span title="'+item.dateCompletedInlineTitle+'">'+item.dateCompletedInline+'</span>' +
+            '               </span>' +
+            '           </div>'+"\n"+
+		    '           <div class="task-through">'+
+                            preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
+		                    (curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
+		                    prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span>' +
+            '           </div>'+
+		    '           <div class="task-note-block">'+
+			'               <div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
+			'               <div id="tasknotearea'+id+'" class="task-note-area">' +
+            '                   <textarea id="notetext'+id+'"></textarea>'+
+			'                   <span class="task-note-actions">' +
+            '                       <a href="#" class="ytt-action-note-save">'+_ytt.lang.get('actionNoteSave')+
+		    '                       </a> | <a href="#" class="ytt-action-note-cancel">'+_ytt.lang.get('actionNoteCancel')+'</a>' +
+            '                   </span>' +
+            '               </div>'+
+		    '           </div>'+
+                        prepareProgress(item)+
+		    "       </div>" +
+            "</li>\n";
 };
 
 
@@ -977,7 +1005,16 @@ function prepareProgress(item)
         var css_class = 'ytt-progress-started';
     }
 
-    return '<span class="ytt-progress '+css_class+'">'+item.progress+'%</span>';
+    return  '<div class="task-progress-block">' +
+            '   <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span class="'+css_class+'">'+item.progress+'%</span></span>' +
+            '   <span class="ytt-progress-bar">' +
+            '       <span class="ytt-progress-percentbar" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;'+((item.progress > 100)?'background-color:#FF0000':'')+'"></span>' +
+            '   </span>' +
+            '   <ul class="timercontrols">' +
+            '       <li><span class="inprogress">'+_ytt.lang.get('in_progress')+'</span><a class="startWork" rel="'+item.id+'">'+_ytt.lang.get('start_timer')+'</a></li>' +
+            '       <li><a class="logTime" rel="'+item.id+'">'+_ytt.lang.get('log_time')+'</a></li>' +
+            '   </ul>' +
+            '</div>';
 };
 
 function submitNewTask(form)
@@ -1861,7 +1898,6 @@ function taskContextClick(el, menu)
 		case 'cmenu_list':
 			if(menu.$caller && menu.$caller.attr('id')=='cmenu_move') moveTaskToList(taskId, value);
 			break;
-        case 'cmenu_work': startWorkTimer(taskId); break;
 	}
 };
 
@@ -2543,7 +2579,7 @@ function refreshNotificationCounter() {
 }
 
 function startWorkTimer(taskId) {
-    $('#cmenu_work').addClass('ytt-item-disabled');
+    $('.startWork').hide();
     $('#ytt-work-timer').show();
 
     worktimer.startTime = new Date();
@@ -2573,7 +2609,8 @@ function stopTimer() {
         worktimer.startTime = null;
         worktimer.taskId = null;
         $('#ytt-time').html('00:00:00');
-        $('#cmenu_work').removeClass('ytt-item-disabled');
+        $('.startWork').show();
+        $('.inprogress').hide();
         $.cookie('worktimer_start', null);
     });
 }
@@ -2596,8 +2633,7 @@ function pauseTimer() {
 }
 
 function continueTimer() {
-
-    if(worktimer.timerTotal > 0) {
+    if(worktimer.timerTotal && worktimer.timerTotal > 0) {
         var a = new Date();
         var mil_sec = a.getTime() - (worktimer.timerTotal * 1000);
         var b = new Date();
@@ -2608,7 +2644,10 @@ function continueTimer() {
         $('#ytt-timer-stop').toggle();
         $('#ytt-timer-continue').toggle();
     } else { // it might come out of the cookie
-        $('#cmenu_work').addClass('ytt-item-disabled');
+        console.log(worktimer.taskId);
+        console.log($('.startWork[rel='+worktimer.taskId+']'));
+        $('.startWork[rel='+worktimer.taskId+']').parent().find('.inprogress').show();
+        $('.startWork').hide();
         $('#ytt-work-timer').show();
     }
 
@@ -2647,6 +2686,7 @@ function saveTimerInCookie() {
     a.setHours(a.getHours() + 10);
 
     $.cookie('worktimer_start', worktimer.startTime, {expires: a});
+    $.cookie('worktimer_task', worktimer.taskId, {expires: a});
 }
 
 })();
