@@ -35,6 +35,10 @@ class DefaultLang {
 		'um_notification_on' => "on",	// needs to be the same like in default_inc!!
 		'um_notification_off' => "off",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Unable to mark notification as read",
+		'start_timer' => "Start timer",
+		'log_time' => "Log time",
+		'progress' => "Progress",
+		'in_progress' => "In progress",
 	);
 
 	private $default_inc = array
@@ -93,7 +97,6 @@ class DefaultLang {
 		'action_delete' => "Delete",
 		'action_priority' => "Priority",
 		'action_move' => "Move to",
-		'action_work' => "Start working",
 		'timer_stop' => "Stop timer",
 		'timer_pause' => "Pause timer",
 		'timer_continue' => "Continue timer",

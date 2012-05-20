@@ -57,11 +57,13 @@ header("Content-type: text/html; charset=utf-8");
 		yourtinytodo.init({
 			needAuth: <?php echo $needAuth ? "true" : "false"; ?>,
 			multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
-			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 			admin: <?php echo is_admin() ? "true" : "false"; ?>,
 			readOnly: <?php echo is_readonly() ? "true" : "false"; ?>,
+			<? if(isset($_SESSION['userid'])) {?>
+			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 			userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
 			userRole: <?php echo (!empty($_SESSION['role']))?$_SESSION['role']:'null'; ?>,
+			<? } ?>
 			isLogged: <?php echo ($needAuth && is_logged()) ? "true" : "false"; ?>,
 			showdate: <?php echo (Config::get('showdate') && !isset($_GET['pda'])) ? "true" : "false"; ?>,
 			singletab: <?php echo (isset($_GET['singletab']) || isset($_GET['pda'])) ? "true" : "false"; ?>,
@@ -78,31 +80,33 @@ header("Content-type: text/html; charset=utf-8");
 <div id="container">
 <div id="ytt_body">
 
-<h2><?php yttinfo('title'); ?></h2>
+<div id="function-bar">
+	<h2><?php yttinfo('title'); ?></h2>
 
-<div id="loading"></div>
+	<div id="loading"></div>
 
-<div id="bar">
-	<div id="msg">
-		<span class="msg-text"></span>
-		<div class="msg-details"></div>
-	</div>
-	<div class="bar-menu">
-		<? if(false !== $notifications_count) {?>
- 		<span class="menu-owner" style="display:none;position: relative;">
-   			<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter"><?=$notifications_count?></span></a>
- 		</span>
-		<?}?>
-		<span class="bar-delim" style="display:none"> | </span>
- 		<span class="menu-owner" style="display:none">
-   			<a href="#settings" id="settings"><?php _e('a_settings');?></a>
- 		</span>
-		<span class="bar-delim" style="display:none"> | </span>
- 		<span id="bar_auth">
-  			<span id="bar_public" style="display:none"><?php _e('public_tasks');?> |</span>
-  			<a href="#login" id="bar_login" class="nodecor"><u><?php _e('a_login');?></u> <span class="arrdown"></span></a>
-  			<a href="#logout" id="bar_logout"><?php _e('a_logout');?></a>
- 		</span>
+	<div id="bar">
+		<div id="msg">
+			<span class="msg-text"></span>
+			<div class="msg-details"></div>
+		</div>
+		<div class="bar-menu">
+			<? if(false !== $notifications_count) {?>
+			<span class="menu-owner menuitem" style="display:none;position: relative;">
+				<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter" class="<?=($notifications_count > 0)?'hasone':'nothing'?>">(<?=$notifications_count?>)</span></a>
+			</span>
+			<?}?>
+			<span class="bar-delim" style="display:none"></span>
+			<span class="menu-owner menuitem" style="display:none">
+				<a href="#settings" id="settings"><?php _e('a_settings');?></a>
+			</span>
+			<span class="bar-delim" style="display:none"></span>
+			<span id="bar_auth">
+				<span id="bar_public" style="display:none"><?php _e('public_tasks');?></span>
+				<a href="#login" id="bar_login" class="nodecor menuitem"><u><?php _e('a_login');?></u></a>
+				<a href="#logout" id="bar_logout" class="menuitem"><?php _e('a_logout');?></a>
+			</span>
+		</div>
 	</div>
 </div>
 
@@ -114,6 +118,8 @@ header("Content-type: text/html; charset=utf-8");
 		<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"><img src="<?php yttinfo('template_url'); ?>images/control_play.png" alt="<?=_e('timer_continue')?>" /></a>
 	</span>
 </div>
+
+<div id="main">
 
 <div id="page_tasks" style="display:none">
 
@@ -226,6 +232,7 @@ header("Content-type: text/html; charset=utf-8");
 </div>  <!-- end of page_taskedit -->
 
 
+
 <div id="authform" style="display:none">
 	<form id="login_form" action="" method="post">
 		<?php if($multiUser) { ?>
@@ -298,7 +305,6 @@ header("Content-type: text/html; charset=utf-8");
 <div id="taskcontextcontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="cmenu_edit"><b><?php _e('action_edit');?></b></li>
-		<li id="cmenu_work"><b><?php _e('action_work');?></b></li>
 		<li id="cmenu_note"><?php _e('action_note');?></li>
 		<li id="cmenu_prio" class="ytt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div><?php _e('action_priority');?></li>
 		<li id="cmenu_move" class="ytt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div><?php _e('action_move');?></li>
@@ -355,6 +361,7 @@ header("Content-type: text/html; charset=utf-8");
 </div>
 
 <div id="page_ajax" style="display:none"></div>
+</div>
 
 </div>
 <div id="space"></div>

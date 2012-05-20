@@ -43,6 +43,10 @@ class Lang extends DefaultLang
 		'um_notification_on' => "aktiviert",	// needs to be the same like in default_inc!!
 		'um_notification_off' => "deaktiviert",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Konnte Benachrichtigung nicht als gelesen markieren",
+		'start_timer' => "Arbeit starten",
+		'log_time' => "Zeit erfassen",
+		'progress' => "Fortschritt",
+		'in_progress' => "In Arbeit",
 	);
 
 	var $inc = array
@@ -100,7 +104,6 @@ class Lang extends DefaultLang
 		'action_delete' => "Löschen",
 		'action_priority' => "Priorität",
 		'action_move' => "Verschieben nach",
-		'action_work' => "Arbeit starten",
 		'timer_stop' => "Timer stoppen",
 		'timer_pause' => "Timer unterbrechen",
 		'timer_continue' => "Timer fortsetzen",
