@@ -708,8 +708,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	
 	pageBack: function()
 	{
-		console.log(this.pages.current.page, this.pages.prev);
-        if(this.pages.current.page == 'tasks') return false;
+		if(this.pages.current.page == 'tasks') return false;
 		var prev = this.pages.current;
 		this.pages.current = this.pages.prev.pop();
         if(this.pages.current.pageClass == 'settings') {
