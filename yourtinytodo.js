@@ -561,11 +561,13 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
             continueTimer();
         });
         $('#ytt-timer-stop').live('click', function() {
-            stopTimer();
+            stopTimer(false);
+        });
+        $('#ytt-timer-finish').live('click', function() {
+            stopTimer(true);
         });
         $('.startWork').live('click', function() {
             var taskId = $(this).attr('rel');
-            $(this).parent().find('.inprogress').toggle();
             startWorkTimer(taskId)
         });
 
@@ -931,6 +933,7 @@ function prepareTaskStr(item, noteExp)
 		    '           <div class="task-through">'+
                             preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
 		                    (curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
+                            prepareProgressMini(item)+
 		                    prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span>' +
             '           </div>'+
 		    '           <div class="task-note-block">'+
@@ -991,30 +994,52 @@ function prepareTagsClass(ids)
 function prepareDuedate(item)
 {
 	if(!item.duedate) return '';
-	return '<span class="duedate" title="'+item.dueTitle+'"><span class="duedate-arrow">→</span> '+item.dueStr+'</span>';
+	return '<span class="duedate" title="'+item.dueTitle+'">'+item.dueStr+'<span class="duedate-edge">&nbsp;</span></span>';
 };
 
 function prepareProgress(item)
 {
-    if(!item.progress) return '';
-    if(item.progress > 100) {
-        var css_class = 'ytt-progress-over';
+    if(!item.duration) return '';
+    if(item.progress >= 100) {
+        var bar_color = '#ff3333';
     } else if(item.progress >= 80) {
-        var css_class = 'ytt-progress-near';
+        var bar_color = '#ffcd20';
     } else {
-        var css_class = 'ytt-progress-started';
+        var bar_color = '#99d25c';
     }
 
     return  '<div class="task-progress-block">' +
-            '   <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span class="'+css_class+'">'+item.progress+'%</span></span>' +
-            '   <span class="ytt-progress-bar">' +
-            '       <span class="ytt-progress-percentbar" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;'+((item.progress > 100)?'background-color:#FF0000':'')+'"></span>' +
-            '   </span>' +
             '   <ul class="timercontrols">' +
-            '       <li><span class="inprogress">'+_ytt.lang.get('in_progress')+'</span><a class="startWork" rel="'+item.id+'">'+_ytt.lang.get('start_timer')+'</a></li>' +
+            '       <li><a class="startWork" rel="'+item.id+'">'+_ytt.lang.get('start_timer')+'</a></li>' +
             '       <li><a class="logTime" rel="'+item.id+'">'+_ytt.lang.get('log_time')+'</a></li>' +
             '   </ul>' +
+            '   <div class="inprogress">' +
+            '       <span>'+_ytt.lang.get('in_progress')+'</span><br/>' +
+            '       <span class="minitimer"></span>'+
+            '   </div>'+
+            '   <div class="progressbar">' +
+            '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+bar_color+'">'+item.progress+'%</span></span>' +
+            '       <span class="ytt-progress-bar">' +
+            '           <span class="ytt-progress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;background-color:'+bar_color+'"></span>' +
+            '       </span>' +
+            '   </div>' +
             '</div>';
+};
+
+function prepareProgressMini(item)
+{
+    if(!item.progress) return '';
+    if(item.progress >= 100) {
+        var bar_color = '#ff3333';
+    } else if(item.progress >= 80) {
+        var bar_color = '#ffcd20';
+    } else {
+        var bar_color = '#99d25c';
+    }
+
+    return  '   <span class="ytt-miniprogress-bar">' +
+            '       <span class="ytt-miniprogress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?50:(item.progress/2))+'px;'+'background-color:'+bar_color+'"></span>' +
+            '   </span>';
 };
 
 function submitNewTask(form)
@@ -1141,7 +1166,7 @@ function prioPopup(act, el, id)
 		clearTimeout(objPrio.timer);
 		return;
 	}
-	var offset = $(el).offset();
+	var offset = $(el).position();
 	var prio=taskList[id].prio;
 	prio=parseInt(prio)+1;
 	priopopup.css({ position: 'absolute', top: offset.top-6, left: offset.left - 5 - (prio*20) });
@@ -2579,13 +2604,17 @@ function refreshNotificationCounter() {
 }
 
 function startWorkTimer(taskId) {
-    $('.startWork').hide();
-    $('#ytt-work-timer').show();
-
     worktimer.startTime = new Date();
     worktimer.timerActive = true;
     worktimer.timerTotal = 0;
     worktimer.taskId = taskId;
+
+    $('#main').toggleClass('hastimer');
+    $('.timercontrols').hide();
+    $('.inprogress').hide();
+    $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress').show();
+
+
     saveTimerInCookie();
 
     setTimeout(function() {
@@ -2593,7 +2622,7 @@ function startWorkTimer(taskId) {
     }, 1000);
 }
 
-function stopTimer() {
+function stopTimer(finished) {
     var dDeltaTime = new Date();
     dDeltaTime.setTime( new Date() - worktimer.startTime );
     var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
@@ -2605,13 +2634,22 @@ function stopTimer() {
     var total_minutes = Math.ceil(worktimer.timerTotal / 60);
 
     _ytt.db.request('trackWorkTime', { task_id:worktimer.taskId, time:total_minutes }, function(json){
-        $('#ytt-work-timer').hide();
-        worktimer.startTime = null;
-        worktimer.taskId = null;
+        $('#main').toggleClass('hastimer');
+
         $('#ytt-time').html('00:00:00');
-        $('.startWork').show();
         $('.inprogress').hide();
+        $('.timercontrols').show();
         $.cookie('worktimer_start', null);
+        if(finished) {
+            $('#taskrow_'+worktimer.taskId).find('input[type=checkbox]').attr('checked', true);
+            $('#taskrow_'+worktimer.taskId).find('input[type=checkbox]').click();
+            worktimer.startTime = null;
+            worktimer.taskId = null;
+        } else {
+            worktimer.startTime = null;
+            worktimer.taskId = null;
+            loadTasks();
+        }
     });
 }
 
@@ -2627,6 +2665,7 @@ function pauseTimer() {
     $('#ytt-timer-pause').toggle();
     $('#ytt-timer-stop').toggle();
     $('#ytt-timer-continue').toggle();
+    $('#ytt-timer-finish').toggle();
 
     worktimer.timerActive = false;
 
@@ -2643,12 +2682,12 @@ function continueTimer() {
         $('#ytt-timer-pause').toggle();
         $('#ytt-timer-stop').toggle();
         $('#ytt-timer-continue').toggle();
+        $('#ytt-timer-finish').toggle();
     } else { // it might come out of the cookie
-        console.log(worktimer.taskId);
-        console.log($('.startWork[rel='+worktimer.taskId+']'));
-        $('.startWork[rel='+worktimer.taskId+']').parent().find('.inprogress').show();
-        $('.startWork').hide();
-        $('#ytt-work-timer').show();
+        $('.inprogress').hide();
+        $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress').show();
+        $('.timercontrols').hide();
+        $('#main').toggleClass('hastimer');
     }
 
     worktimer.timerActive = true;
@@ -2675,6 +2714,7 @@ function showTime() {
     sSec = ( sSec < 10 ) ? "0" + sSec : sSec;
 
     $('#ytt-time').html(sHours + ":" + sMin + ":" + sSec);
+    $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.minitimer').html(sHours + ":" + sMin + ":" + sSec);
 
     setTimeout(function() {
         showTime();

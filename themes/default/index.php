@@ -110,16 +110,15 @@ header("Content-type: text/html; charset=utf-8");
 	</div>
 </div>
 
-<div class="ytt-clear" id="subbar">
-	<span id="ytt-work-timer">
-		Timer: <span id="ytt-time">00:00:00</span>
-		<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"><img src="<?php yttinfo('template_url'); ?>images/control_pause.png" alt="<?=_e('timer_pause')?>" /></a>
-		<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"><img src="<?php yttinfo('template_url'); ?>images/control_stop.png" alt="<?=_e('timer_stop')?>" /></a>
-		<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"><img src="<?php yttinfo('template_url'); ?>images/control_play.png" alt="<?=_e('timer_continue')?>" /></a>
-	</span>
-</div>
-
 <div id="main">
+
+<div id="ytt-work-timer">
+	<span id="ytt-time">00:00:00</span>
+	<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"></a>
+	<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"></a>
+	<a href="#" id="ytt-timer-finish" title="<?=_e('timer_finish')?>"></a>
+	<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"></a>
+</div>
 
 <div id="page_tasks" style="display:none">
 
