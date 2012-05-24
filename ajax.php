@@ -745,11 +745,34 @@ elseif(isset($_GET['trackWorkTime']))
 	stop_gpc($_POST);
 	$taskid = (int)_post('ytt_taskId');
 	$time = (int)_post('ytt_time');
-	TimeTracker::trackTime($taskid, $time);
+	$date = _post('ytt_date');
+	TimeTracker::trackTime($taskid, $time, $date);
 	jsonExit(array('done' => 1));
+}
+elseif(isset($_GET['addComment']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$taskid = (int)_post('ytt_taskId');
+	$comment = _post('ytt_comment');
+	$current_user_id = (int)$_SESSION['userid'];
+
+	$db->dq("INSERT INTO {$db->prefix}comments (task_id,user_id,text) VALUES(?,?,?)",
+		array($taskid, $current_user_id, $comment) );
+
+	jsonExit(array('done' => 1, 'user' => getUserName($current_user_id), 'date' => date(Config::get('dateformat'))));
 }
 
 ###################################################################################################
+
+function getUserName($userid) {
+	$db = DBConnection::instance();
+	$username = '';
+	if($userid > 0) {
+		$username = $db->sq("SELECT username FROM {$db->prefix}users WHERE id=$userid");
+	}
+	return $username;
+}
 
 function prepareTaskRow($r)
 {
@@ -798,7 +821,23 @@ function prepareTaskRow($r)
 		'dueTitle' => htmlarray(sprintf($lang->get('taskdate_inline_duedate'), $dueA['formatted'])),
 		'duration' => (empty($r['duration']))?'':$r['duration'],
 		'progress' => $progress,
+		'comments' => getTaskComments($r['id'])
 	);
+}
+
+function getTaskComments($task_id) {
+	$db = DBConnection::instance();
+	$q = $db->dq("SELECT * FROM {$db->prefix}comments WHERE task_id = $task_id");
+
+	$result = array();
+	while($r = $q->fetch_assoc()) {
+		$new_item = array();
+		$new_item['user'] = getUserName($r['user_id']);
+		$new_item['date'] = date(Config::get('dateformat'), strtotime($r['created']));
+		$new_item['text'] = $r['text'];
+		$result[] = $new_item;
+	}
+	return $result;
 }
 
 function check_read_access($listId = null)

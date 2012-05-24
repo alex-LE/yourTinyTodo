@@ -61,6 +61,9 @@ class Notification {
 	}
 
 	public static function getUnreadCount() {
+		if(!isset($_SESSION['userid'])) {
+			return 0;
+		}
 		$current_user_id = (int)$_SESSION['userid'];
 		$db = DBConnection::instance();
 		return $db->sq("SELECT COUNT(*) FROM {$db->prefix}notifications WHERE shown = 0 AND user_id = ".$current_user_id);
