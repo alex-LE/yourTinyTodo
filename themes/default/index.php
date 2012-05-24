@@ -34,6 +34,7 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.cookie.js?v=<?=YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autosize.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
@@ -68,11 +69,14 @@ header("Content-type: text/html; charset=utf-8");
 			showdate: <?php echo (Config::get('showdate') && !isset($_GET['pda'])) ? "true" : "false"; ?>,
 			singletab: <?php echo (isset($_GET['singletab']) || isset($_GET['pda'])) ? "true" : "false"; ?>,
 			duedatepickerformat: "<?php echo htmlspecialchars(Config::get('dateformat2')); ?>",
+			dateformatshort: "<?php echo htmlspecialchars(Config::get('dateformatshort')); ?>",
 			firstdayofweek: <?php echo (int) Config::get('firstdayofweek'); ?>,
 			autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>
 		<?php if(isset($_GET['list'])) echo ",openList: ". (int)$_GET['list']; ?>
 		<?php if(isset($_GET['pda'])) echo ", touchDevice: true"; ?>
 		}).loadLists(1);
+
+		$('.testarea').autosize();
 	});
 </script>
 
@@ -93,7 +97,12 @@ header("Content-type: text/html; charset=utf-8");
 		<div class="bar-menu">
 			<? if(false !== $notifications_count) {?>
 			<span class="menu-owner menuitem" style="display:none;position: relative;">
-				<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter" class="<?=($notifications_count > 0)?'hasone':'nothing'?>">(<?=$notifications_count?>)</span></a>
+				<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter" class="<?=($notifications_count > 0)?'hasone':'nothing'?>">
+						<span class="notification_counter-left"></span>
+						<?=$notifications_count?>
+						<span class="notification_counter-right"></span>
+					</span>
+				</a>
 			</span>
 			<?}?>
 			<span class="bar-delim" style="display:none"></span>
@@ -112,12 +121,14 @@ header("Content-type: text/html; charset=utf-8");
 
 <div id="main">
 
-<div id="ytt-work-timer">
-	<span id="ytt-time">00:00:00</span>
-	<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"></a>
-	<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"></a>
-	<a href="#" id="ytt-timer-finish" title="<?=_e('timer_finish')?>"></a>
-	<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"></a>
+<div id="header">
+	<div id="ytt-work-timer">
+		<span id="ytt-time">00:00:00</span>
+		<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"></a>
+		<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"></a>
+		<a href="#" id="ytt-timer-finish" title="<?=_e('timer_finish')?>"></a>
+		<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"></a>
+	</div>
 </div>
 
 <div id="page_tasks" style="display:none">

@@ -43,7 +43,7 @@ class Lang extends DefaultLang
 		'um_notification_on' => "aktiviert",	// needs to be the same like in default_inc!!
 		'um_notification_off' => "deaktiviert",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Konnte Benachrichtigung nicht als gelesen markieren",
-		'start_timer' => "Arbeit starten",
+		'start_timer' => "Timer starten",
 		'log_time' => "Zeit erfassen",
 		'progress' => "Fortschritt",
 		'in_progress' => "In Arbeit",

@@ -414,7 +414,27 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			return false;
 		});
 
-		if(this.options.tagPreview) {
+        $('#tasklist .ytt-action-logtime-cancel').live('click', function(){
+            //var id = parseInt(getLiTaskId(this));
+            $('.logtimePanel').hide();
+            return false;
+        });
+
+        $('#tasklist .ytt-action-logtime-save').live('click', function(){
+            var id = parseInt(getLiTaskId(this));
+            var total_minutes = parseFloat($(this).parent().find("input[name='hours']").val());
+            var target_date = $(this).parent().find('.ytt-action-logtime-date').html();
+
+            if(id && total_minutes > 0) {
+                _ytt.db.request('trackWorkTime', { task_id:id, time:total_minutes, date:target_date }, function(json){
+                    loadTasks();
+                    $('.logtimePanel').hide();
+                });
+            }
+            return false;
+        });
+
+        if(this.options.tagPreview) {
 			$('#tasklist .tag').live('mouseover mouseout', function(event){
 				var cl = 'tag-id-' + $(this).attr('tagid');
 				var sel = (event.metaKey || event.ctrlKey) ? 'li.'+cl : 'li:not(.'+cl+')';
@@ -553,7 +573,30 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		this.addAction('listSelected', slmenuOnListSelected);
 		this.addAction('listHidden', slmenuOnListHidden);
 
-        // work timer
+        $('.task-note-block .icon').live('click', function() {
+            toggleTaskNote(getLiTaskId(this));
+        });
+
+        $('.task-comment-block .ytt-newcomment').live('keydown', function(event) {
+            if (event.which == 13) {
+                var parent_ul = $(this).parent().parent();
+                var comment = $(this).val();
+                $(this).val('');
+                _ytt.db.request('addComment', { task_id:getLiTaskId(parent_ul.get(0)), comment:$(this).val() }, function(json) {
+                    if(json.done == 1) {
+                        var new_item =  '    <li class="existingcomment">' +
+                                        '       <span class="subicon"></span>' +
+                                        '       <span class="author">'+json.user+'</span>'+
+                                        '       <span class="created">'+json.date+'</span>'+
+                                        '       ' + comment +
+                                        '   </li>';
+                        parent_ul.find('.ytt-newcomment').parent().before(new_item);
+                    }
+                });
+            }
+        });
+
+                // work timer
         $('#ytt-timer-pause').live('click', function() {
            pauseTimer();
         });
@@ -568,7 +611,10 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
         });
         $('.startWork').live('click', function() {
             var taskId = $(this).attr('rel');
-            startWorkTimer(taskId)
+            startWorkTimer(taskId);
+        });
+        $('.logTime').live('click', function() {
+            $(this).parent().parent().parent().find('.logtimePanel').show();
         });
 
 		return this;
@@ -908,6 +954,19 @@ function tasksLoaded() {
         worktimer.taskId = $.cookie('worktimer_task');
         continueTimer();
     }
+
+    $(".ytt-action-logtime-dateselect").datepicker({
+        onSelect: function(dateText, inst) {
+            $(this).parent().find('.ytt-action-logtime-date').html(dateText);
+        },
+        dateFormat: _ytt.duedatepickerformat(),
+        firstDay: _ytt.options.firstdayofweek,
+        duration:'',
+        dayNamesMin:_ytt.lang.daysMin, dayNames:_ytt.lang.daysLong, monthNamesShort:_ytt.lang.monthsLong
+    });
+    $(".ytt-action-logtime-date").click(function(){
+        $(this).parent().find('.ytt-action-logtime-dateselect').datepicker("show");
+    });
 }
 
 function prepareTaskStr(item, noteExp)
@@ -936,6 +995,7 @@ function prepareTaskStr(item, noteExp)
 		                    prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span>' +
             '           </div>'+
 		    '           <div class="task-note-block">'+
+			'				<span class="icon"></span>'+
 			'               <div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
 			'               <div id="tasknotearea'+id+'" class="task-note-area">' +
             '                   <textarea id="notetext'+id+'"></textarea>'+
@@ -946,6 +1006,7 @@ function prepareTaskStr(item, noteExp)
             '               </div>'+
 		    '           </div>'+
                         prepareProgress(item)+
+                        prepareComments(item)+
 		    "       </div>" +
             "</li>\n";
 };
@@ -996,18 +1057,45 @@ function prepareDuedate(item)
 	return '<span class="duedate" title="'+item.dueTitle+'">'+item.dueStr+'<span class="duedate-edge">&nbsp;</span></span>';
 };
 
+function prepareComments(item) {
+    var result =    '<div class="task-comment-block">' +
+                    '	<span class="icon"></span>' +
+                    '   <ul>';
+
+    for(var i = 0; i < item.comments.length; i++) {
+        result +=   '       <li class="existingcomment">' +
+                    '           <span class="subicon"></span>' +
+                    '           <span class="author">'+item.comments[i].user+'</span>'+
+                    '           <span class="created">'+item.comments[i].date+'</span>'+
+                    '           <span class="comment">'+item.comments[i].text+'</span>' +
+                    '       </li>';
+    }
+
+    result +=       '       <li class="newcomment">' +
+                    '           <span class="subicon"></span>' +
+                    '           <input type="text" class="ytt-newcomment" maxlength="255" />'+
+                    '       </li>' +
+                    '   </ul>' +
+                    '</div>';
+    return result;
+}
+
 function prepareProgress(item)
 {
     if(!item.duration) return '';
     if(item.progress >= 100) {
         var bar_color = '#ff3333';
+        var text_color = '#ff3333';
     } else if(item.progress >= 80) {
         var bar_color = '#ffcd20';
+        var text_color = '#edb801';
     } else {
         var bar_color = '#99d25c';
+        var text_color = '#59a901';
     }
 
     return  '<div class="task-progress-block">' +
+    		'	<span class="icon"></span>' +
             '   <ul class="timercontrols">' +
             '       <li><a class="startWork" rel="'+item.id+'">'+_ytt.lang.get('start_timer')+'</a></li>' +
             '       <li><a class="logTime" rel="'+item.id+'">'+_ytt.lang.get('log_time')+'</a></li>' +
@@ -1017,11 +1105,14 @@ function prepareProgress(item)
             '       <span class="minitimer"></span>'+
             '   </div>'+
             '   <div class="progressbar">' +
-            '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+bar_color+'">'+item.progress+'%</span></span>' +
+            '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+text_color+'">'+item.progress+'%</span></span>' +
             '       <span class="ytt-progress-bar">' +
             '           <span class="ytt-progress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;background-color:'+bar_color+'"></span>' +
             '       </span>' +
             '   </div>' +
+            '   <div class="logtimePanel">'+
+            '       Time spent <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">today</span>:&nbsp;<input type="text" name="hours" class="in35"><a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('actionNoteSave')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('actionNoteCancel')+'</a> '+
+            '   </div>'+
             '</div>';
 };
 
@@ -1036,9 +1127,12 @@ function prepareProgressMini(item)
         var bar_color = '#99d25c';
     }
 
-    return  '   <span class="ytt-miniprogress-bar">' +
-            '       <span class="ytt-miniprogress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?50:(item.progress/2))+'px;'+'background-color:'+bar_color+'"></span>' +
-            '   </span>';
+    return  '   <span class="ytt-miniprogress">' +
+    		'		<span class="ytt-miniprogress-bar">' +
+            '       	<span class="ytt-miniprogress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?50:(item.progress/2))+'px;'+'background-color:'+bar_color+'"></span>' +
+            '   	</span>'+
+            '		<img class="inprogress_icon" />'+
+             ' 	</span>';
 };
 
 function submitNewTask(form)
@@ -1421,7 +1515,7 @@ function toggleTaskNote(id)
 
 function cancelTaskNote(id)
 {
-	if(taskList[id].note == '') $('#taskrow_'+id).removeClass('task-expanded');
+	//if(taskList[id].note == '') $('#taskrow_'+id).removeClass('task-expanded');
 	$('#tasknotearea'+id).hide();
 	$('#tasknote'+id).show();
 	return false;
@@ -2612,6 +2706,7 @@ function startWorkTimer(taskId) {
     $('.timercontrols').hide();
     $('.inprogress').hide();
     $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress').show();
+    $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress_icon').css('display', 'inline-block');
 
 
     saveTimerInCookie();
@@ -2685,6 +2780,7 @@ function continueTimer() {
     } else { // it might come out of the cookie
         $('.inprogress').hide();
         $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress').show();
+        $('#taskrow_'+worktimer.taskId).find('.inprogress_icon').css('display', 'inline-block');
         $('.timercontrols').hide();
         $('#main').toggleClass('hastimer');
     }
