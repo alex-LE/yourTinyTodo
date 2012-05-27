@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false, debugmode:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -37,6 +37,8 @@ var tabLists = {
 };
 var curList = 0;
 var tagsList = [];
+
+var worktimer = {};
 
 var yourtinytodo = window.yourtinytodo = _ytt = {
 
@@ -104,8 +106,10 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.globalNotifications = options.globalNotifications ? true : false;
 		flag.readOnly = options.readOnly ? true : false;
 		flag.admin = options.admin ? true : false;
+		flag.authbypass = options.authbypass ? true : false;
 		flag.userId = options.userId;
 		flag.userRole = options.userRole;
+		flag.debugmode = options.debugmode;
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
@@ -377,6 +381,12 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			return false;
 		});
 
+        $('#tasklist .task-through').live('click', function(){
+            var id = getLiTaskId(this);
+            if(id) $('#taskrow_'+id).toggleClass('task-expanded');
+            return false;
+        });
+
 		$('#tasklist .tag').live('click', function(event){
 			clearTimeout(_ytt.timers.previewtag);
 			$('#tasklist li').removeClass('not-in-tagpreview');
@@ -406,7 +416,27 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			return false;
 		});
 
-		if(this.options.tagPreview) {
+        $('#tasklist .ytt-action-logtime-cancel').live('click', function(){
+            //var id = parseInt(getLiTaskId(this));
+            $('.logtimePanel').hide();
+            return false;
+        });
+
+        $('#tasklist .ytt-action-logtime-save').live('click', function(){
+            var id = parseInt(getLiTaskId(this));
+            var total_minutes = parseFloat($(this).parent().find("input[name='hours']").val());
+            var target_date = $(this).parent().find('.ytt-action-logtime-date').html();
+
+            if(id && total_minutes > 0) {
+                _ytt.db.request('trackWorkTime', { task_id:id, time:total_minutes, date:target_date }, function(json){
+                    loadTasks();
+                    $('.logtimePanel').hide();
+                });
+            }
+            return false;
+        });
+
+        if(this.options.tagPreview) {
 			$('#tasklist .tag').live('mouseover mouseout', function(event){
 				var cl = 'tag-id-' + $(this).attr('tagid');
 				var sel = (event.metaKey || event.ctrlKey) ? 'li.'+cl : 'li:not(.'+cl+')';
@@ -445,14 +475,21 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			if(request.status == 0) errtxt = 'Bad connection';
 			else if(request.status != 200) errtxt = 'HTTP: '+request.status+'/'+request.statusText;
 			else errtxt = request.responseText;
-			flashError(_ytt.lang.get('error'), errtxt); 
-		}); 
+            if(flag.debugmode) {
+			    flashError(_ytt.lang.get('error'), errtxt);
+            } else {
+			    flashError(_ytt.lang.get('error_silent'), errtxt);
+            }
+		});
 
 
 		// Error Message details
-		$("#msg>.msg-text").click(function(){
-			$("#msg>.msg-details").toggle();
-		});
+        $("#msg>.msg-text").click(function(){
+            if(flag.debugmode) {
+                $("#msg>.msg-details").toggle();
+            }
+        });
+
 
 
 		// Authorization
@@ -500,7 +537,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
         // User management
         $("#manageusers").live('click', showUserManagement);
         $('#createuserBtn').live('click', function(){
-            if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('createuser', {adjustWidth:true, modal:true});
+            if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('ytt-createuser', {adjustWidth:true, modal:true});
             _ytt.menus.createuser.show(this);
             $("#um_role").removeAttr("disabled");
             $('#um_userid').val('');
@@ -544,6 +581,50 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		this.addAction('listAdded', slmenuOnListAdded);
 		this.addAction('listSelected', slmenuOnListSelected);
 		this.addAction('listHidden', slmenuOnListHidden);
+
+        $('.task-note-block .icon').live('click', function() {
+            toggleTaskNote(getLiTaskId(this));
+        });
+
+        $('.task-comment-block .ytt-newcomment').live('keydown', function(event) {
+            if (event.which == 13) {
+                var parent_ul = $(this).parent().parent();
+                var comment = $(this).val();
+                $(this).val('');
+                _ytt.db.request('addComment', { task_id:getLiTaskId(parent_ul.get(0)), comment:comment }, function(json) {
+                    if(json.done == 1) {
+                        var new_item =  '    <li class="existingcomment">' +
+                                        '       <span class="subicon"></span>' +
+                                        '       <span class="author">'+json.user+'</span>'+
+                                        '       <span class="created">'+json.date+'</span>'+
+                                        '       ' + comment +
+                                        '   </li>';
+                        parent_ul.find('.ytt-newcomment').parent().before(new_item);
+                    }
+                });
+            }
+        });
+
+                // work timer
+        $('#ytt-timer-pause').live('click', function() {
+           pauseTimer();
+        });
+        $('#ytt-timer-continue').live('click', function() {
+            continueTimer();
+        });
+        $('#ytt-timer-stop').live('click', function() {
+            stopTimer(false);
+        });
+        $('#ytt-timer-finish').live('click', function() {
+            stopTimer(true);
+        });
+        $('.startWork').live('click', function() {
+            var taskId = $(this).attr('rel');
+            startWorkTimer(taskId);
+        });
+        $('.logTime').live('click', function() {
+            $(this).parent().parent().parent().find('.logtimePanel').show();
+        });
 
 		return this;
 	},
@@ -682,8 +763,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	
 	pageBack: function()
 	{
-		console.log(this.pages.current.page, this.pages.prev);
-        if(this.pages.current.page == 'tasks') return false;
+		if(this.pages.current.page == 'tasks') return false;
 		var prev = this.pages.current;
 		this.pages.current = this.pages.prev.pop();
         if(this.pages.current.pageClass == 'settings') {
@@ -873,33 +953,71 @@ function loadTasks(opts)
 		}
 		refreshTaskCnt();
 		$('#tasklist').html(tasks);
+        tasksLoaded();
 	});
 };
 
+function tasksLoaded() {
+    if($.cookie('worktimer_start') != null) {
+        worktimer.startTime = Date.parse($.cookie('worktimer_start'));
+        worktimer.taskId = $.cookie('worktimer_task');
+        continueTimer();
+    }
+
+    $(".ytt-action-logtime-dateselect").datepicker({
+        onSelect: function(dateText, inst) {
+            $(this).parent().find('.ytt-action-logtime-date').html(dateText);
+        },
+        dateFormat: _ytt.duedatepickerformat(),
+        firstDay: _ytt.options.firstdayofweek,
+        duration:'',
+        dayNamesMin:_ytt.lang.daysMin, dayNames:_ytt.lang.daysLong, monthNamesShort:_ytt.lang.monthsLong
+    });
+    $(".ytt-action-logtime-date").click(function(){
+        $(this).parent().find('.ytt-action-logtime-dateselect').datepicker("show");
+    });
+}
 
 function prepareTaskStr(item, noteExp)
 {
 	// &mdash; = &#8212; = —
 	var id = item.id;
 	var prio = item.prio;
-	return '<li id="taskrow_'+id+'" class="' + (item.compl?'task-completed ':'') + item.dueClass + (item.note!=''?' task-has-note':'') +
-				((curList.showNotes && item.note != '') || noteExp ? ' task-expanded' : '') + prepareTagsClass(item.tags_ids) + '">' +
-		'<div class="task-actions"><a href="#" class="taskactionbtn"></a></div>'+"\n"+
-		'<div class="task-left"><div class="task-toggle"></div>'+
-		'<input type="checkbox" '+(flag.readOnly?'disabled="disabled"':'')+(item.compl?'checked="checked"':'')+'/></div>'+"\n"+
-		'<div class="task-middle"><div class="task-through-right">'+prepareDuedate(item)+
-		'<span class="task-date-completed"><span title="'+item.dateInlineTitle+'">'+item.dateInline+'</span>&#8212;'+
-		'<span title="'+item.dateCompletedInlineTitle+'">'+item.dateCompletedInline+'</span></span></div>'+"\n"+
-		'<div class="task-through">'+preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
-		(curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
-		prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span></div>'+
-		'<div class="task-note-block">'+
-			'<div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
-			'<div id="tasknotearea'+id+'" class="task-note-area"><textarea id="notetext'+id+'"></textarea>'+
-				'<span class="task-note-actions"><a href="#" class="ytt-action-note-save">'+_ytt.lang.get('actionNoteSave')+
-				'</a> | <a href="#" class="ytt-action-note-cancel">'+_ytt.lang.get('actionNoteCancel')+'</a></span></div>'+
-		'</div>'+
-		"</div></li>\n";
+	return  '    <li id="taskrow_'+id+'" class="' + (item.compl?'task-completed ':'') + item.dueClass + (item.note!=''?' task-has-note':'') +
+				        ((curList.showNotes && item.note != '') || noteExp ? ' task-expanded' : '') + prepareTagsClass(item.tags_ids) + '">' +
+		    '       <div class="task-actions"><a href="#" class="taskactionbtn"></a></div>'+"\n"+
+		    '       <div class="task-left">' +
+            '           <div class="task-toggle"></div>'+
+		    '           <input type="checkbox" '+(flag.readOnly?'disabled="disabled"':'')+(item.compl?'checked="checked"':'')+'/>' +
+            '       </div>'+"\n"+
+		    '       <div class="task-middle">' +
+            '           <div class="task-through-right">'+prepareDuedate(item)+
+		    '               <span class="task-date-completed">' +
+            '                   <span title="'+item.dateInlineTitle+'">'+item.dateInline+'</span>&#8212;'+
+		    '                   <span title="'+item.dateCompletedInlineTitle+'">'+item.dateCompletedInline+'</span>' +
+            '               </span>' +
+            '           </div>'+"\n"+
+		    '           <div class="task-through">'+
+                            preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
+		                    (curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
+                            prepareProgressMini(item)+
+		                    prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span>' +
+            '           </div>'+
+		    '           <div class="task-note-block">'+
+			'				<span class="icon"></span>'+
+			'               <div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
+			'               <div id="tasknotearea'+id+'" class="task-note-area">' +
+            '                   <textarea id="notetext'+id+'"></textarea>'+
+			'                   <span class="task-note-actions">' +
+            '                       <a href="#" class="ytt-action-note-save">'+_ytt.lang.get('actionNoteSave')+
+		    '                       </a> | <a href="#" class="ytt-action-note-cancel">'+_ytt.lang.get('actionNoteCancel')+'</a>' +
+            '                   </span>' +
+            '               </div>'+
+		    '           </div>'+
+                        prepareProgress(item)+
+                        prepareComments(item)+
+		    "       </div>" +
+            "</li>\n";
 };
 
 
@@ -945,9 +1063,86 @@ function prepareTagsClass(ids)
 function prepareDuedate(item)
 {
 	if(!item.duedate) return '';
-	return '<span class="duedate" title="'+item.dueTitle+'"><span class="duedate-arrow">→</span> '+item.dueStr+'</span>';
+	return '<span class="duedate" title="'+item.dueTitle+'">'+item.dueStr+'<span class="duedate-edge">&nbsp;</span></span>';
 };
 
+function prepareComments(item) {
+    var result =    '<div class="task-comment-block">' +
+                    '	<span class="icon"></span>' +
+                    '   <ul>';
+
+    for(var i = 0; i < item.comments.length; i++) {
+        result +=   '       <li class="existingcomment">' +
+                    '           <span class="subicon"></span>' +
+                    '           <span class="author">'+item.comments[i].user+'</span>'+
+                    '           <span class="created">'+item.comments[i].date+'</span>'+
+                    '           <span class="comment">'+item.comments[i].comment+'</span>' +
+                    '       </li>';
+    }
+
+    result +=       '       <li class="newcomment">' +
+                    '           <span class="subicon"></span>' +
+                    '           <input type="text" class="ytt-newcomment" maxlength="255" />'+
+                    '       </li>' +
+                    '   </ul>' +
+                    '</div>';
+    return result;
+}
+
+function prepareProgress(item)
+{
+    if(!item.duration) return '';
+    if(item.progress >= 100) {
+        var bar_color = '#ff3333';
+        var text_color = '#ff3333';
+    } else if(item.progress >= 80) {
+        var bar_color = '#ffcd20';
+        var text_color = '#edb801';
+    } else {
+        var bar_color = '#99d25c';
+        var text_color = '#59a901';
+    }
+
+    return  '<div class="task-progress-block">' +
+    		'	<span class="icon"></span>' +
+            '   <ul class="timercontrols">' +
+            '       <li><a class="startWork" rel="'+item.id+'">'+_ytt.lang.get('start_timer')+'</a></li>' +
+            '       <li><a class="logTime" rel="'+item.id+'">'+_ytt.lang.get('log_time')+'</a></li>' +
+            '   </ul>' +
+            '   <div class="inprogress">' +
+            '       <span>'+_ytt.lang.get('in_progress')+'</span><br/>' +
+            '       <span class="minitimer"></span>'+
+            '   </div>'+
+            '   <div class="progressbar">' +
+            '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+text_color+'">'+item.progress+'%</span></span>' +
+            '       <span class="ytt-progress-bar">' +
+            '           <span class="ytt-progress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;background-color:'+bar_color+'"></span>' +
+            '       </span>' +
+            '   </div>' +
+            '   <div class="logtimePanel">'+
+            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35"><a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
+            '   </div>'+
+            '</div>';
+};
+
+function prepareProgressMini(item)
+{
+    if(!item.progress) return '';
+    if(item.progress >= 100) {
+        var bar_color = '#ff3333';
+    } else if(item.progress >= 80) {
+        var bar_color = '#ffcd20';
+    } else {
+        var bar_color = '#99d25c';
+    }
+
+    return  '   <span class="ytt-miniprogress">' +
+    		'		<span class="ytt-miniprogress-bar">' +
+            '       	<span class="ytt-miniprogress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?50:(item.progress/2))+'px;'+'background-color:'+bar_color+'"></span>' +
+            '   	</span>'+
+            '		<img class="inprogress_icon" />'+
+             ' 	</span>';
+};
 
 function submitNewTask(form)
 {
@@ -1073,7 +1268,7 @@ function prioPopup(act, el, id)
 		clearTimeout(objPrio.timer);
 		return;
 	}
-	var offset = $(el).offset();
+	var offset = $(el).position();
 	var prio=taskList[id].prio;
 	prio=parseInt(prio)+1;
 	priopopup.css({ position: 'absolute', top: offset.top-6, left: offset.left - 5 - (prio*20) });
@@ -1329,7 +1524,7 @@ function toggleTaskNote(id)
 
 function cancelTaskNote(id)
 {
-	if(taskList[id].note == '') $('#taskrow_'+id).removeClass('task-expanded');
+	//if(taskList[id].note == '') $('#taskrow_'+id).removeClass('task-expanded');
 	$('#tasknotearea'+id).hide();
 	$('#tasknote'+id).show();
 	return false;
@@ -1362,6 +1557,7 @@ function editTask(id)
 	form.tags.value = item.tags.split(',').join(', ');
 	form.duedate.value = item.duedate;
 	form.prio.value = item.prio;
+	form.duration.value = item.duration;
 	$('#taskedit-date .date-created>span').text(item.date);
 	if(item.compl) $('#taskedit-date .date-completed').show().find('span').text(item.dateCompleted);
 	else $('#taskedit-date .date-completed').hide();
@@ -1419,7 +1615,7 @@ function saveTask(form)
 		return submitFullTask(form);
 
 	_ytt.db.request('editTask', {id:form.id.value, title: form.task.value, note:form.note.value,
-		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value},
+		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duration:form.duration.value},
 		function(json){
 			if(!parseInt(json.total)) return;
 			var item = json.list[0];
@@ -1615,7 +1811,7 @@ function yttMenu(container, options)
 {
 	var menu = this;
 	this.container = document.getElementById(container);
-	this.$container = $(this.container);
+    this.$container = $(this.container);
 	this.menuOpen = false;
 	this.options = options || {};
 	this.submenu = [];
@@ -2150,7 +2346,9 @@ function hideTab(listId)
 function flashError(str, details)
 {
 	$("#msg>.msg-text").text(str)
-	$("#msg>.msg-details").text(details);
+	if(flag.debugmode) {
+        $("#msg>.msg-details").text(details);
+    }
 	$("#loading").hide();
 	$("#msg").addClass('ytt-error').effect("highlight", {color:_ytt.theme.msgFlashColor}, 700);
 }
@@ -2180,7 +2378,9 @@ function updateAccessStatus()
 	// flag.needAuth is not changed after pageload
 	if(flag.needAuth)
 	{
-		$('#bar_auth').show();
+		if(!flag.authbypass) {
+            $('#bar_auth').show();
+        }
 		if(flag.isLogged) {
 			showhide($("#bar_logout"),$("#bar_login"));
 			if(flag.admin) {
@@ -2225,7 +2425,7 @@ function showAuth(el)
 	var w = $('#authform');
 	if(w.css('display') == 'none')
 	{
-		var offset = $(el).offset();
+		var offset = $(el).position();
 		w.css({
 			position: 'absolute',
 			top: offset.top + el.offsetHeight + 3,
@@ -2507,6 +2707,134 @@ function refreshNotificationCounter() {
         }
         $('#notification_counter').html(json.count);
     });
+}
+
+function startWorkTimer(taskId) {
+    worktimer.startTime = new Date();
+    worktimer.timerActive = true;
+    worktimer.timerTotal = 0;
+    worktimer.taskId = taskId;
+
+    $('#main').toggleClass('hastimer');
+    $('.timercontrols').hide();
+    $('.inprogress').hide();
+    $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress').show();
+    $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress_icon').css('display', 'inline-block');
+
+
+    saveTimerInCookie();
+
+    setTimeout(function() {
+        showTime();
+    }, 1000);
+}
+
+function stopTimer(finished) {
+    var dDeltaTime = new Date();
+    dDeltaTime.setTime( new Date() - worktimer.startTime );
+    var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
+    var sSec = dDeltaTime.getSeconds(); // Sekundenanteil der Differenz
+    var sHours = Math.floor( dDeltaTime / 3600000 );
+
+    worktimer.timerActive = false;
+    worktimer.timerTotal = sSec + (sMin*60) + (sHours*3600);
+    var total_minutes = Math.ceil(worktimer.timerTotal / 60);
+
+    _ytt.db.request('trackWorkTime', { task_id:worktimer.taskId, time:total_minutes }, function(json){
+        $('#main').toggleClass('hastimer');
+
+        $('#ytt-time').html('00:00:00');
+        $('.inprogress').hide();
+        $('.timercontrols').show();
+        $.cookie('worktimer_start', null);
+        if(finished) {
+            $('#taskrow_'+worktimer.taskId).find('input[type=checkbox]').attr('checked', true);
+            $('#taskrow_'+worktimer.taskId).find('input[type=checkbox]').click();
+            worktimer.startTime = null;
+            worktimer.taskId = null;
+        } else {
+            worktimer.startTime = null;
+            worktimer.taskId = null;
+            loadTasks();
+        }
+    });
+}
+
+function pauseTimer() {
+    var dDeltaTime = new Date();
+    dDeltaTime.setTime( new Date() - worktimer.startTime );
+    var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
+    var sSec = dDeltaTime.getSeconds(); // Sekundenanteil der Differenz
+    var sHours = Math.floor( dDeltaTime / 3600000 );
+
+    worktimer.timerTotal = sSec + (sMin*60) + (sHours*3600);
+
+    $('#ytt-timer-pause').toggle();
+    $('#ytt-timer-stop').toggle();
+    $('#ytt-timer-continue').toggle();
+    $('#ytt-timer-finish').toggle();
+
+    worktimer.timerActive = false;
+
+}
+
+function continueTimer() {
+    if(worktimer.timerTotal && worktimer.timerTotal > 0) {
+        var a = new Date();
+        var mil_sec = a.getTime() - (worktimer.timerTotal * 1000);
+        var b = new Date();
+        b.setTime(mil_sec);
+        worktimer.startTime = b;
+        saveTimerInCookie();
+        $('#ytt-timer-pause').toggle();
+        $('#ytt-timer-stop').toggle();
+        $('#ytt-timer-continue').toggle();
+        $('#ytt-timer-finish').toggle();
+    } else { // it might come out of the cookie
+        $('.inprogress').hide();
+        $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.inprogress').show();
+        $('#taskrow_'+worktimer.taskId).find('.inprogress_icon').css('display', 'inline-block');
+        $('.timercontrols').hide();
+        $('#main').toggleClass('hastimer');
+    }
+
+    worktimer.timerActive = true;
+
+    setTimeout(function() {
+        showTime();
+    }, 1000);
+}
+
+function showTime() {
+    if(!worktimer.timerActive) {
+        return;
+    }
+
+    var dDeltaTime = new Date();
+    dDeltaTime.setTime( new Date() - worktimer.startTime );
+
+    var sMin = dDeltaTime.getMinutes(); // Minutenanteil der Differenz
+    var sSec = dDeltaTime.getSeconds(); // Sekundenanteil der Differenz
+    var sHours = Math.floor( dDeltaTime / 3600000 );
+
+    sHours = ( sHours < 10 ) ? "0" + sHours : sHours;
+    sMin = ( sMin < 10 ) ? "0" + sMin : sMin;
+    sSec = ( sSec < 10 ) ? "0" + sSec : sSec;
+
+    $('#ytt-time').html(sHours + ":" + sMin + ":" + sSec);
+    $('.startWork[rel='+worktimer.taskId+']').parent().parent().parent().find('.minitimer').html(sHours + ":" + sMin + ":" + sSec);
+
+    setTimeout(function() {
+        showTime();
+    }, 1000);
+}
+
+function saveTimerInCookie() {
+    var a = new Date();
+    a.setHours(a.getHours() + 10);
+
+    $.cookie('worktimer_start', worktimer.startTime, {expires: a});
+    $.cookie('worktimer_task', worktimer.taskId, {expires: a});
 }
 
 })();

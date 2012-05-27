@@ -75,6 +75,9 @@ class NotificationListener {
 	}
 
 	public static function hasGlobalNotifications($userid) {
+		if($userid) {
+			return 0;
+		}
 		$db = DBConnection::instance();
 		return $db->sq("SELECT COUNT(*) FROM {$db->prefix}notification_listeners WHERE type = '".NotificationListener::LISTENER_TYPE_GLOBAL."' AND user_id = ".$userid) > 0;
 	}

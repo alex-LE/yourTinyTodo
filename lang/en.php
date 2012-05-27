@@ -23,6 +23,7 @@ class Lang extends DefaultLang
 		'actionNoteSave' => "save",
 		'actionNoteCancel' => "cancel",
 		'error' => "Some error occurred (click for details)",
+		'error_silent' => "Some error occurred",
 		'denied' => "Access denied",
 		'invalidpass' => "Wrong password",
 		'invalidlogin' => "Invalid credentials",
@@ -43,6 +44,14 @@ class Lang extends DefaultLang
 		'um_notification_on' => "on",	// needs to be the same like in default_inc!!
 		'um_notification_off' => "off",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Unable to mark notification as read",
+		'start_timer' => "Start timer",
+		'log_time' => "Log time",
+		'progress' => "Progress",
+		'in_progress' => "In progress",
+		'time_spent' => "Time spent",
+		'time_today' => "today",
+		'save' => "Save",
+		'cancel' => "Cancel",
 	);
 
 	var $inc = array
@@ -93,11 +102,16 @@ class Lang extends DefaultLang
 		'f_past' => "Overdue",
 		'f_today' => "Today and tomorrow",
 		'f_soon' => "Soon",
+		'duration' => "Duration",
+		'hour_sign' => "h",
 		'action_edit' => "Edit",
 		'action_note' => "Edit Note",
 		'action_delete' => "Delete",
 		'action_priority' => "Priority",
 		'action_move' => "Move to",
+		'timer_stop' => "Stop timer",
+		'timer_pause' => "Pause timer",
+		'timer_continue' => "Continue timer",
 		'notes' => "Notes:",
 		'notes_show' => "Show",
 		'notes_hide' => "Hide",
@@ -179,7 +193,7 @@ class Lang extends DefaultLang
 		'n_task_deleted' => 'Task "%s" deleted',
 		'n_task_completed' => 'Task "%s" completed',
 		'n_task_changed_priority' => 'Task "%s" changed (Priority)',
-		'n_task_changed_comment' => 'Task "%s" changed (Comment)',
+		'n_task_changed_note' => 'Task "%s" changed (Comment)',
 		'n_task_changed_all' => 'Task "%s" changed',
 		'n_list_added' => 'List "%s" created',
 		'n_list_renamed' => 'List "%s" renamed in "%s"',

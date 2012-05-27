@@ -78,7 +78,7 @@ yourtinytodoStorageAjax.prototype =
 	editTask: function(params, callback)
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?editTask='+params.id,
-			{ id:params.id, title:params.title, note:params.note, prio:params.prio, tags:params.tags, duedate:params.duedate },
+			{ id:params.id, title:params.title, note:params.note, prio:params.prio, tags:params.tags, duedate:params.duedate, duration:params.duration },
 			callback, 'json');
 	},
 
@@ -207,6 +207,16 @@ yourtinytodoStorageAjax.prototype =
     countNotifications: function(params, callback)
     {
         $.getJSON(this.ytt.yttUrl+'ajax.php?countNotifications&rnd='+Math.random(), callback);
+    },
+
+    trackWorkTime: function(params, callback)
+    {
+        $.post(this.ytt.yttUrl+'ajax.php?trackWorkTime', { ytt_taskId:params.task_id, ytt_time:params.time, ytt_date:params.date }, callback, 'json');
+    },
+
+    addComment: function(params, callback)
+    {
+        $.post(this.ytt.yttUrl+'ajax.php?addComment', { ytt_taskId:params.task_id, ytt_comment:params.comment }, callback, 'json');
     }
 };
 

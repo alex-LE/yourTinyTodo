@@ -33,9 +33,11 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.cookie.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
+
 
 <script type="text/javascript">
 	$().ready(function(){
@@ -55,20 +57,26 @@ header("Content-type: text/html; charset=utf-8");
 		yourtinytodo.init({
 			needAuth: <?php echo $needAuth ? "true" : "false"; ?>,
 			multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
-			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 			admin: <?php echo is_admin() ? "true" : "false"; ?>,
 			readOnly: <?php echo is_readonly() ? "true" : "false"; ?>,
+			<? if(isset($_SESSION['userid'])) {?>
+			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 			userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
 			userRole: <?php echo (!empty($_SESSION['role']))?$_SESSION['role']:'null'; ?>,
+			<? } ?>
 			isLogged: <?php echo ($needAuth && is_logged()) ? "true" : "false"; ?>,
 			showdate: <?php echo (Config::get('showdate') && !isset($_GET['pda'])) ? "true" : "false"; ?>,
 			singletab: <?php echo (isset($_GET['singletab']) || isset($_GET['pda'])) ? "true" : "false"; ?>,
 			duedatepickerformat: "<?php echo htmlspecialchars(Config::get('dateformat2')); ?>",
+			dateformatshort: "<?php echo htmlspecialchars(Config::get('dateformatshort')); ?>",
 			firstdayofweek: <?php echo (int) Config::get('firstdayofweek'); ?>,
-			autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>
+			autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>,
+			authbypass: <?php echo Config::get('auth_bypass') == 'none' ? "false" : "true"; ?>,
+			debugmode: <?php echo Config::get('debugmode') ? "true" : "false"; ?>
 		<?php if(isset($_GET['list'])) echo ",openList: ". (int)$_GET['list']; ?>
 		<?php if(isset($_GET['pda'])) echo ", touchDevice: true"; ?>
 		}).loadLists(1);
+
 	});
 </script>
 
@@ -76,35 +84,52 @@ header("Content-type: text/html; charset=utf-8");
 <div id="container">
 <div id="ytt_body">
 
-<h2><?php yttinfo('title'); ?></h2>
+<div id="function-bar">
+	<h2><?php yttinfo('title'); ?></h2>
 
-<div id="loading"></div>
+	<div id="loading"></div>
 
-<div id="bar">
-	<div id="msg">
-		<span class="msg-text"></span>
-		<div class="msg-details"></div>
-	</div>
-	<div class="bar-menu">
-		<? if(false !== $notifications_count) {?>
- 		<span class="menu-owner" style="display:none;position: relative;">
-   			<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter"><?=$notifications_count?></span></a>
- 		</span>
-		<?}?>
-		<span class="bar-delim" style="display:none"> | </span>
- 		<span class="menu-owner" style="display:none">
-   			<a href="#settings" id="settings"><?php _e('a_settings');?></a>
- 		</span>
-		<span class="bar-delim" style="display:none"> | </span>
- 		<span id="bar_auth">
-  			<span id="bar_public" style="display:none"><?php _e('public_tasks');?> |</span>
-  			<a href="#login" id="bar_login" class="nodecor"><u><?php _e('a_login');?></u> <span class="arrdown"></span></a>
-  			<a href="#logout" id="bar_logout"><?php _e('a_logout');?></a>
- 		</span>
+	<div id="bar">
+		<div id="msg">
+			<span class="msg-text"></span>
+			<div class="msg-details"></div>
+		</div>
+		<div class="bar-menu">
+			<? if(false !== $notifications_count) {?>
+			<span class="menu-owner menuitem" style="display:none;position: relative;">
+				<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter" class="<?=($notifications_count > 0)?'hasone':'nothing'?>">
+						<span class="notification_counter-left"></span>
+						<?=$notifications_count?>
+						<span class="notification_counter-right"></span>
+					</span>
+				</a>
+			</span>
+			<?}?>
+			<span class="bar-delim" style="display:none"></span>
+			<span class="menu-owner menuitem" style="display:none">
+				<a href="#settings" id="settings"><?php _e('a_settings');?></a>
+			</span>
+			<span class="bar-delim" style="display:none"></span>
+			<span id="bar_auth">
+				<span id="bar_public" style="display:none"><?php _e('public_tasks');?></span>
+				<a href="#login" id="bar_login" class="nodecor menuitem"><u><?php _e('a_login');?></u></a>
+				<a href="#logout" id="bar_logout" class="menuitem"><?php _e('a_logout');?></a>
+			</span>
+		</div>
 	</div>
 </div>
 
-<br clear="all" />
+<div id="main">
+
+<div id="header">
+	<div id="ytt-work-timer">
+		<span id="ytt-time">00:00:00</span>
+		<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"></a>
+		<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"></a>
+		<a href="#" id="ytt-timer-finish" title="<?=_e('timer_finish')?>"></a>
+		<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"></a>
+	</div>
+</div>
 
 <div id="page_tasks" style="display:none">
 
@@ -192,6 +217,10 @@ header("Content-type: text/html; charset=utf-8");
 			<span class="h"><?php _e('due');?> </span>
 			<input name="duedate" id="duedate" value="" class="in100" title="Y-M-D, M/D/Y, D.M.Y, M/D, D.M" autocomplete="off" />
 		</div>
+		<div class="form-row form-row-short">
+			<span class="h"><?php _e('duration');?> </span>
+			<input name="duration" id="duration" value="" class="in35" title="" autocomplete="off" />&nbsp;<?php _e('hour_sign');?>
+		</div>
 		<div class="form-row-short-end"></div>
 		<div class="form-row"><div class="h"><?php _e('task');?></div> <input type="text" name="task" value="" class="in500" maxlength="250" /></div>
 		<div class="form-row"><div class="h"><?php _e('note');?></div> <textarea name="note" class="in500"></textarea></div>
@@ -212,21 +241,6 @@ header("Content-type: text/html; charset=utf-8");
 
 </div>  <!-- end of page_taskedit -->
 
-
-<div id="authform" style="display:none">
-	<form id="login_form" action="" method="post">
-		<?php if($multiUser) { ?>
-		<div><label for="username"><?php _e('um_username');?></label><input type="text" name="username" id="username" /></div>
-		<div><label for="password"><?php _e('um_password');?></label><input type="password" name="password" id="password" /></div>
-		<div><input type="submit" value="<?php _e('btn_login');?>" /></div>
-		<?php } else { ?>
-		<div class="h"><?php _e('password');?></div>
-		<div><input type="password" name="password" id="password" /></div>
-		<div><input type="submit" value="<?php _e('btn_login');?>" /></div>
-		<?php } ?>
-	</form>
-</div>
-
 <div id="priopopup" style="display:none">
 	<span class="prio-neg prio-neg-1">&minus;1</span>
 	<span class="prio-zero">&plusmn;0</span>
@@ -234,63 +248,9 @@ header("Content-type: text/html; charset=utf-8");
 	<span class="prio-pos prio-pos-2">+2</span>
 </div>
 
-<div id="taskviewcontainer" class="ytt-menu-container" style="display:none">
-	<ul>
-		<li id="view_tasks"><?php _e('tasks');?> (<span id="cnt_total">0</span>)</li>
-		<li id="view_past"><?php _e('f_past');?> (<span id="cnt_past">0</span>)</li>
-		<li id="view_today"><?php _e('f_today');?> (<span id="cnt_today">0</span>)</li>
-		<li id="view_soon"><?php _e('f_soon');?> (<span id="cnt_soon">0</span>)</li>
-	</ul>
-</div>
-
-<div id="tagcloud" style="display:none">
-	<a id="tagcloudcancel" class="ytt-img-button"><span>&nbsp;</span></a>
-	<div id="tagcloudload"></div>
-	<div id="tagcloudcontent"></div>
-</div>
-
 <?php
 	$show_edit_options = (!isset($_SESSION['role']) || $_SESSION['role'] < 3);
 ?>
-
-<div id="listmenucontainer" class="ytt-menu-container" style="display:none">
-	<ul>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list ytt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-menu-delimiter ytt-need-real-list"></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
-		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
-		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
-		<li class="ytt-need-list ytt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="ytt-sort-direction">&nbsp;</span></li>
-		<li class="ytt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div><?php _e('sortByDateCreated');?> <span class="ytt-sort-direction">&nbsp;</span></li>
-		<li class="ytt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div><?php _e('sortByPriority');?> <span class="ytt-sort-direction">&nbsp;</span></li>
-		<li class="ytt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div><?php _e('sortByDueDate');?> <span class="ytt-sort-direction">&nbsp;</span></li>
-		<li class="ytt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="ytt-sort-direction">&nbsp;</span></li>
-		<li class="ytt-menu-delimiter"></li>
-		<li class="ytt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
-		<li class="ytt-menu-delimiter"></li>
-		<li class="ytt-need-list" id="btnNotifications"><div class="menu-icon"></div><?php _e('list_notifications');?></li>
-	</ul>
-</div>
-
-<div id="listexportmenucontainer" class="ytt-menu-container" style="display:none">
-	<ul>
-		<li class="ytt-need-list ytt-need-real-list" id="btnExportCSV"><?php _e('list_export_csv');?></li>
-		<li class="ytt-need-list ytt-need-real-list" id="btnExportICAL"><?php _e('list_export_ical');?></li>
-	</ul>
-</div>
-
-<div id="taskcontextcontainer" class="ytt-menu-container" style="display:none">
-	<ul>
-		<li id="cmenu_edit"><b><?php _e('action_edit');?></b></li>
-		<li id="cmenu_note"><?php _e('action_note');?></li>
-		<li id="cmenu_prio" class="ytt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div><?php _e('action_priority');?></li>
-		<li id="cmenu_move" class="ytt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div><?php _e('action_move');?></li>
-		<li id="cmenu_delete"><?php _e('action_delete');?></li>
-	</ul>
-</div>
 
 <div id="cmenupriocontainer" class="ytt-menu-container" style="display:none">
 	<ul>
@@ -305,6 +265,19 @@ header("Content-type: text/html; charset=utf-8");
 	<ul>
 	</ul>
 </div>
+
+<div id="page_ajax" style="display:none"></div>
+</div>
+
+</div>
+<div id="space"></div>
+</div>
+
+<div id="ytt-menu-modal" class="ytt-menu-modal"></div>
+
+<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?> </div></div>
+
+</div> <!-- end of main -->
 
 <div id="slmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
@@ -340,17 +313,81 @@ header("Content-type: text/html; charset=utf-8");
 	</form>
 </div>
 
-<div id="page_ajax" style="display:none"></div>
-
+<div id="taskviewcontainer" class="ytt-menu-container" style="display:none">
+	<ul>
+		<li id="view_tasks"><?php _e('tasks');?> (<span id="cnt_total">0</span>)</li>
+		<li id="view_past"><?php _e('f_past');?> (<span id="cnt_past">0</span>)</li>
+		<li id="view_today"><?php _e('f_today');?> (<span id="cnt_today">0</span>)</li>
+		<li id="view_soon"><?php _e('f_soon');?> (<span id="cnt_soon">0</span>)</li>
+	</ul>
 </div>
-<div id="space"></div>
+
+<div id="tagcloud" style="display:none">
+	<a id="tagcloudcancel" class="ytt-img-button"><span>&nbsp;</span></a>
+	<div id="tagcloudload"></div>
+	<div id="tagcloudcontent"></div>
 </div>
 
-<div id="ytt-menu-modal" class="ytt-menu-modal"></div>
-
-<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?> </div></div>
-
+<div id="listexportmenucontainer" class="ytt-menu-container" style="display:none">
+	<ul>
+		<li class="ytt-need-list ytt-need-real-list" id="btnExportCSV"><?php _e('list_export_csv');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnExportICAL"><?php _e('list_export_ical');?></li>
+	</ul>
 </div>
+
+<div id="authform" style="display:none">
+	<form id="login_form" action="" method="post">
+		<?php if($multiUser) { ?>
+		<div><label for="username"><?php _e('um_username');?></label><input type="text" name="username" id="username" /></div>
+		<div><label for="password"><?php _e('um_password');?></label><input type="password" name="password" id="password" /></div>
+		<div><input type="submit" value="<?php _e('btn_login');?>" /></div>
+		<?php } else { ?>
+		<div class="h"><?php _e('password');?></div>
+		<div><input type="password" name="password" id="password" /></div>
+		<div><input type="submit" value="<?php _e('btn_login');?>" /></div>
+		<?php } ?>
+	</form>
+</div>
+
+<div id="taskcontextcontainer" class="ytt-menu-container" style="display:none">
+	<ul>
+		<li id="cmenu_edit"><b><?php _e('action_edit');?></b></li>
+		<li id="cmenu_note"><?php _e('action_note');?></li>
+		<li id="cmenu_prio" class="ytt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div><?php _e('action_priority');?></li>
+		<li id="cmenu_move" class="ytt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div><?php _e('action_move');?></li>
+		<li id="cmenu_delete"><?php _e('action_delete');?></li>
+	</ul>
+</div>
+
+<div id="listmenucontainer" class="ytt-menu-container" style="display:none">
+	<ul>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list ytt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-menu-delimiter ytt-need-real-list"></li><?}?>
+		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
+		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
+		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
+		<li class="ytt-need-list ytt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div><?php _e('sortByDateCreated');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div><?php _e('sortByPriority');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div><?php _e('sortByDueDate');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div><?php _e('sortByDateModified');?> <span class="ytt-sort-direction">&nbsp;</span></li>
+		<li class="ytt-menu-delimiter"></li>
+		<li class="ytt-need-list" id="btnShowCompleted"><div class="menu-icon"></div><?php _e('list_showcompleted');?></li>
+		<li class="ytt-menu-delimiter"></li>
+		<li class="ytt-need-list" id="btnNotifications"><div class="menu-icon"></div><?php _e('list_notifications');?></li>
+	</ul>
+</div>
+
+<!--
+<?
+/**
+ * @todo REMOVE ME!!!
+ */
+print_r($_SESSION)
+?>
+-->
 </body>
 </html>
-<!-- r387 -->
