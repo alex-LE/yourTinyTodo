@@ -196,7 +196,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS `ytt_notifications` (
+"CREATE TABLE IF NOT EXISTS `{$db->prefix}notifications` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL,
   `text` varchar(255) NOT NULL,
@@ -207,13 +207,35 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS `ytt_notification_listeners` (
+"CREATE TABLE IF NOT EXISTS `{$db->prefix}notification_listeners` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL,
   `type` set('task','list','global') character set utf8 NOT NULL,
   `value` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; ");
+
+
+			$db->ex(
+"CREATE TABLE IF NOT EXISTS `{$db->prefix}comments` (
+  `id` int(11) NOT NULL auto_increment,
+  `task_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `comment` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+			$db->ex(
+"CREATE TABLE IF NOT EXISTS `{$db->prefix}time_tracker` (
+  `id` int(11) NOT NULL auto_increment,
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `task_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `minutes` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 
 
 		} catch (Exception $e) {
@@ -346,45 +368,85 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 				");
 
 			$db->ex(
-				"CREATE TABLE ytt_notifications (
+				"CREATE TABLE {$db->prefix}notifications (
 					id integer NOT NULL,
 					user_id integer,
 					text character varying,
 					created timestamp with time zone,
 					shown integer
 				);
-				CREATE SEQUENCE ytt_notifications_id_seq
+				CREATE SEQUENCE {$db->prefix}notifications_id_seq
 					START WITH 1
 					INCREMENT BY 1
 					NO MAXVALUE
 					NO MINVALUE
 					CACHE 1;
-				ALTER SEQUENCE ytt_notifications_id_seq OWNED BY mtt_notifications.id;
-				ALTER TABLE ytt_notifications ALTER COLUMN id SET DEFAULT nextval('mtt_notifications_id_seq'::regclass);
-				ALTER TABLE ONLY ytt_notifications
-    				ADD CONSTRAINT ytt_notifications_pkey PRIMARY KEY (id);
+				ALTER SEQUENCE {$db->prefix}notifications_id_seq OWNED BY {$db->prefix}notifications.id;
+				ALTER TABLE {$db->prefix}notifications ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}notifications_id_seq'::regclass);
+				ALTER TABLE ONLY {$db->prefix}notifications
+    				ADD CONSTRAINT {$db->prefix}notifications_pkey PRIMARY KEY (id);
 
 				");
 
 
 			$db->ex(
-				"CREATE TABLE ytt_notification_listeners (
+				"CREATE TABLE {$db->prefix}notification_listeners (
 					id integer NOT NULL,
 					user_id integer,
 					\"type\" character varying,
 					value integer
 				);
-				COMMENT ON COLUMN ytt_notification_listeners.\"type\" IS '''task'',''list'',''global''';
-				CREATE SEQUENCE ytt_notification_listeners_id_seq
+				COMMENT ON COLUMN {$db->prefix}notification_listeners.\"type\" IS '''task'',''list'',''global''';
+				CREATE SEQUENCE {$db->prefix}notification_listeners_id_seq
 					START WITH 1
 					INCREMENT BY 1
 					NO MAXVALUE
 					NO MINVALUE
 					CACHE 1;
-				ALTER SEQUENCE ytt_notification_listeners_id_seq OWNED BY ytt_notification_listeners.id;
-				ALTER TABLE ytt_notification_listeners ALTER COLUMN id SET DEFAULT nextval('ytt_notification_listeners_id_seq'::regclass);
-				ALTER TABLE ONLY ytt_notification_listeners
-    				ADD CONSTRAINT ytt_notification_listeners_pkey PRIMARY KEY (id);
+				ALTER SEQUENCE {$db->prefix}notification_listeners_id_seq OWNED BY {$db->prefix}notification_listeners.id;
+				ALTER TABLE {$db->prefix}notification_listeners ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}notification_listeners_id_seq'::regclass);
+				ALTER TABLE ONLY {$db->prefix}notification_listeners
+    				ADD CONSTRAINT {$db->prefix}notification_listeners_pkey PRIMARY KEY (id);
+				");
+
+
+			$db->ex(
+				'CREATE TABLE '.$db->prefix.'comments (
+					id integer NOT NULL,
+					task_id integer,
+					user_id integer,
+					created timestamp with time zone DEFAULT now(),
+					"comment" character varying
+				);'."
+				CREATE SEQUENCE {$db->prefix}comments_id_seq
+					INCREMENT BY 1
+					NO MAXVALUE
+					NO MINVALUE
+					CACHE 1;
+				ALTER SEQUENCE {$db->prefix}comments_id_seq OWNED BY {$db->prefix}comments.id;
+				ALTER TABLE {$db->prefix}comments ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}comments_id_seq'::regclass);
+				ALTER TABLE ONLY {$db->prefix}comments
+    				ADD CONSTRAINT {$db->prefix}comments_pkey PRIMARY KEY (id);
+				");
+
+
+			$db->ex(
+				"CREATE TABLE {$db->prefix}time_tracker (
+					id integer NOT NULL,
+					created timestamp with time zone,
+					task_id integer,
+					user_id integer,
+					minutes integer
+				);
+				CREATE SEQUENCE {$db->prefix}time_tracker_id_seq
+					INCREMENT BY 1
+					NO MAXVALUE
+					NO MINVALUE
+					CACHE 1;
+				ALTER SEQUENCE {$db->prefix}time_tracker_id_seq OWNED BY {$db->prefix}time_tracker.id;
+				ALTER TABLE {$db->prefix}time_tracker ALTER COLUMN id SET DEFAULT nextval('{$db->prefix}time_tracker_id_seq'::regclass);
+				ALTER TABLE ONLY {$db->prefix}time_tracker
+    				ADD CONSTRAINT {$db->prefix}time_tracker_pkey PRIMARY KEY (id);
 				");
 
 			// Using || to concatenate in YTT is not recommeneded because there are
@@ -463,8 +525,10 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 
 			$db->ex('CREATE TABLE '.$db->prefix.'users ("id" INTEGER PRIMARY KEY  NOT NULL , "uuid" VARCHAR, "username" VARCHAR, "password" VARCHAR, "email" VARCHAR, "d_created" INTEGER, "role" INTEGER)');
 
-			$db->ex('CREATE TABLE "ytt_notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
-			$db->ex('CREATE  TABLE "main"."ytt_notification_listeners" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "type" VARCHAR, "value" INTEGER)');
+			$db->ex('CREATE TABLE "{$db->prefix}notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
+			$db->ex('CREATE  TABLE "{$db->prefix}notification_listeners" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "type" VARCHAR, "value" INTEGER)');
+			$db->ex('CREATE TABLE "{$db->prefix}comments" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "task_id" INTEGER, "user_id" INTEGER, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "comment" TEXT)');
+			$db->ex('CREATE TABLE "{$db->prefix}time_tracker" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "created" DATETIME, "task_id" INTEGER, "user_id" INTEGER, "minutes" INTEGER)');
 
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));

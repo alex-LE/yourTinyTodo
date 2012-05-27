@@ -169,6 +169,7 @@ elseif(isset($_GET['fullNewTask']))
 	$title = trim(_post('title'));
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
 	$prio = (int)_post('prio');
+	$duration = (float)str_replace(',','.',_post('duration'));
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
 	$duedate = parse_duedate(trim(_post('duedate')));
@@ -181,8 +182,8 @@ elseif(isset($_GET['fullNewTask']))
 	if(Config::get('autotag')) $tags .= ','._post('tag');
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}todolist WHERE list_id=$listId AND compl=0");
 	$db->ex("BEGIN");
-	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate) VALUES(?,?,?,?,?,?,?,?,?)",
-				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate) );
+	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate,duration) VALUES(?,?,?,?,?,?,?,?,?,?)",
+				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate, $duration) );
 	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
 	{
@@ -240,7 +241,7 @@ elseif(isset($_GET['editNote']))
 
 	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
 	$listId = (int)$db->sq("SELECT list_id FROM {$db->prefix}todolist WHERE id=$id");
-	addNotification(_r('n_task_changed_comment', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
+	addNotification(_r('n_task_changed_note', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
 
 	$t = array();
 	$t['total'] = 1;
@@ -254,6 +255,7 @@ elseif(isset($_GET['editTask']))
 	stop_gpc($_POST);
 	$title = trim(_post('title'));
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
+	$duration = (float)str_replace(',','.',_post('duration'));
 	$prio = (int)_post('prio');
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
@@ -273,8 +275,8 @@ elseif(isset($_GET['editTask']))
 		$tags_ids = implode(',',$aTags['ids']);
 		addTaskTags($id, $aTags['ids'], $listId);
 	}
-	$db->dq("UPDATE {$db->prefix}todolist SET title=?,note=?,prio=?,tags=?,tags_ids=?,duedate=?,d_edited=? WHERE id=$id",
-			array($title, $note, $prio, $tags, $tags_ids, $duedate, time()) );
+	$db->dq("UPDATE {$db->prefix}todolist SET title=?,note=?,prio=?,tags=?,tags_ids=?,duedate=?,d_edited=?,duration=? WHERE id=$id",
+			array($title, $note, $prio, $tags, $tags_ids, $duedate, time(), $duration) );
 	$db->ex("COMMIT");
 
 	addNotification(_r('n_task_changed_all', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
@@ -737,8 +739,40 @@ elseif(isset($_GET['countNotifications']))
 	$notifications_count = (Config::get('multiuser') == 1)?Notification::getUnreadCount():0;
 	jsonExit(array('count' => $notifications_count));
 }
+elseif(isset($_GET['trackWorkTime']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$taskid = (int)_post('ytt_taskId');
+	$time = (int)_post('ytt_time');
+	$date = _post('ytt_date');
+	TimeTracker::trackTime($taskid, $time, $date);
+	jsonExit(array('done' => 1));
+}
+elseif(isset($_GET['addComment']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$taskid = (int)_post('ytt_taskId');
+	$comment = _post('ytt_comment');
+	$current_user_id = (int)$_SESSION['userid'];
+
+	$db->dq("INSERT INTO {$db->prefix}comments (task_id,user_id,comment) VALUES(?,?,?)",
+		array($taskid, $current_user_id, $comment) );
+
+	jsonExit(array('done' => 1, 'user' => getUserName($current_user_id), 'date' => date(Config::get('dateformat'))));
+}
 
 ###################################################################################################
+
+function getUserName($userid) {
+	$db = DBConnection::instance();
+	$username = '';
+	if($userid > 0) {
+		$username = $db->sq("SELECT username FROM {$db->prefix}users WHERE id=$userid");
+	}
+	return $username;
+}
 
 function prepareTaskRow($r)
 {
@@ -754,6 +788,11 @@ function prepareTaskRow($r)
 	$db = DBConnection::instance();
 	$current_user_id = (int)$_SESSION['userid'];
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$r['id']." AND user_id=".$current_user_id);
+
+	$progress = '';
+	if(!empty($r['duration'])) {
+		$progress = ceil((TimeTracker::getTaskTotal($r['id'])*100)/($r['duration']*60));
+	}
 
 	return array(
 		'id' => $r['id'],
@@ -780,7 +819,25 @@ function prepareTaskRow($r)
 		'dueStr' => htmlarray($r['compl'] && $dueA['timestamp'] ? formatTime($formatCompletedInline, $dueA['timestamp']) : $dueA['str']),
 		'dueInt' => date2int($r['duedate']),
 		'dueTitle' => htmlarray(sprintf($lang->get('taskdate_inline_duedate'), $dueA['formatted'])),
+		'duration' => (empty($r['duration']))?'':$r['duration'],
+		'progress' => $progress,
+		'comments' => getTaskComments($r['id'])
 	);
+}
+
+function getTaskComments($task_id) {
+	$db = DBConnection::instance();
+	$q = $db->dq("SELECT * FROM {$db->prefix}comments WHERE task_id = $task_id");
+
+	$result = array();
+	while($r = $q->fetch_assoc()) {
+		$new_item = array();
+		$new_item['user'] = getUserName($r['user_id']);
+		$new_item['date'] = date(Config::get('dateformat'), strtotime($r['created']));
+		$new_item['comment'] = $r['comment'];
+		$result[] = $new_item;
+	}
+	return $result;
 }
 
 function check_read_access($listId = null)

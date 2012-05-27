@@ -23,6 +23,7 @@ class Lang extends DefaultLang
 		'actionNoteSave' => "Speichern",
 		'actionNoteCancel' => "Abbrechen",
 		'error' => "Ein Fehler ist aufgetreten (hier klicken für Details)",
+		'error_silent' => "Ein Fehler ist aufgetreten",
 		'denied' => "Zugriff verweigert",
 		'invalidpass' => "Falsches Passwort",
 		'invalidlogin' => "Ungültige Logindaten",
@@ -43,6 +44,14 @@ class Lang extends DefaultLang
 		'um_notification_on' => "aktiviert",	// needs to be the same like in default_inc!!
 		'um_notification_off' => "deaktiviert",	// needs to be the same like in default_inc!!
 		'n_deleteerror1' => "Konnte Benachrichtigung nicht als gelesen markieren",
+		'start_timer' => "Timer starten",
+		'log_time' => "Zeit erfassen",
+		'progress' => "Fortschritt",
+		'in_progress' => "In Arbeit",
+		'time_spent' => "Zeit erfassen für",
+		'time_today' => "heute",
+		'save' => "Speichern",
+		'cancel' => "Abbrechen",
 	);
 
 	var $inc = array
@@ -93,11 +102,16 @@ class Lang extends DefaultLang
 		'f_past' => "Überfällig",
 		'f_today' => "Heute und morgen",
 		'f_soon' => "Bald",
+		'duration' => "Dauer",
+		'hour_sign' => "h",
 		'action_edit' => "Bearbeiten",
 		'action_note' => "Notiz bearbeiten",
 		'action_delete' => "Löschen",
 		'action_priority' => "Priorität",
 		'action_move' => "Verschieben nach",
+		'timer_stop' => "Timer stoppen",
+		'timer_pause' => "Timer unterbrechen",
+		'timer_continue' => "Timer fortsetzen",
 		'notes' => "Notizen:",
 		'notes_show' => "Anzeigen",
 		'notes_hide' => "Ausblenden",
@@ -179,7 +193,7 @@ class Lang extends DefaultLang
 		'n_task_deleted' => 'Aufgabe "%s" gelöscht',
 		'n_task_completed' => 'Aufgabe "%s" abgeschlossen',
 		'n_task_changed_priority' => 'Aufgabe "%s" wurde geändert (Priorität)',
-		'n_task_changed_comment' => 'Aufgabe "%s" wurde geändert (Kommentar)',
+		'n_task_changed_note' => 'Aufgabe "%s" wurde geändert (Notiz)',
 		'n_task_changed_all' => 'Aufgabe "%s" wurde geändert',
 		'n_list_added' => 'Liste "%s" erstellt',
 		'n_list_renamed' => 'Liste "%s" in "%s" umbenannt',

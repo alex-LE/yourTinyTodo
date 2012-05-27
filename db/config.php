@@ -66,4 +66,6 @@ $config['dateformatshort'] = 'j M';
 # Show task date in list
 $config['showdate'] = 0;
 
+$config['auth_bypass'] = 'none';
+$config['debugmode'] = 0;
 ?>
