@@ -213,7 +213,7 @@ if(!$ver)
   `type` set('task','list','global') character set utf8 NOT NULL,
   `value` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; ");
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 
 
 			$db->ex(
