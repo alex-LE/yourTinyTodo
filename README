@@ -25,7 +25,9 @@ Features
   *  Style for mobiles devices
 
 
-Features comming with the next version:
+Features comming with the next version (already in Dev Branch):
 
  * MulitUser Support (3 UserGroups: Admin, Read/Write, Readonly)
  * Notifications
+ * Comments per Task
+ * Time Tracking
