@@ -32,3 +32,6 @@ Features
 Features comming with the next version:
 
  * MulitUser Support (3 UserGroups: Admin, Read/Write, Readonly)
+ * Notifications
+ * Comments per Task
+ * Time Tracking
