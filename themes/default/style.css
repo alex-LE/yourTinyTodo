@@ -497,7 +497,7 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
             .task-comment-block ul li.newcomment .subicon {
                 background-position: 0 -28px;
                 height: 14px;
-                top: -5px;
+                top: -11px;
                 z-index: 1000;
             }
 
