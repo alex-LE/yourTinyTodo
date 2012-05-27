@@ -23,6 +23,7 @@ class Lang extends DefaultLang
 		'actionNoteSave' => "Speichern",
 		'actionNoteCancel' => "Abbrechen",
 		'error' => "Ein Fehler ist aufgetreten (hier klicken für Details)",
+		'error_silent' => "Ein Fehler ist aufgetreten",
 		'denied' => "Zugriff verweigert",
 		'invalidpass' => "Falsches Passwort",
 		'invalidlogin' => "Ungültige Logindaten",
@@ -47,6 +48,10 @@ class Lang extends DefaultLang
 		'log_time' => "Zeit erfassen",
 		'progress' => "Fortschritt",
 		'in_progress' => "In Arbeit",
+		'time_spent' => "Zeit erfassen für",
+		'time_today' => "heute",
+		'save' => "Speichern",
+		'cancel' => "Abbrechen",
 	);
 
 	var $inc = array

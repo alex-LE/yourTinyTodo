@@ -19,17 +19,22 @@ require_once(YTTPATH. 'core/Lang.class.php');
 require_once(YTTPATH. 'core/Notification.class.php');
 require_once(YTTPATH. 'core/TimeTracker.class.php');
 
-ini_set('display_errors', 0);
-
 define('YTT_VERSION', '1.0a');
-
-define('DEBUG_MODE', true);
 
 if(!isset($config)) global $config;
 Config::loadConfig($config);
 unset($config);
 
 date_default_timezone_set(Config::get('timezone'));
+
+if(Config::get('debugmode')) {
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+} else {
+	ini_set('display_errors', 0);
+	error_reporting(E_NONE);
+}
+
 
 # MySQL Database Connection
 if(Config::get('db') == 'mysql')
