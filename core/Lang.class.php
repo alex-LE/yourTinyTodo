@@ -14,6 +14,7 @@ class DefaultLang {
 		'actionNoteSave' => "save",
 		'actionNoteCancel' => "cancel",
 		'error' => "Some error occurred (click for details)",
+		'error_silent' => "Some error occurred",
 		'denied' => "Access denied",
 		'invalidpass' => "Wrong password",
 		'invalidlogin' => "Invalid credentials",
@@ -39,6 +40,10 @@ class DefaultLang {
 		'log_time' => "Log time",
 		'progress' => "Progress",
 		'in_progress' => "In progress",
+		'time_spent' => "Time spent",
+		'time_today' => "today",
+		'save' => "Save",
+		'cancel' => "Cancel",
 	);
 
 	private $default_inc = array

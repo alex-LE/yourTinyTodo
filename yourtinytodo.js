@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false, debugmode:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -109,6 +109,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.authbypass = options.authbypass ? true : false;
 		flag.userId = options.userId;
 		flag.userRole = options.userRole;
+		flag.debugmode = options.debugmode;
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
@@ -474,14 +475,21 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			if(request.status == 0) errtxt = 'Bad connection';
 			else if(request.status != 200) errtxt = 'HTTP: '+request.status+'/'+request.statusText;
 			else errtxt = request.responseText;
-			flashError(_ytt.lang.get('error'), errtxt); 
-		}); 
+            if(flag.debugmode) {
+			    flashError(_ytt.lang.get('error'), errtxt);
+            } else {
+			    flashError(_ytt.lang.get('error_silent'), errtxt);
+            }
+		});
 
 
 		// Error Message details
-		$("#msg>.msg-text").click(function(){
-			$("#msg>.msg-details").toggle();
-		});
+        $("#msg>.msg-text").click(function(){
+            if(flag.debugmode) {
+                $("#msg>.msg-details").toggle();
+            }
+        });
+
 
 
 		// Authorization
@@ -529,7 +537,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
         // User management
         $("#manageusers").live('click', showUserManagement);
         $('#createuserBtn').live('click', function(){
-            if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('createuser', {adjustWidth:true, modal:true});
+            if(!_ytt.menus.createuser) _ytt.menus.createuser = new yttMenu('ytt-createuser', {adjustWidth:true, modal:true});
             _ytt.menus.createuser.show(this);
             $("#um_role").removeAttr("disabled");
             $('#um_userid').val('');
@@ -1112,7 +1120,7 @@ function prepareProgress(item)
             '       </span>' +
             '   </div>' +
             '   <div class="logtimePanel">'+
-            '       Time spent <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">today</span>:&nbsp;<input type="text" name="hours" class="in35"><a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('actionNoteSave')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('actionNoteCancel')+'</a> '+
+            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35"><a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
             '   </div>'+
             '</div>';
 };
@@ -1803,7 +1811,7 @@ function yttMenu(container, options)
 {
 	var menu = this;
 	this.container = document.getElementById(container);
-	this.$container = $(this.container);
+    this.$container = $(this.container);
 	this.menuOpen = false;
 	this.options = options || {};
 	this.submenu = [];
@@ -2338,7 +2346,9 @@ function hideTab(listId)
 function flashError(str, details)
 {
 	$("#msg>.msg-text").text(str)
-	$("#msg>.msg-details").text(details);
+	if(flag.debugmode) {
+        $("#msg>.msg-details").text(details);
+    }
 	$("#loading").hide();
 	$("#msg").addClass('ytt-error').effect("highlight", {color:_ytt.theme.msgFlashColor}, 700);
 }
@@ -2415,7 +2425,7 @@ function showAuth(el)
 	var w = $('#authform');
 	if(w.css('display') == 'none')
 	{
-		var offset = $(el).offset();
+		var offset = $(el).position();
 		w.css({
 			position: 'absolute',
 			top: offset.top + el.offsetHeight + 3,
