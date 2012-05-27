@@ -188,7 +188,7 @@ class Lang extends DefaultLang
 		'n_task_deleted' => 'Task "%s" deleted',
 		'n_task_completed' => 'Task "%s" completed',
 		'n_task_changed_priority' => 'Task "%s" changed (Priority)',
-		'n_task_changed_comment' => 'Task "%s" changed (Comment)',
+		'n_task_changed_note' => 'Task "%s" changed (Comment)',
 		'n_task_changed_all' => 'Task "%s" changed',
 		'n_list_added' => 'List "%s" created',
 		'n_list_renamed' => 'List "%s" renamed in "%s"',
