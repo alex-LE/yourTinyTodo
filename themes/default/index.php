@@ -381,13 +381,5 @@ header("Content-type: text/html; charset=utf-8");
 	</ul>
 </div>
 
-<!--
-<?
-/**
- * @todo REMOVE ME!!!
- */
-print_r($_SESSION)
-?>
--->
 </body>
 </html>
