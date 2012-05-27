@@ -98,6 +98,7 @@ class Config
 		'dateformatshort' => array('default'=>'j M', 'type'=>'s'),
 		'template' => array('default'=>'default', 'type'=>'s'),
 		'showdate' => array('default'=>0, 'type'=>'i'),
+		'auth_bypass' => array('default'=>'none', 'type'=>'s'),
 	);
 
 	public static $config;

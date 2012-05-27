@@ -34,7 +34,6 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.cookie.js?v=<?=YTT_VERSION?>"></script>
-<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autosize.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
@@ -71,12 +70,12 @@ header("Content-type: text/html; charset=utf-8");
 			duedatepickerformat: "<?php echo htmlspecialchars(Config::get('dateformat2')); ?>",
 			dateformatshort: "<?php echo htmlspecialchars(Config::get('dateformatshort')); ?>",
 			firstdayofweek: <?php echo (int) Config::get('firstdayofweek'); ?>,
-			autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>
+			autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>,
+			authbypass: <?php echo Config::get('auth_bypass') == 'none' ? "false" : "true"; ?>
 		<?php if(isset($_GET['list'])) echo ",openList: ". (int)$_GET['list']; ?>
 		<?php if(isset($_GET['pda'])) echo ", touchDevice: true"; ?>
 		}).loadLists(1);
 
-		$('.testarea').autosize();
 	});
 </script>
 
@@ -382,6 +381,13 @@ header("Content-type: text/html; charset=utf-8");
 <div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?> </div></div>
 
 </div>
+<!--
+<?
+/**
+ * @todo REMOVE ME!!!
+ */
+print_r($_SESSION)
+?>
+-->
 </body>
 </html>
-<!-- r387 -->

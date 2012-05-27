@@ -241,7 +241,7 @@ elseif(isset($_GET['editNote']))
 
 	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
 	$listId = (int)$db->sq("SELECT list_id FROM {$db->prefix}todolist WHERE id=$id");
-	addNotification(_r('n_task_changed_comment', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
+	addNotification(_r('n_task_changed_note', $title), Notification::NOTIFICATION_TYPE_TASK_CHANGED, $listId, $id);
 
 	$t = array();
 	$t['total'] = 1;
@@ -757,7 +757,7 @@ elseif(isset($_GET['addComment']))
 	$comment = _post('ytt_comment');
 	$current_user_id = (int)$_SESSION['userid'];
 
-	$db->dq("INSERT INTO {$db->prefix}comments (task_id,user_id,text) VALUES(?,?,?)",
+	$db->dq("INSERT INTO {$db->prefix}comments (task_id,user_id,comment) VALUES(?,?,?)",
 		array($taskid, $current_user_id, $comment) );
 
 	jsonExit(array('done' => 1, 'user' => getUserName($current_user_id), 'date' => date(Config::get('dateformat'))));
@@ -834,7 +834,7 @@ function getTaskComments($task_id) {
 		$new_item = array();
 		$new_item['user'] = getUserName($r['user_id']);
 		$new_item['date'] = date(Config::get('dateformat'), strtotime($r['created']));
-		$new_item['text'] = $r['text'];
+		$new_item['comment'] = $r['comment'];
 		$result[] = $new_item;
 	}
 	return $result;

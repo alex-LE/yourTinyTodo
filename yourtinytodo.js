@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -106,6 +106,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.globalNotifications = options.globalNotifications ? true : false;
 		flag.readOnly = options.readOnly ? true : false;
 		flag.admin = options.admin ? true : false;
+		flag.authbypass = options.authbypass ? true : false;
 		flag.userId = options.userId;
 		flag.userRole = options.userRole;
 
@@ -582,7 +583,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
                 var parent_ul = $(this).parent().parent();
                 var comment = $(this).val();
                 $(this).val('');
-                _ytt.db.request('addComment', { task_id:getLiTaskId(parent_ul.get(0)), comment:$(this).val() }, function(json) {
+                _ytt.db.request('addComment', { task_id:getLiTaskId(parent_ul.get(0)), comment:comment }, function(json) {
                     if(json.done == 1) {
                         var new_item =  '    <li class="existingcomment">' +
                                         '       <span class="subicon"></span>' +
@@ -1067,7 +1068,7 @@ function prepareComments(item) {
                     '           <span class="subicon"></span>' +
                     '           <span class="author">'+item.comments[i].user+'</span>'+
                     '           <span class="created">'+item.comments[i].date+'</span>'+
-                    '           <span class="comment">'+item.comments[i].text+'</span>' +
+                    '           <span class="comment">'+item.comments[i].comment+'</span>' +
                     '       </li>';
     }
 
@@ -2367,7 +2368,9 @@ function updateAccessStatus()
 	// flag.needAuth is not changed after pageload
 	if(flag.needAuth)
 	{
-		$('#bar_auth').show();
+		if(!flag.authbypass) {
+            $('#bar_auth').show();
+        }
 		if(flag.isLogged) {
 			showhide($("#bar_logout"),$("#bar_login"));
 			if(flag.admin) {

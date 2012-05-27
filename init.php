@@ -105,8 +105,20 @@ $notifications_count = (Config::get('multiuser') == 1)?Notification::getUnreadCo
 
 function is_logged()
 {
-	if(!isset($_SESSION['logged']) || !$_SESSION['logged']) return false;
-	return true;
+	if(isset($_SESSION['logged'])) {
+		return true;
+	}
+
+	if(Config::get('auth_bypass') != 'none') {
+		$classname = Config::get('auth_bypass').'_Bypass';
+		if(file_exists(YTTCOREPATH.'authentication/'.$classname.'.php')) {
+			require_once(YTTCOREPATH.'authentication/'.$classname.'.php');
+			$bypass = new $classname;
+			$bypass->setSession();
+		}
+	}
+
+	return false;
 }
 
 function is_readonly()
@@ -127,7 +139,7 @@ function is_admin()
 		return true;
 	}
 
-	if($needAuth && Config::get('multiuser') == 1 && $_SESSION['role'] == 1) {
+	if($needAuth && Config::get('multiuser') == 1 && isset($_SESSION['role']) && $_SESSION['role'] == 1) {
 		return true;
 	}
 
