@@ -126,115 +126,115 @@ if(!$ver)
 
 			$db->ex(
 "CREATE TABLE {$db->prefix}lists (
- `id` INT UNSIGNED NOT NULL auto_increment,
- `uuid` CHAR(36) NOT NULL default '',
- `ow` INT NOT NULL default 0,
- `name` VARCHAR(50) NOT NULL default '',
- `d_created` INT UNSIGNED NOT NULL default 0,
- `d_edited` INT UNSIGNED NOT NULL default 0,
- `sorting` TINYINT UNSIGNED NOT NULL default 0,
- `published` TINYINT UNSIGNED NOT NULL default 0,
- `taskview` INT UNSIGNED NOT NULL default 0,
- PRIMARY KEY(`id`),
- UNIQUE KEY(`uuid`)
+ id INT UNSIGNED NOT NULL auto_increment,
+ uuid CHAR(36) NOT NULL default '',
+ ow INT NOT NULL default 0,
+ name VARCHAR(50) NOT NULL default '',
+ d_created INT UNSIGNED NOT NULL default 0,
+ d_edited INT UNSIGNED NOT NULL default 0,
+ sorting TINYINT UNSIGNED NOT NULL default 0,
+ published TINYINT UNSIGNED NOT NULL default 0,
+ taskview INT UNSIGNED NOT NULL default 0,
+ PRIMARY KEY(id),
+ UNIQUE KEY(uuid)
 ) CHARSET=utf8 ");
 
 
 			$db->ex(
 "CREATE TABLE {$db->prefix}todolist (
- `id` INT UNSIGNED NOT NULL auto_increment,
- `uuid` CHAR(36) NOT NULL default '',
- `list_id` INT UNSIGNED NOT NULL default 0,
- `d_created` INT UNSIGNED NOT NULL default 0,   /* time() timestamp */
- `d_completed` INT UNSIGNED NOT NULL default 0, /* time() timestamp */
- `d_edited` INT UNSIGNED NOT NULL default 0,    /* time() timestamp */
- `compl` TINYINT UNSIGNED NOT NULL default 0,
- `title` VARCHAR(250) NOT NULL,
- `note` TEXT,
- `prio` TINYINT NOT NULL default 0,			/* priority -,0,+ */
- `ow` INT NOT NULL default 0,				/* order weight */
- `tags` VARCHAR(600) NOT NULL default '',	/* for fast access to task tags */
- `tags_ids` VARCHAR(250) NOT NULL default '', /* no more than 22 tags (x11 chars) */
- `duedate` DATE default NULL,
-  PRIMARY KEY(`id`),
-  KEY(`list_id`),
-  UNIQUE KEY(`uuid`)
+ id INT UNSIGNED NOT NULL auto_increment,
+ uuid CHAR(36) NOT NULL default '',
+ list_id INT UNSIGNED NOT NULL default 0,
+ d_created INT UNSIGNED NOT NULL default 0,   /* time() timestamp */
+ d_completed INT UNSIGNED NOT NULL default 0, /* time() timestamp */
+ d_edited INT UNSIGNED NOT NULL default 0,    /* time() timestamp */
+ compl TINYINT UNSIGNED NOT NULL default 0,
+ title VARCHAR(250) NOT NULL,
+ note TEXT,
+ prio TINYINT NOT NULL default 0,			/* priority -,0,+ */
+ ow INT NOT NULL default 0,				/* order weight */
+ tags VARCHAR(600) NOT NULL default '',	/* for fast access to task tags */
+ tags_ids VARCHAR(250) NOT NULL default '', /* no more than 22 tags (x11 chars) */
+ duedate DATE default NULL,
+  PRIMARY KEY(id),
+  KEY(list_id),
+  UNIQUE KEY(uuid)
 ) CHARSET=utf8 ");
 
 
 			$db->ex(
 "CREATE TABLE {$db->prefix}tags (
- `id` INT UNSIGNED NOT NULL auto_increment,
- `name` VARCHAR(50) NOT NULL,
- PRIMARY KEY(`id`),
- UNIQUE KEY `name` (`name`)
+ id INT UNSIGNED NOT NULL auto_increment,
+ name VARCHAR(50) NOT NULL,
+ PRIMARY KEY(id),
+ UNIQUE KEY name (name)
 ) CHARSET=utf8 ");
 
 
 			$db->ex(
 "CREATE TABLE {$db->prefix}tag2task (
- `tag_id` INT UNSIGNED NOT NULL,
- `task_id` INT UNSIGNED NOT NULL,
- `list_id` INT UNSIGNED NOT NULL,
- KEY(`tag_id`),
- KEY(`task_id`),
- KEY(`list_id`)		/* for tagcloud */
+ tag_id INT UNSIGNED NOT NULL,
+ task_id INT UNSIGNED NOT NULL,
+ list_id INT UNSIGNED NOT NULL,
+ KEY(tag_id),
+ KEY(task_id),
+ KEY(list_id)		/* for tagcloud */
 ) CHARSET=utf8 ");
 
 
 			$db->ex(
 "CREATE TABLE IF NOT EXISTS {$db->prefix}users (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `uuid` varchar(36) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(32) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `d_created` int(10) unsigned NOT NULL,
-  `role` enum('1','2','3') NOT NULL default '3',
-  PRIMARY KEY  (`id`)
+  id int(10) unsigned NOT NULL auto_increment,
+  uuid varchar(36) NOT NULL,
+  username varchar(50) NOT NULL,
+  password varchar(32) NOT NULL,
+  email varchar(100) NOT NULL,
+  d_created int(10) unsigned NOT NULL,
+  role enum('1','2','3') NOT NULL default '3',
+  PRIMARY KEY  (id)
 ) CHARSET=utf8 ");
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS `{$db->prefix}notifications` (
-  `id` int(11) NOT NULL auto_increment,
-  `user_id` int(11) NOT NULL,
-  `text` varchar(255) NOT NULL,
-  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `shown` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+"CREATE TABLE IF NOT EXISTS {$db->prefix}notifications (
+  id int(11) NOT NULL auto_increment,
+  user_id int(11) NOT NULL,
+  text varchar(255) NOT NULL,
+  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+  shown tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS `{$db->prefix}notification_listeners` (
-  `id` int(11) NOT NULL auto_increment,
-  `user_id` int(11) NOT NULL,
-  `type` set('task','list','global') character set utf8 NOT NULL,
-  `value` int(11) default NULL,
-  PRIMARY KEY  (`id`)
+"CREATE TABLE IF NOT EXISTS {$db->prefix}notification_listeners (
+  id int(11) NOT NULL auto_increment,
+  user_id int(11) NOT NULL,
+  type set('task','list','global') character set utf8 NOT NULL,
+  value int(11) default NULL,
+  PRIMARY KEY  (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS `{$db->prefix}comments` (
-  `id` int(11) NOT NULL auto_increment,
-  `task_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `comment` varchar(255) NOT NULL,
-  PRIMARY KEY  (`id`)
+"CREATE TABLE IF NOT EXISTS {$db->prefix}comments (
+  id int(11) NOT NULL auto_increment,
+  task_id int(11) NOT NULL,
+  user_id int(11) NOT NULL,
+  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+  comment varchar(255) NOT NULL,
+  PRIMARY KEY  (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS `{$db->prefix}time_tracker` (
-  `id` int(11) NOT NULL auto_increment,
-  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `task_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `minutes` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
+"CREATE TABLE IF NOT EXISTS {$db->prefix}time_tracker (
+  id int(11) NOT NULL auto_increment,
+  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+  task_id int(11) NOT NULL,
+  user_id int(11) NOT NULL,
+  minutes int(11) NOT NULL,
+  PRIMARY KEY  (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 
 
@@ -540,7 +540,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 
 	// create default user - for multi user support
 	$uuid = generateUUID();
-	$db->ex("INSERT INTO {$db->prefix}users (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
+	$db->ex("INSERT INTO {$db->prefix}users (id, uuid, username, password, email, d_created, role) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 }
 elseif($ver == YTT_VERSION)
@@ -654,7 +654,7 @@ function has_field_sqlite($db, $table, $field)
 
 function has_field_mysql($db, $table, $field)
 {
-	$q = $db->dq("DESCRIBE `$table`");
+	$q = $db->dq("DESCRIBE $table");
 	while($r = $q->fetch_row()) {
 		if($r[0] == $field) return true;
 	}
@@ -717,7 +717,7 @@ function myExceptionHandler($e)
 ### 1.1-1.2 ##########
 function update_11_12($db, $dbtype)
 {
-	if($dbtype == 'mysql') $db->ex("ALTER TABLE todolist ADD `duedate` DATE default NULL");
+	if($dbtype == 'mysql') $db->ex("ALTER TABLE todolist ADD duedate DATE default NULL");
 	else $db->ex("ALTER TABLE todolist ADD duedate DATE default NULL");
 
 	# Fixing broken tags
@@ -788,16 +788,16 @@ function update_12_13($db, $dbtype)
 	{
 		$db->ex(
 "CREATE TABLE lists (
- `id` INT UNSIGNED NOT NULL auto_increment,
- `name` VARCHAR(50) NOT NULL default '',
- PRIMARY KEY(`id`)
+ id INT UNSIGNED NOT NULL auto_increment,
+ name VARCHAR(50) NOT NULL default '',
+ PRIMARY KEY(id)
 ) CHARSET=utf8 ");
-		$db->ex("ALTER TABLE todolist ADD `list_id` INT UNSIGNED NOT NULL default 0");
-		$db->ex("ALTER TABLE tags ADD `list_id` INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE todolist ADD list_id INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE tags ADD list_id INT UNSIGNED NOT NULL default 0");
 
-		$db->ex("ALTER TABLE todolist ADD KEY(`list_id`)");
-		$db->ex("DROP INDEX `name` ON tags");
-		$db->ex("ALTER TABLE tags ADD UNIQUE KEY `listid_name` (`list_id`,`name`)");
+		$db->ex("ALTER TABLE todolist ADD KEY(list_id)");
+		$db->ex("DROP INDEX name ON tags");
+		$db->ex("ALTER TABLE tags ADD UNIQUE KEY listid_name (list_id,name)");
 	}
 	else
 	{
@@ -857,14 +857,14 @@ function update_130_131($db, $dbtype)
 	$db->ex("BEGIN");
 	if($dbtype=='mysql')
 	{
-		$db->ex("ALTER TABLE lists ADD `ow` INT NOT NULL default 0");
-		$db->ex("ALTER TABLE lists ADD `d_created` INT UNSIGNED NOT NULL default 0");
-		$db->ex("ALTER TABLE lists ADD `sorting` TINYINT UNSIGNED NOT NULL default 0");
-		$db->ex("ALTER TABLE lists ADD `published` TINYINT UNSIGNED NOT NULL default 0");
-		$db->ex("ALTER TABLE lists ADD `taskview` INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE lists ADD ow INT NOT NULL default 0");
+		$db->ex("ALTER TABLE lists ADD d_created INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE lists ADD sorting TINYINT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE lists ADD published TINYINT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE lists ADD taskview INT UNSIGNED NOT NULL default 0");
 
-		$db->ex("ALTER TABLE todolist ADD `d_created` INT UNSIGNED NOT NULL default 0");
-		$db->ex("ALTER TABLE todolist ADD `d_completed` INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE todolist ADD d_created INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE todolist ADD d_completed INT UNSIGNED NOT NULL default 0");
 
 		# convert task date...
 		$db_session_timezone = $db->sq("SELECT @@session.time_zone");;
@@ -873,7 +873,7 @@ function update_130_131($db, $dbtype)
 		$db->ex("UPDATE todolist SET d_created = UNIX_TIMESTAMP(d) + TIME_TO_SEC(TIMEDIFF(NOW(),UTC_TIMESTAMP())) ".($tz<0?'-':'+').abs($tz));
 		$db->ex("SET time_zone=?", array($db_session_timezone));
 
-		$db->ex("ALTER TABLE todolist DROP `d`");
+		$db->ex("ALTER TABLE todolist DROP d");
 	}
 	else
 	{
@@ -960,22 +960,22 @@ function update_131_14($db, $dbtype)
 		$db->ex("DROP TABLE {$db->prefix}tags");
 		$db->ex(
 			"CREATE TABLE {$db->prefix}tags (
-			 `id` INT UNSIGNED NOT NULL auto_increment,
-			 `name` VARCHAR(50) NOT NULL,
-			 PRIMARY KEY(`id`),
-			 UNIQUE KEY `name` (`name`)
+			 id INT UNSIGNED NOT NULL auto_increment,
+			 name VARCHAR(50) NOT NULL,
+			 PRIMARY KEY(id),
+			 UNIQUE KEY name (name)
 			) CHARSET=utf8 ");
 		
-		$db->ex("ALTER TABLE {$db->prefix}todolist CHANGE `tags` `tags` VARCHAR(600) NOT NULL default ''");
-		$db->ex("ALTER TABLE {$db->prefix}todolist ADD `tags_ids` VARCHAR(250) NOT NULL default ''");
-		$db->ex("ALTER TABLE {$db->prefix}todolist ADD `uuid` CHAR(36) NOT NULL default ''");
-		$db->ex("ALTER TABLE {$db->prefix}todolist ADD `d_edited` INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE {$db->prefix}todolist CHANGE tags tags VARCHAR(600) NOT NULL default ''");
+		$db->ex("ALTER TABLE {$db->prefix}todolist ADD tags_ids VARCHAR(250) NOT NULL default ''");
+		$db->ex("ALTER TABLE {$db->prefix}todolist ADD uuid CHAR(36) NOT NULL default ''");
+		$db->ex("ALTER TABLE {$db->prefix}todolist ADD d_edited INT UNSIGNED NOT NULL default 0");
 		
-		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD `list_id` INT UNSIGNED NOT NULL");
-		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD KEY(`list_id`)");
+		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD list_id INT UNSIGNED NOT NULL");
+		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD KEY(list_id)");
 		
-		$db->ex("ALTER TABLE {$db->prefix}lists ADD `uuid` CHAR(36) NOT NULL default ''");
-		$db->ex("ALTER TABLE {$db->prefix}lists ADD `d_edited` INT UNSIGNED NOT NULL default 0");
+		$db->ex("ALTER TABLE {$db->prefix}lists ADD uuid CHAR(36) NOT NULL default ''");
+		$db->ex("ALTER TABLE {$db->prefix}lists ADD d_edited INT UNSIGNED NOT NULL default 0");
 		
 	}
 	else #sqlite
@@ -1070,8 +1070,8 @@ function update_131_14($db, $dbtype)
 	# create unique indexes for UUID
 	if($dbtype=='mysql')
 	{
-		$db->ex("ALTER TABLE {$db->prefix}lists ADD UNIQUE KEY (`uuid`)");
-		$db->ex("ALTER TABLE {$db->prefix}todolist ADD UNIQUE KEY (`uuid`)");
+		$db->ex("ALTER TABLE {$db->prefix}lists ADD UNIQUE KEY (uuid)");
+		$db->ex("ALTER TABLE {$db->prefix}todolist ADD UNIQUE KEY (uuid)");
 	}
 	else
 	{
@@ -1131,14 +1131,14 @@ function update_14_15($db, $dbtype)
 	{
 		$db->ex(
 			"CREATE TABLE IF NOT EXISTS {$db->prefix}users (
-			  `id` int(10) unsigned NOT NULL auto_increment,
-			  `uuid` varchar(36) NOT NULL,
-			  `username` varchar(50) NOT NULL,
-			  `password` varchar(32) NOT NULL,
-			  `email` varchar(100) NOT NULL,
-			  `d_created` int(10) unsigned NOT NULL,
-			  `role` enum('1','2','3') NOT NULL default '3',
-			  PRIMARY KEY  (`id`)
+			  id int(10) unsigned NOT NULL auto_increment,
+			  uuid varchar(36) NOT NULL,
+			  username varchar(50) NOT NULL,
+			  password varchar(32) NOT NULL,
+			  email varchar(100) NOT NULL,
+			  d_created int(10) unsigned NOT NULL,
+			  role enum('1','2','3') NOT NULL default '3',
+			  PRIMARY KEY  (id)
 			) CHARSET=utf8 ");
 
 	}
@@ -1183,7 +1183,7 @@ function update_14_15($db, $dbtype)
 
 	// create default user - for multi user support
 	$uuid = generateUUID();
-	$db->ex("INSERT INTO {$db->prefix}users (`id`, `uuid`, `username`, `password`, `email`, `d_created`, `role`) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
+	$db->ex("INSERT INTO {$db->prefix}users (id, uuid, username, password, email, d_created, role) VALUES (1, '".$uuid."', 'admin', '".hashPassword('admin',$uuid)."', 'mail@example.com', ".time().", '1')");
 
 	$db->ex("COMMIT");
 }

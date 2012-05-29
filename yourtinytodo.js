@@ -1120,7 +1120,7 @@ function prepareProgress(item)
             '       </span>' +
             '   </div>' +
             '   <div class="logtimePanel">'+
-            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35"><a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
+            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35">&nbsp;min.&nbsp;<a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
             '   </div>'+
             '</div>';
 };
