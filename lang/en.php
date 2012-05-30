@@ -52,6 +52,8 @@ class Lang extends DefaultLang
 		'time_today' => "today",
 		'save' => "Save",
 		'cancel' => "Cancel",
+		'time_of' => 'of',
+		'time_min' => 'min.'
 	);
 
 	var $inc = array

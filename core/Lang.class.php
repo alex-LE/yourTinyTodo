@@ -44,6 +44,8 @@ class DefaultLang {
 		'time_today' => "today",
 		'save' => "Save",
 		'cancel' => "Cancel",
+		'time_of' => 'of',
+		'time_min' => 'min.'
 	);
 
 	private $default_inc = array

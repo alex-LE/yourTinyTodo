@@ -790,8 +790,12 @@ function prepareTaskRow($r)
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$r['id']." AND user_id=".$current_user_id);
 
 	$progress = '';
+	$progress_current = '';
+	$progress_total = '';
 	if(!empty($r['duration'])) {
 		$progress = ceil((TimeTracker::getTaskTotal($r['id'])*100)/($r['duration']*60));
+		$progress_current = TimeTracker::getTaskTotal($r['id'])/60;
+		$progress_total = $r['duration'];
 	}
 
 	return array(
@@ -821,6 +825,8 @@ function prepareTaskRow($r)
 		'dueTitle' => htmlarray(sprintf($lang->get('taskdate_inline_duedate'), $dueA['formatted'])),
 		'duration' => (empty($r['duration']))?'':$r['duration'],
 		'progress' => $progress,
+		'progress_current' => $progress_current,
+		'progress_total' => $progress_total,
 		'comments' => getTaskComments($r['id'])
 	);
 }

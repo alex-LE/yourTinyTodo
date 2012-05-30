@@ -362,8 +362,10 @@ li.task-completed .duedate { /*font-size:0.8em;*/ display:none; }
     #tasklist li.soon .duedate .duedate-edge {background-position: 0 -18px}
 #tasklist li.today .duedate { color:#ff3333; background-position: 0 -9px }
     #tasklist li.today .duedate .duedate-edge {background-position: 0 -9px}
-#tasklist li.past .duedate { color:#262f38; background-position: 0 -9px }
-    #tasklist li.past .duedate .duedate-edge {background-position: 0 0}
+#tasklist li.past .duedate { color:#ff3333; background-position: 0 -9px }
+    #tasklist li.past .duedate .duedate-edge {background-position: 0 -9px}
+#tasklist li.future .duedate { color:#262f38; background-position: 0 -9px }
+    #tasklist li.future .duedate .duedate-edge {background-position: 0 0}
 
 li.task-completed .task-middle { color:#777777;}
 li.task-completed .task-through { text-decoration:line-through; }

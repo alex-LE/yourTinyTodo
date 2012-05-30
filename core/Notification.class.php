@@ -56,7 +56,7 @@ class Notification {
 				continue;
 			}
 
-			$db->dq("INSERT INTO {$db->prefix}notifications (user_id, text) VALUES (?, ?)", array($listener->getUserid(), $text));
+			$db->dq("INSERT INTO {$db->prefix}notifications (user_id, text, created, shown) VALUES (?, ?, now(), 0)", array($listener->getUserid(), $text));
 		}
 	}
 
@@ -66,6 +66,6 @@ class Notification {
 		}
 		$current_user_id = (int)$_SESSION['userid'];
 		$db = DBConnection::instance();
-		return $db->sq("SELECT COUNT(*) FROM {$db->prefix}notifications WHERE shown = 0 AND user_id = ".$current_user_id);
+		return $db->sq("SELECT COUNT(*) FROM {$db->prefix}notifications WHERE shown != 1 AND user_id = ".$current_user_id);
 	}
 }

@@ -181,8 +181,7 @@ class Database_Postgres extends Database
 	{
 		$table = addslashes($table);
 		$q = pg_num_rows(pg_query($this->dbh, "select * from pg_tables where schemaname='public' AND tablename = '$table';"));
-		var_dump(pg_query($this->dbh, "select * from pg_tables where schemaname='public' AND tablename = '$table';"));
-		var_dump($q);
+		pg_query($this->dbh, "select * from pg_tables where schemaname='public' AND tablename = '$table';");
 		if($q > 0) return true;
 		else return false;
 	}

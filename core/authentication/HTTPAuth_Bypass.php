@@ -7,7 +7,7 @@ class HTTPAuth_Bypass implements IAuthentication_Bypass {
 	 * fills session data
 	 */
 	public function setSession() {
-		session_regenerate_id(1);
+		//session_regenerate_id(1);
 		$_SESSION['logged'] = 1;
 		$userdata = $this->getUserFromDB($_SERVER['PHP_AUTH_USER']);
 		$_SESSION['userid'] = $userdata['id'];
