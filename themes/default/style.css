@@ -462,6 +462,7 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
         .task-comment-block ul li.existingcomment {
             border:1px solid #C9C9C9!important;
             background-color: #eef7ff!important;
+            padding:3px 0 2px 5px;
         }
 
         .task-comment-block ul li.newcomment {
