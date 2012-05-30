@@ -252,6 +252,19 @@ header("Content-type: text/html; charset=utf-8");
 	$show_edit_options = (!isset($_SESSION['role']) || $_SESSION['role'] < 3);
 ?>
 
+<div id="page_ajax" style="display:none"></div>
+</div>
+
+</div>
+<div id="space"></div>
+</div>
+
+<div id="ytt-menu-modal" class="ytt-menu-modal"></div>
+
+<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?> </div></div>
+
+</div> <!-- end of main -->
+
 <div id="cmenupriocontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="cmenu_prio:2"><div class="menu-icon"></div>+2</li>
@@ -265,19 +278,6 @@ header("Content-type: text/html; charset=utf-8");
 	<ul>
 	</ul>
 </div>
-
-<div id="page_ajax" style="display:none"></div>
-</div>
-
-</div>
-<div id="space"></div>
-</div>
-
-<div id="ytt-menu-modal" class="ytt-menu-modal"></div>
-
-<div id="footer"><div id="footer_content">Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?> </div></div>
-
-</div> <!-- end of main -->
 
 <div id="slmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
