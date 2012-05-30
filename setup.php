@@ -36,7 +36,7 @@ if(!isset($config['db']))
 	if(isset($config['allow']) && $config['allow'] == 'read') $config['allowread'] = 1;
 }
 
-if($config['db'] != '') 
+if($config['db'] != '')
 {
 	require_once('./init.php');
 	if($needAuth && !is_logged())
@@ -56,7 +56,7 @@ else
 	if(!defined('YTTPATH')) define('YTTPATH', dirname(__FILE__) .'/');
 	require_once(YTTPATH. 'common.php');
 	Config::loadConfig($config);
-	unset($config); 
+	unset($config);
 
 	$db = 0;
 	$dbtype = '';
@@ -119,13 +119,13 @@ if(!$ver)
 	}
 
 	# install database
-	if($dbtype == 'mysql') 
+	if($dbtype == 'mysql')
 	{
 		try
 		{
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}lists (
+				"CREATE TABLE {$db->prefix}lists (
  id INT UNSIGNED NOT NULL auto_increment,
  uuid CHAR(36) NOT NULL default '',
  ow INT NOT NULL default 0,
@@ -141,7 +141,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}todolist (
+				"CREATE TABLE {$db->prefix}todolist (
  id INT UNSIGNED NOT NULL auto_increment,
  uuid CHAR(36) NOT NULL default '',
  list_id INT UNSIGNED NOT NULL default 0,
@@ -163,7 +163,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}tags (
+				"CREATE TABLE {$db->prefix}tags (
  id INT UNSIGNED NOT NULL auto_increment,
  name VARCHAR(50) NOT NULL,
  PRIMARY KEY(id),
@@ -172,7 +172,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}tag2task (
+				"CREATE TABLE {$db->prefix}tag2task (
  tag_id INT UNSIGNED NOT NULL,
  task_id INT UNSIGNED NOT NULL,
  list_id INT UNSIGNED NOT NULL,
@@ -183,7 +183,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS {$db->prefix}users (
+				"CREATE TABLE IF NOT EXISTS {$db->prefix}users (
   id int(10) unsigned NOT NULL auto_increment,
   uuid varchar(36) NOT NULL,
   username varchar(50) NOT NULL,
@@ -196,7 +196,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS {$db->prefix}notifications (
+				"CREATE TABLE IF NOT EXISTS {$db->prefix}notifications (
   id int(11) NOT NULL auto_increment,
   user_id int(11) NOT NULL,
   text varchar(255) NOT NULL,
@@ -207,7 +207,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS {$db->prefix}notification_listeners (
+				"CREATE TABLE IF NOT EXISTS {$db->prefix}notification_listeners (
   id int(11) NOT NULL auto_increment,
   user_id int(11) NOT NULL,
   type set('task','list','global') character set utf8 NOT NULL,
@@ -217,7 +217,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS {$db->prefix}comments (
+				"CREATE TABLE IF NOT EXISTS {$db->prefix}comments (
   id int(11) NOT NULL auto_increment,
   task_id int(11) NOT NULL,
   user_id int(11) NOT NULL,
@@ -228,7 +228,7 @@ if(!$ver)
 
 
 			$db->ex(
-"CREATE TABLE IF NOT EXISTS {$db->prefix}time_tracker (
+				"CREATE TABLE IF NOT EXISTS {$db->prefix}time_tracker (
   id int(11) NOT NULL auto_increment,
   created timestamp NOT NULL default CURRENT_TIMESTAMP,
   task_id int(11) NOT NULL,
@@ -242,13 +242,13 @@ if(!$ver)
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
 		}
 	}
-	elseif($dbtype == 'postgres') 
+	elseif($dbtype == 'postgres')
 	{
 		try
 		{
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}lists (
+				"CREATE TABLE {$db->prefix}lists (
     id integer NOT NULL,
     uuid character varying(36) NOT NULL,
     ow integer DEFAULT 0 NOT NULL,
@@ -274,7 +274,7 @@ ALTER TABLE ONLY {$db->prefix}lists
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}todolist (
+				"CREATE TABLE {$db->prefix}todolist (
     id integer NOT NULL,
     uuid character varying(36) NOT NULL,
     list_id integer DEFAULT 0 NOT NULL,
@@ -306,7 +306,7 @@ CREATE INDEX idx_list_id ON {$db->prefix}todolist USING btree (list_id);");
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}tags (
+				"CREATE TABLE {$db->prefix}tags (
     id integer NOT NULL,
     name character varying(50) NOT NULL
 );
@@ -325,7 +325,7 @@ ALTER TABLE ONLY {$db->prefix}tags
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}tag2task (
+				"CREATE TABLE {$db->prefix}tag2task (
     id integer NOT NULL,
     tag_id integer NOT NULL,
     task_id integer NOT NULL,
@@ -470,7 +470,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 		{
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}lists (
+				"CREATE TABLE {$db->prefix}lists (
  id INTEGER PRIMARY KEY,
  uuid CHAR(36) NOT NULL,
  ow INTEGER NOT NULL default 0,
@@ -485,7 +485,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 			$db->ex("CREATE UNIQUE INDEX lists_uuid ON {$db->prefix}lists (uuid)");
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}todolist (
+				"CREATE TABLE {$db->prefix}todolist (
  id INTEGER PRIMARY KEY,
  uuid CHAR(36) NOT NULL,
  list_id INTEGER UNSIGNED NOT NULL default 0,
@@ -499,14 +499,15 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
  ow INTEGER NOT NULL default 0,
  tags VARCHAR(600) NOT NULL default '',
  tags_ids VARCHAR(250) NOT NULL default '',
- duedate DATE default NULL
+ duedate DATE default NULL,
+ "duration" DOUBLE
 ) ");
 			$db->ex("CREATE INDEX todo_list_id ON {$db->prefix}todolist (list_id)");
 			$db->ex("CREATE UNIQUE INDEX todo_uuid ON {$db->prefix}todolist (uuid)");
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}tags (
+				"CREATE TABLE {$db->prefix}tags (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
  name VARCHAR(50) NOT NULL COLLATE NOCASE
 ) ");
@@ -514,7 +515,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 
 
 			$db->ex(
-"CREATE TABLE {$db->prefix}tag2task (
+				"CREATE TABLE {$db->prefix}tag2task (
  tag_id INTEGER NOT NULL,
  task_id INTEGER NOT NULL,
  list_id INTEGER NOT NULL
@@ -525,16 +526,16 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 
 			$db->ex('CREATE TABLE '.$db->prefix.'users ("id" INTEGER PRIMARY KEY  NOT NULL , "uuid" VARCHAR, "username" VARCHAR, "password" VARCHAR, "email" VARCHAR, "d_created" INTEGER, "role" INTEGER)');
 
-			$db->ex('CREATE TABLE "{$db->prefix}notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
-			$db->ex('CREATE  TABLE "{$db->prefix}notification_listeners" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "type" VARCHAR, "value" INTEGER)');
-			$db->ex('CREATE TABLE "{$db->prefix}comments" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "task_id" INTEGER, "user_id" INTEGER, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "comment" TEXT)');
-			$db->ex('CREATE TABLE "{$db->prefix}time_tracker" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "created" DATETIME, "task_id" INTEGER, "user_id" INTEGER, "minutes" INTEGER)');
+			$db->ex('CREATE TABLE "'.$db->prefix.'notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
+			$db->ex('CREATE  TABLE "'.$db->prefix.'notification_listeners" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "type" VARCHAR, "value" INTEGER)');
+			$db->ex('CREATE TABLE "'.$db->prefix.'comments" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "task_id" INTEGER, "user_id" INTEGER, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "comment" TEXT)');
+			$db->ex('CREATE TABLE "'.$db->prefix.'time_tracker" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "created" DATETIME, "task_id" INTEGER, "user_id" INTEGER, "minutes" INTEGER)');
 
 		} catch (Exception $e) {
 			exitMessage("<b>Error:</b> ". htmlarray($e->getMessage()));
-		} 
+		}
 	}
-	
+
 	# create default list	
 	$db->ex("INSERT INTO {$db->prefix}lists (uuid,name,d_created) VALUES (?,?,?)", array(generateUUID(), 'Todo', time()));
 
@@ -639,7 +640,7 @@ function exitMessage($s)
 
 function printFooter()
 {
-	echo "</body></html>"; 
+	echo "</body></html>";
 }
 
 
@@ -680,7 +681,7 @@ function testConnect(&$error)
 			require_once(YTTPATH . 'core/db/class.db.mysql.php');
 			$db = new Database_Mysql;
 			$db->connect(Config::get('mysql.host'), Config::get('mysql.user'), Config::get('mysql.password'), Config::get('mysql.db'));
-		
+
 		}
 		else if(Config::get('db') == 'postgres')
 		{
@@ -728,7 +729,7 @@ function update_11_12($db, $dbtype)
 	while($r = $q->fetch_assoc())
 	{
 		if($r['tags'] == '') continue;
-		$tag_ids = prepare_tags($r['tags']); 
+		$tag_ids = prepare_tags($r['tags']);
 		if($tag_ids) update_task_tags($r['id'], $tag_ids);
 	}
 	$db->ex("COMMIT");
@@ -740,7 +741,7 @@ function prepare_tags(&$tags_str)
 	$tag_names = array();
 	$tags = explode(',', $tags_str);
 	foreach($tags as $v)
-	{ 
+	{
 		# remove duplicate tags?
 		$tag = str_replace(array('"',"'"),array('',''),trim($v));
 		if($tag == '') continue;
@@ -787,7 +788,7 @@ function update_12_13($db, $dbtype)
 	if($dbtype=='mysql')
 	{
 		$db->ex(
-"CREATE TABLE lists (
+			"CREATE TABLE lists (
  id INT UNSIGNED NOT NULL auto_increment,
  name VARCHAR(50) NOT NULL default '',
  PRIMARY KEY(id)
@@ -802,23 +803,23 @@ function update_12_13($db, $dbtype)
 	else
 	{
 		$db->ex(
-"CREATE TABLE lists (
+			"CREATE TABLE lists (
  id INTEGER PRIMARY KEY,
  name VARCHAR(50) NOT NULL
 ) ");
 		$db->ex("ALTER TABLE todolist ADD list_id INTEGER UNSIGNED NOT NULL default 0");
 		$db->ex("CREATE INDEX todolist_list_id ON todolist (list_id)");
-		
+
 		$db->ex(
-"CREATE TEMPORARY TABLE tags_backup (
+			"CREATE TEMPORARY TABLE tags_backup (
  id INTEGER,
  name VARCHAR(50) NOT NULL,
  tags_count INT default 0
-) ");		
+) ");
 		$db->ex("INSERT INTO tags_backup SELECT id,name,tags_count FROM tags");
 		$db->ex("DROP TABLE tags");
 		$db->ex(
-"CREATE TABLE tags (
+			"CREATE TABLE tags (
  id INTEGER PRIMARY KEY,
  name VARCHAR(50) NOT NULL,
  tags_count INT default 0,
@@ -829,7 +830,7 @@ function update_12_13($db, $dbtype)
 		$db->ex("DROP TABLE tags_backup");
 	}
 	$db->ex("COMMIT");
-	
+
 	$db->ex("INSERT INTO lists (name,d_created) VALUES (?,?)", array('Todo', time()));
 	$db->ex("UPDATE todolist SET list_id=1");
 
@@ -853,7 +854,7 @@ function update_130_131($db, $dbtype)
 #		$temp_store_pragma = $db->sq("PRAGMA temp_store");
 #		$db->ex("PRAGMA temp_store = MEMORY");
 #	}
-	
+
 	$db->ex("BEGIN");
 	if($dbtype=='mysql')
 	{
@@ -892,7 +893,7 @@ function update_130_131($db, $dbtype)
 
 		# drop unnecessary field 'd'
 		$db->ex(
-"CREATE TEMPORARY TABLE todolist_backup (
+			"CREATE TEMPORARY TABLE todolist_backup (
  id INTEGER,
  list_id INTEGER UNSIGNED NOT NULL default 0,
  d_created INTEGER UNSIGNED NOT NULL default 0,
@@ -906,11 +907,11 @@ function update_130_131($db, $dbtype)
  duedate DATE default NULL
 ) ");
 		$db->ex("INSERT INTO todolist_backup (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate) ".
-				" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM todolist");
+			" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM todolist");
 		$db->ex("DROP TABLE todolist");
 
 		$db->ex(
-"CREATE TABLE todolist (
+			"CREATE TABLE todolist (
  id INTEGER PRIMARY KEY,
  list_id INTEGER UNSIGNED NOT NULL default 0,
  d_created INTEGER UNSIGNED NOT NULL default 0,
@@ -926,7 +927,7 @@ function update_130_131($db, $dbtype)
 		$db->ex("CREATE INDEX list_id ON todolist (list_id)");
 
 		$db->ex("INSERT INTO todolist (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate) ".
-				" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM todolist_backup");
+			" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM todolist_backup");
 		$db->ex("DROP TABLE todolist_backup");
 	}
 
@@ -965,33 +966,33 @@ function update_131_14($db, $dbtype)
 			 PRIMARY KEY(id),
 			 UNIQUE KEY name (name)
 			) CHARSET=utf8 ");
-		
+
 		$db->ex("ALTER TABLE {$db->prefix}todolist CHANGE tags tags VARCHAR(600) NOT NULL default ''");
 		$db->ex("ALTER TABLE {$db->prefix}todolist ADD tags_ids VARCHAR(250) NOT NULL default ''");
 		$db->ex("ALTER TABLE {$db->prefix}todolist ADD uuid CHAR(36) NOT NULL default ''");
 		$db->ex("ALTER TABLE {$db->prefix}todolist ADD d_edited INT UNSIGNED NOT NULL default 0");
-		
+
 		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD list_id INT UNSIGNED NOT NULL");
 		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD KEY(list_id)");
-		
+
 		$db->ex("ALTER TABLE {$db->prefix}lists ADD uuid CHAR(36) NOT NULL default ''");
 		$db->ex("ALTER TABLE {$db->prefix}lists ADD d_edited INT UNSIGNED NOT NULL default 0");
-		
+
 	}
 	else #sqlite
 	{
-			# changes in tags table: fully new
-			$db->ex("DROP TABLE {$db->prefix}tags"); //index will be deleted too
-			$db->ex(
-				"CREATE TABLE {$db->prefix}tags (
+		# changes in tags table: fully new
+		$db->ex("DROP TABLE {$db->prefix}tags"); //index will be deleted too
+		$db->ex(
+			"CREATE TABLE {$db->prefix}tags (
 				 id INTEGER PRIMARY KEY AUTOINCREMENT,
 				 name VARCHAR(50) NOT NULL COLLATE NOCASE
 				) ");
-			$db->ex("CREATE UNIQUE INDEX tags_name ON {$db->prefix}tags (name COLLATE NOCASE)");
-			
-			# changes in todolist table: uuid, d_edited, tags, tags_ids
-			$db->ex(
-				"CREATE TABLE todolist_new (
+		$db->ex("CREATE UNIQUE INDEX tags_name ON {$db->prefix}tags (name COLLATE NOCASE)");
+
+		# changes in todolist table: uuid, d_edited, tags, tags_ids
+		$db->ex(
+			"CREATE TABLE todolist_new (
 				 id INTEGER PRIMARY KEY,
 				 uuid CHAR(36) NOT NULL default '',
 				 list_id INTEGER UNSIGNED NOT NULL default 0,
@@ -1007,51 +1008,51 @@ function update_131_14($db, $dbtype)
 				 tags_ids VARCHAR(250) NOT NULL default '',
 				 duedate DATE default NULL
 				) ");
-			$db->ex("INSERT INTO todolist_new (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate)".
-					" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM {$db->prefix}todolist");
-			$db->ex("DROP TABLE {$db->prefix}todolist");
-			$db->ex("ALTER TABLE todolist_new RENAME TO {$db->prefix}todolist");
-			$db->ex("CREATE INDEX todo_list_id ON {$db->prefix}todolist (list_id)"); #1st index of 2
-			
-			# changes in tag2task table: new column and index, new names of indexes
-			$db->ex("ALTER TABLE {$db->prefix}tag2task ADD list_id INTEGER NOT NULL default 0");
-			$db->ex("DROP INDEX tag_id");
-			$db->ex("DROP INDEX task_id ");
-			$db->ex("CREATE INDEX tag2task_tag_id ON {$db->prefix}tag2task (tag_id)");
-			$db->ex("CREATE INDEX tag2task_task_id ON {$db->prefix}tag2task (task_id)");
-			$db->ex("CREATE INDEX tag2task_list_id ON {$db->prefix}tag2task (list_id)");
-			
-			# changes in lists table: uuid, d_edited
-			$db->ex("ALTER TABLE {$db->prefix}lists ADD uuid CHAR(36) NOT NULL default ''");
-			$db->ex("ALTER TABLE {$db->prefix}lists ADD d_edited INTEGER UNSIGNED NOT NULL default 0");
-			
+		$db->ex("INSERT INTO todolist_new (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate)".
+			" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM {$db->prefix}todolist");
+		$db->ex("DROP TABLE {$db->prefix}todolist");
+		$db->ex("ALTER TABLE todolist_new RENAME TO {$db->prefix}todolist");
+		$db->ex("CREATE INDEX todo_list_id ON {$db->prefix}todolist (list_id)"); #1st index of 2
+
+		# changes in tag2task table: new column and index, new names of indexes
+		$db->ex("ALTER TABLE {$db->prefix}tag2task ADD list_id INTEGER NOT NULL default 0");
+		$db->ex("DROP INDEX tag_id");
+		$db->ex("DROP INDEX task_id ");
+		$db->ex("CREATE INDEX tag2task_tag_id ON {$db->prefix}tag2task (tag_id)");
+		$db->ex("CREATE INDEX tag2task_task_id ON {$db->prefix}tag2task (task_id)");
+		$db->ex("CREATE INDEX tag2task_list_id ON {$db->prefix}tag2task (list_id)");
+
+		# changes in lists table: uuid, d_edited
+		$db->ex("ALTER TABLE {$db->prefix}lists ADD uuid CHAR(36) NOT NULL default ''");
+		$db->ex("ALTER TABLE {$db->prefix}lists ADD d_edited INTEGER UNSIGNED NOT NULL default 0");
+
 	}
-	
+
 	# recreate tags
 	$db->ex("DELETE FROM {$db->prefix}tag2task");
-	
+
 	$q = $db->dq("SELECT id,list_id,tags FROM {$db->prefix}todolist WHERE tags != ''");
 	$ar = array();
 	while($r = $q->fetch_assoc()) $ar[] = $r;
 	foreach($ar as $r)
 	{
-			$aTags = v14_prepareTags($r['tags']);
-			if($aTags)
-			{
-				v14_addTaskTags($r['id'], $aTags['ids'], $r['list_id']);
-				$db->ex("UPDATE {$db->prefix}todolist SET tags=?,tags_ids=? WHERE id=".$r['id'],
-						array(implode(',',$aTags['tags']), implode(',',$aTags['ids'])) );
-			}
+		$aTags = v14_prepareTags($r['tags']);
+		if($aTags)
+		{
+			v14_addTaskTags($r['id'], $aTags['ids'], $r['list_id']);
+			$db->ex("UPDATE {$db->prefix}todolist SET tags=?,tags_ids=? WHERE id=".$r['id'],
+				array(implode(',',$aTags['tags']), implode(',',$aTags['ids'])) );
+		}
 	}
-	
+
 	# fix bug with empty lists.d_created
 	$db->ex("UPDATE {$db->prefix}lists SET d_created=?", time());
-	
+
 	# init d_edited
 	$db->ex("UPDATE {$db->prefix}todolist SET d_edited=d_created");
 	$db->ex("UPDATE {$db->prefix}todolist SET d_edited=d_completed WHERE d_completed > d_edited");
 	$db->ex("UPDATE {$db->prefix}lists SET d_edited=d_created");
-	
+
 	# add UUID
 	$q = $db->dq("SELECT id FROM {$db->prefix}todolist");
 	$ar = array();
@@ -1066,7 +1067,7 @@ function update_131_14($db, $dbtype)
 	foreach($ar as $r) {
 		$db->ex("UPDATE {$db->prefix}lists SET uuid=? WHERE id=".$r['id'], array(generateUUID()) );
 	}
-	
+
 	# create unique indexes for UUID
 	if($dbtype=='mysql')
 	{
@@ -1077,8 +1078,8 @@ function update_131_14($db, $dbtype)
 	{
 		$db->ex("CREATE UNIQUE INDEX lists_uuid ON {$db->prefix}lists (uuid)");
 		$db->ex("CREATE UNIQUE INDEX todo_uuid ON {$db->prefix}todolist (uuid)");
-	}	
-	
+	}
+
 	$db->ex("COMMIT");
 }
 
