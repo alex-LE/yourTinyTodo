@@ -1115,15 +1115,22 @@ function prepareProgress(item)
             '   </div>'+
             '   <div class="progressbar">' +
             '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+text_color+'">'+item.progress+'%</span></span>' +
-            '       <span class="ytt-progress-bar">' +
+            '       <span class="ytt-progress-bar" title="'+formatHours(item.progress_current)+' '+_ytt.lang.get('time_of')+' '+formatHours(item.progress_total)+'">' +
             '           <span class="ytt-progress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;background-color:'+bar_color+'"></span>' +
             '       </span>' +
             '   </div>' +
             '   <div class="logtimePanel">'+
-            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35"><a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
+            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35">&nbsp;'+_ytt.lang.get('time_min')+'&nbsp;<a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
             '   </div>'+
             '</div>';
 };
+
+function formatHours(value) {
+    value = Math.abs(value);
+    var hours = Math.floor(value);
+    var minutes = Math.round((value-Math.floor(value))*60);
+    return hours+':'+minutes;
+}
 
 function prepareProgressMini(item)
 {

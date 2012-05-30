@@ -10,8 +10,8 @@ class TimeTracker {
 	public static function trackTime($taskid, $time, $date = null) {
 		$current_user_id = (int)$_SESSION['userid'];
 		$db = DBConnection::instance();
-
-		if(empty($date) || $date == 'today') {
+		$lang = Lang::instance();
+		if(empty($date) || $date == $lang->get('today')) {
 			$date = date("Y-m-d H:i");
 		} else {
 			$date = date("Y-m-d 00:00",strtotime($date));
