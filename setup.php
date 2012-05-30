@@ -500,7 +500,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
  tags VARCHAR(600) NOT NULL default '',
  tags_ids VARCHAR(250) NOT NULL default '',
  duedate DATE default NULL,
- "duration" DOUBLE
+ duration DOUBLE
 ) ");
 			$db->ex("CREATE INDEX todo_list_id ON {$db->prefix}todolist (list_id)");
 			$db->ex("CREATE UNIQUE INDEX todo_uuid ON {$db->prefix}todolist (uuid)");
