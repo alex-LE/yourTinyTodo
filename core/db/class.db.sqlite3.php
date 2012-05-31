@@ -91,6 +91,7 @@ class Database_Sqlite3 extends Database
 			$this->dbh = new PDO("sqlite:$host");
 			$this->dbh->sqliteCreateFunction('concat', 'sqlite_udf_concat', 2);
 			$this->dbh->sqliteCreateFunction('md5', 'sqlite_udf_md5', 1);
+			$this->dbh->sqliteCreateFunction('now', 'sqlite_udf_now', 1);
 		}
 		catch(PDOException $e) {
 			throw new Exception($e->getMessage());
@@ -199,4 +200,8 @@ function sqlite_udf_concat($str1, $str2)
 function sqlite_udf_md5($a)
 {
 	return md5($a);
+}
+
+function sqlite_udf_now() {
+	return date("Y-m-d H:i:s");
 }

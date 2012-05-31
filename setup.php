@@ -589,6 +589,7 @@ else
 	}
 }
 echo "Done<br/><br/><b>Attention!</b> Delete this file for security reasons.";
+echo '<br/><br/><a href="index.php">Proceed to a shiny new yourTinyTodo</a>';
 printFooter();
 
 
