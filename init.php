@@ -176,6 +176,15 @@ function formatTime($format, $timestamp=0)
 	return $s;
 }
 
+function getUserName($userid) {
+	$db = DBConnection::instance();
+	$username = '';
+	if($userid > 0) {
+		$username = $db->sq("SELECT username FROM {$db->prefix}users WHERE id=$userid");
+	}
+	return $username;
+}
+
 function _e($s)
 {
 	echo Lang::instance()->get($s);

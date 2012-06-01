@@ -1113,6 +1113,10 @@ function prepareProgress(item)
             '       <span>'+_ytt.lang.get('in_progress')+'</span><br/>' +
             '       <span class="minitimer"></span>'+
             '   </div>'+
+            '   <div class="progress">'+
+            '       <span class="spent">'+_ytt.lang.get('progress_spent')+': '+formatHours(item.progress_current)+'</span>'+
+            '       <span class="estimated">'+_ytt.lang.get('progress_estimated')+': '+formatHours(item.progress_total)+'</span>'+
+            '   </div>'+
             '   <div class="progressbar">' +
             '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+text_color+'">'+item.progress+'%</span></span>' +
             '       <span class="ytt-progress-bar" title="'+formatHours(item.progress_current)+' '+_ytt.lang.get('time_of')+' '+formatHours(item.progress_total)+'">' +
@@ -1129,7 +1133,14 @@ function formatHours(value) {
     value = Math.abs(value);
     var hours = Math.floor(value);
     var minutes = Math.round((value-Math.floor(value))*60);
-    return hours+':'+minutes;
+    if(hours > 0 && minutes > 0) {
+        return hours+'h '+minutes+'m';
+    } else if(hours > 0) {
+        return hours+'h';
+    } else if(minutes > 0) {
+        return minutes+'m';
+    }
+    return '';
 }
 
 function prepareProgressMini(item)
