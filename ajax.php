@@ -765,15 +765,6 @@ elseif(isset($_GET['addComment']))
 
 ###################################################################################################
 
-function getUserName($userid) {
-	$db = DBConnection::instance();
-	$username = '';
-	if($userid > 0) {
-		$username = $db->sq("SELECT username FROM {$db->prefix}users WHERE id=$userid");
-	}
-	return $username;
-}
-
 function prepareTaskRow($r)
 {
 	$lang = Lang::instance();

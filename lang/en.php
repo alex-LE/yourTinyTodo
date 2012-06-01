@@ -52,8 +52,9 @@ class Lang extends DefaultLang
 		'time_today' => "today",
 		'save' => "Save",
 		'cancel' => "Cancel",
-		'time_of' => 'of',
-		'time_min' => 'min.'
+		'time_min' => 'min.',
+		'progress_spent' => 'Time spent',
+		'progress_estimated' => 'Time estimated',
 	);
 
 	var $inc = array
@@ -189,6 +190,7 @@ class Lang extends DefaultLang
 		'um_nousers' => "No users available",
 		'um_createuser' => "Create user",
 		'access_denied' => "Access denied!<br/>Disable password protection or Log in.",
+		'loggedin_as' => 'Logged in as:',
 
 		/* notifications */
 		'n_task_created' => 'New Task "%s" created',
