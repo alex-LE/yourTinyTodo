@@ -52,6 +52,118 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
     float:right;
 }
 
+#taskajax {
+    position: relative;
+    min-height: 400px;
+}
+
+#tasktable {
+    width:520px;
+    min-height: 400px;
+    padding-top: 10px;
+}
+
+    #tasktable ul {
+        list-style-type: none;
+        margin: 30px 0 0;
+        padding: 0;
+        color: #313131;
+        font-weight: bold;
+    }
+
+    #tasktable h3 {
+        font-size: 1.5em;
+    }
+
+    #tasktable ul li {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    #tasktable .ytt-progress-bar {
+        height: 20px;
+        margin-left: 0;
+        margin-top: 8px;
+        width: 520px;
+    }
+
+    #tasktable .ytt-progress-percentbar {
+        height: 20px;
+    }
+
+    #tasktable .task-title {
+
+    }
+
+    #tasktable .duration {
+        background-color: #252E37;
+        color: #FFFFFF;
+        font-size: 10px;
+        padding: 1px 3px;
+        position: absolute;
+        right: -2px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    #tasktable .duration img {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 18px;
+    }
+
+#chart_container {
+    min-width: 330px;
+    height: 330px;
+    position: absolute;
+    top:20px;
+    right:20px;
+}
+
+#chart_text {
+    position:absolute;
+    left: 547px;
+    top: 25px;
+    font-weight: bold;
+}
+
+    #pieChartInfoText {
+        left:105px;
+        top:128px;
+        width: 123px;
+        position:absolute;
+        text-align:center;
+    }
+
+#total_caption {
+    font-size: 15px;
+    white-space: nowrap;
+    margin-bottom:7px;
+    display:inline-block;
+}
+
+#total_time_hours {
+    font-size: 27px;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+#total_time_days {
+    display: none;
+}
+
+.has_days #total_time_days {
+    display: inline-block;
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.has_days #total_time_hours {
+    font-size: 18px;
+}
+
 #function-bar {
     background: -moz-linear-gradient(top, #fff, #f0f0f0);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#f0f0f0));

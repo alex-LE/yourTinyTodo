@@ -926,7 +926,9 @@ function loadTasks(opts)
 	opts = opts || {};
 	if(opts.clearTasklist) {
 		$('#tasklist').html('');
+		$('#taskajax').html('');
 		$('#total').html('0');
+        $('#page_tasks > h3').show();
 	}
 
 	_ytt.db.request('loadTasks', {
@@ -1119,7 +1121,7 @@ function prepareProgress(item)
             '   </div>'+
             '   <div class="progressbar">' +
             '       <span class="ytt-progress">'+_ytt.lang.get('progress')+':&nbsp;<span style="color:'+text_color+'">'+item.progress+'%</span></span>' +
-            '       <span class="ytt-progress-bar" title="'+formatHours(item.progress_current)+' '+_ytt.lang.get('time_of')+' '+formatHours(item.progress_total)+'">' +
+            '       <span class="ytt-progress-bar">' +
             '           <span class="ytt-progress-percentbar '+((item.progress >= 100)?'percent-full':'')+'" style="width:'+((item.progress > 100)?200:(item.progress*2))+'px;background-color:'+bar_color+'"></span>' +
             '       </span>' +
             '   </div>' +
@@ -1469,6 +1471,7 @@ function listMenuClick(el, menu)
 		case 'btnShowCompleted': showCompletedToggle(); break;
 		case 'btnNotifications': showNotificationsToggle(); break;
 		case 'btnClearCompleted': clearCompleted(); break;
+		case 'btnTimeTable': showTimeTable(); break;
 		case 'sortByHand': setSort(0); break;
 		case 'sortByPrio': setSort(curList.sort==1 ? 101 : 1); break;
 		case 'sortByDueDate': setSort(curList.sort==2 ? 102 : 2); break;
@@ -2538,6 +2541,19 @@ function saveSettings(frm)
 			setTimeout('window.location.reload();', 1000);
 		}
 	}, 'json');
+}
+
+/**
+ * Timetable
+ */
+function showTimeTable() {
+    if(_ytt.pages.current.page == 'ajax' && _ytt.pages.current.pageClass == 'timetable') return false;
+    if(!curList) return false;
+    $('#taskajax').load(_ytt.yttUrl+'pages/timetable.php?listid='+curList.id,null,function(){
+        $('#page_tasks > h3').hide();
+        $('#tasklist').html('');
+    })
+    return false;
 }
 
 /**
