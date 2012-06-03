@@ -37,6 +37,7 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/highcharts.js"></script>
 
 
 <script type="text/javascript">
@@ -188,6 +189,7 @@ header("Content-type: text/html; charset=utf-8");
 
 	<div id="taskcontainer">
 		<ol id="tasklist" class="sortable"></ol>
+		<div id="taskajax"></div>
 	</div>
 
 </div> <!-- end of page_tasks -->
@@ -371,6 +373,7 @@ header("Content-type: text/html; charset=utf-8");
 		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
 		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list ytt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
 		<?php if($show_edit_options) {?><li class="ytt-menu-delimiter ytt-need-real-list"></li><?}?>
+		<li class="ytt-need-list ytt-need-real-list" id="btnTimeTable"><?php _e('list_timetable');?></li>
 		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
 		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
 		<li class="ytt-menu-delimiter ytt-need-real-list"></li>

@@ -13,7 +13,7 @@ Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 set_error_handler('myErrorHandler');
 set_exception_handler('myExceptionHandler');
 
-require_once('./init.php');
+require_once(dirname(__FILE__).'/init.php');
 
 $db = DBConnection::instance();
 
@@ -36,82 +36,7 @@ elseif(isset($_GET['loadTasks']))
 	stop_gpc($_GET);
 	$listId = (int)_get('list');
 	check_read_access($listId);
-
-	$sqlWhere = $inner = '';
-	if($listId == -1) {
-		$userLists = getUserListsSimple();
-		$sqlWhere .= " AND {$db->prefix}todolist.list_id IN (". implode(array_keys($userLists), ','). ") ";
-	}
-	else $sqlWhere .= " AND {$db->prefix}todolist.list_id=". $listId;
-	if(_get('compl') == 0) $sqlWhere .= ' AND compl=0';
-	
-	$tag = trim(_get('t'));
-	if($tag != '')
-	{
-		$at = explode(',', $tag);
-		$tagIds = array();
-		$tagExIds = array();
-		foreach($at as $i=>$atv) {
-			$atv = trim($atv);
-			if($atv == '' || $atv == '^') continue;
-			if(substr($atv,0,1) == '^') {
-				$tagExIds[] = getTagId(substr($atv,1));
-			} else {
-				$tagIds[] = getTagId($atv);
-			}
-		}
-
-		if(sizeof($tagIds) > 1) {
-			$inner .= "INNER JOIN (SELECT task_id, COUNT(tag_id) AS c FROM {$db->prefix}tag2task WHERE list_id=$listId AND tag_id IN (".
-						implode(',',$tagIds). ") GROUP BY task_id) AS t2t ON id=t2t.task_id";
-			$sqlWhere = " AND c=". sizeof($tagIds); //overwrite sqlWhere!
-		}
-		elseif($tagIds) {
-			$inner .= "INNER JOIN {$db->prefix}tag2task ON id=task_id";
-			$sqlWhere .= " AND tag_id = ". $tagIds[0];
-		}
-		
-		if($tagExIds) {
-			$sqlWhere .= " AND id NOT IN (SELECT DISTINCT task_id FROM {$db->prefix}tag2task WHERE list_id=$listId AND tag_id IN (".
-						implode(',',$tagExIds). "))"; //DISTINCT ?
-		}
-	}
-
-	$s = trim(_get('s'));
-	if($s != '') $sqlWhere .= " AND (title LIKE ". $db->quoteForLike("%%%s%%",$s). " OR note LIKE ". $db->quoteForLike("%%%s%%",$s). ")";
-	$sort = (int)_get('sort');
-	$sqlSort = "ORDER BY compl ASC, ";
-	if($sort == 1) $sqlSort .= "prio DESC, ddn ASC, duedate ASC, ow ASC";		// byPrio
-	elseif($sort == 101) $sqlSort .= "prio ASC, ddn DESC, duedate DESC, ow DESC";	// byPrio (reverse)
-	elseif($sort == 2) $sqlSort .= "ddn ASC, duedate ASC, prio DESC, ow ASC";	// byDueDate
-	elseif($sort == 102) $sqlSort .= "ddn DESC, duedate DESC, prio ASC, ow DESC";// byDueDate (reverse)
-	elseif($sort == 3) $sqlSort .= "d_created ASC, prio DESC, ow ASC";			// byDateCreated
-	elseif($sort == 103) $sqlSort .= "d_created DESC, prio ASC, ow DESC";		// byDateCreated (reverse)
-	elseif($sort == 4) $sqlSort .= "d_edited ASC, prio DESC, ow ASC";			// byDateModified
-	elseif($sort == 104) $sqlSort .= "d_edited DESC, prio ASC, ow DESC";		// byDateModified (reverse)
-	else $sqlSort .= "ow ASC";
-
-	$t = array();
-	$t['total'] = 0;
-	$t['list'] = array();
-	$q = $db->dq("SELECT *, duedate IS NULL AS ddn FROM {$db->prefix}todolist $inner WHERE 1=1 $sqlWhere $sqlSort");
-	while($r = $q->fetch_assoc($q))
-	{
-		$t['total']++;
-		$t['list'][] = prepareTaskRow($r);
-	}
-	if(_get('setCompl') && have_write_access($listId)) {
-		$bitwise = (_get('compl') == 0) ? 'taskview & ~1' : 'taskview | 1';
-		$db->dq("UPDATE {$db->prefix}lists SET taskview=$bitwise WHERE id=$listId");
-	}
-
-	if((_get('setNotification',null) === '0' || _get('setNotification',null) === '1') && have_write_access($listId)) {
-		if(_get('setNotification') == 1) {
-			NotificationListener::enableNotification(NotificationListener::LISTENER_TYPE_LIST, $listId);
-		} else {
-			NotificationListener::disableNotification(NotificationListener::LISTENER_TYPE_LIST, $listId);
-		}
-	}
+	$t = loadTasks($listId, _get('compl'), _get('t'), _get('s'), _get('setCompl'), _get('setNotification',null));
 	jsonExit($t);
 }
 elseif(isset($_GET['newTask']))
@@ -764,6 +689,86 @@ elseif(isset($_GET['addComment']))
 }
 
 ###################################################################################################
+
+function loadTasks($listId, $compl = 0, $tag = '', $s = '', $sort = 0, $setCompl = 0, $setNotification = null) {
+	$db = DBConnection::instance();
+	$sqlWhere = $inner = '';
+	if($listId == -1) {
+		$userLists = getUserListsSimple();
+		$sqlWhere .= " AND {$db->prefix}todolist.list_id IN (". implode(array_keys($userLists), ','). ") ";
+	}
+	else $sqlWhere .= " AND {$db->prefix}todolist.list_id=". $listId;
+	if($compl == 0) $sqlWhere .= ' AND compl=0';
+
+	$tag = trim($tag);
+	if($tag != '')
+	{
+		$at = explode(',', $tag);
+		$tagIds = array();
+		$tagExIds = array();
+		foreach($at as $i=>$atv) {
+			$atv = trim($atv);
+			if($atv == '' || $atv == '^') continue;
+			if(substr($atv,0,1) == '^') {
+				$tagExIds[] = getTagId(substr($atv,1));
+			} else {
+				$tagIds[] = getTagId($atv);
+			}
+		}
+
+		if(sizeof($tagIds) > 1) {
+			$inner .= "INNER JOIN (SELECT task_id, COUNT(tag_id) AS c FROM {$db->prefix}tag2task WHERE list_id=$listId AND tag_id IN (".
+				implode(',',$tagIds). ") GROUP BY task_id) AS t2t ON id=t2t.task_id";
+			$sqlWhere = " AND c=". sizeof($tagIds); //overwrite sqlWhere!
+		}
+		elseif($tagIds) {
+			$inner .= "INNER JOIN {$db->prefix}tag2task ON id=task_id";
+			$sqlWhere .= " AND tag_id = ". $tagIds[0];
+		}
+
+		if($tagExIds) {
+			$sqlWhere .= " AND id NOT IN (SELECT DISTINCT task_id FROM {$db->prefix}tag2task WHERE list_id=$listId AND tag_id IN (".
+				implode(',',$tagExIds). "))"; //DISTINCT ?
+		}
+	}
+
+	$s = trim($s);
+	if($s != '') $sqlWhere .= " AND (title LIKE ". $db->quoteForLike("%%%s%%",$s). " OR note LIKE ". $db->quoteForLike("%%%s%%",$s). ")";
+	$sort = $sort;
+	$sqlSort = "ORDER BY compl ASC, ";
+	if($sort == 1) $sqlSort .= "prio DESC, ddn ASC, duedate ASC, ow ASC";		// byPrio
+	elseif($sort == 101) $sqlSort .= "prio ASC, ddn DESC, duedate DESC, ow DESC";	// byPrio (reverse)
+	elseif($sort == 2) $sqlSort .= "ddn ASC, duedate ASC, prio DESC, ow ASC";	// byDueDate
+	elseif($sort == 102) $sqlSort .= "ddn DESC, duedate DESC, prio ASC, ow DESC";// byDueDate (reverse)
+	elseif($sort == 3) $sqlSort .= "d_created ASC, prio DESC, ow ASC";			// byDateCreated
+	elseif($sort == 103) $sqlSort .= "d_created DESC, prio ASC, ow DESC";		// byDateCreated (reverse)
+	elseif($sort == 4) $sqlSort .= "d_edited ASC, prio DESC, ow ASC";			// byDateModified
+	elseif($sort == 104) $sqlSort .= "d_edited DESC, prio ASC, ow DESC";		// byDateModified (reverse)
+	else $sqlSort .= "ow ASC";
+
+	$t = array();
+	$t['total'] = 0;
+	$t['list'] = array();
+	$q = $db->dq("SELECT *, duedate IS NULL AS ddn FROM {$db->prefix}todolist $inner WHERE 1=1 $sqlWhere $sqlSort");
+	while($r = $q->fetch_assoc($q))
+	{
+		$t['total']++;
+		$t['list'][] = prepareTaskRow($r);
+	}
+	if($setCompl && have_write_access($listId)) {
+		$bitwise = ($compl == 0) ? 'taskview & ~1' : 'taskview | 1';
+		$db->dq("UPDATE {$db->prefix}lists SET taskview=$bitwise WHERE id=$listId");
+	}
+
+	if(($setNotification === '0' || $setNotification === '1') && have_write_access($listId)) {
+		if($setNotification == 1) {
+			NotificationListener::enableNotification(NotificationListener::LISTENER_TYPE_LIST, $listId);
+		} else {
+			NotificationListener::disableNotification(NotificationListener::LISTENER_TYPE_LIST, $listId);
+		}
+	}
+	return $t;
+}
 
 function prepareTaskRow($r)
 {

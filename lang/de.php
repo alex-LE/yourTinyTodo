@@ -130,6 +130,7 @@ class Lang extends DefaultLang
 		'list_export_ical' => "iCalendar",
 		'list_rssfeed' => "RSS Feed",
 		'list_notifications' => "Benachrichtigen bei Änderungen",
+		'list_timetable' => "Timetable",
 		'alltags' => "Alle Tags:",
 		'alltags_show' => "Alle anzeigen",
 		'alltags_hide' => "Alle ausblenden",
@@ -207,5 +208,8 @@ class Lang extends DefaultLang
 		'n_user' => 'Benutzer',
 		'n_mark_read' => 'als gelesen markieren',
 		'n_mark_all_read' => 'alle gelesen',
+
+		'tt_total' => 'Gesamt',
+		'tt_days' => 'Tage'
 	);
 }
