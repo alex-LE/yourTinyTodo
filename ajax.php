@@ -36,7 +36,7 @@ elseif(isset($_GET['loadTasks']))
 	stop_gpc($_GET);
 	$listId = (int)_get('list');
 	check_read_access($listId);
-	$t = loadTasks($listId, _get('compl'), _get('t'), _get('s'), _get('setCompl'), _get('setNotification',null));
+	$t = loadTasks($listId, _get('compl'), _get('t'), _get('s'), (int)_get('sort'), _get('setCompl'), _get('setNotification'));
 	jsonExit($t);
 }
 elseif(isset($_GET['newTask']))
