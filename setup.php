@@ -15,7 +15,11 @@ define('YTT_VERSION', 'ytt1.0a');
 set_exception_handler('myExceptionHandler');
 
 # Check old config file (prior v1.3)
-require_once('./db/config.php');
+if(file_exists('./db/config.php')) {
+	require_once('./db/config.php');
+} else {
+	require_once('./db/config.default.php');
+}
 if(!isset($config['db']))
 {
 	if(isset($config['mysql'])) {
@@ -108,11 +112,17 @@ if(!$ver)
 			Config::set('postgres.password', _post('postgres_password'));
 			Config::set('prefix', trim(_post('postgres_prefix')));
 		}
+		if($dbtype == 'sqlite') {
+			if(!is_writable('./db/')) {
+				exitMessage("Database folder ('db/') is not writable.");
+			}
+			@copy(YTTPATH.'db/todolist.default.db', YTTPATH.'db/todolist.db');
+		}
 		if(!testConnect($error)) {
 			exitMessage("Database connection error: $error");
 		}
-		if(!is_writable('./db/config.php')) {
-			exitMessage("Config file ('db/config.php') is not writable.");
+		if(!is_writable('./db/')) {
+			exitMessage("Config folder ('db/') is not writable.");
 		}
 		Config::save();
 		exitMessage("This will create yourTinyTodo database <form method=post><input type=hidden name=install value=1><input type=submit value=' Install '></form>");
