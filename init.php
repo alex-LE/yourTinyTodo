@@ -15,6 +15,8 @@ if(!defined('YTTCOREPATH')) define('YTTCOREPATH', YTTPATH.'core/');
 require_once(YTTPATH. 'common.php');
 if(!file_exists(YTTPATH.'db/config.php')) {
 	die("Not installed. Run <a href=setup.php>setup.php</a> first.");
+} else {
+	require_once(YTTPATH. 'db/config.php');
 }
 require_once(YTTPATH. 'core/Database.class.php');
 require_once(YTTPATH. 'core/Lang.class.php');
