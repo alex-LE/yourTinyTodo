@@ -3,7 +3,7 @@ Written in PHP and jQuery.
 Data stored in SQLite, MySQL or PostgreSQL database.
 Distributed under the GNU GPL License.
 
-yourTinyTodo - by the yourTinyTodo community
+yourTinyTodo - by the yourTinyTodo.net community
 
 Based on myTinyTodo by Max Pozdeev
 (C) Copyright 2009-2010 Max Pozdeev <maxpozdeev@gmail.com>
@@ -31,3 +31,11 @@ Features comming with the next version (already in Dev Branch):
  * Notifications
  * Comments per Task
  * Time Tracking
+
+IMPORTANT
+
+A default admin user will be created during setup.
+If you enable multi user support you need the following data to log in:
+
+username: admin
+password: admin
