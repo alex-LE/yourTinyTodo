@@ -56,7 +56,7 @@ class Notification {
 				continue;
 			}
 
-			$db->dq("INSERT INTO {$db->prefix}notifications (user_id, text, created, shown) VALUES (?, ?, now(), 0)", array($listener->getUserid(), $text));
+			$db->dq("INSERT INTO {$db->prefix}notifications (user_id, text, created, shown, creator_user_id) VALUES (?, ?, now(), 0, ?)", array($listener->getUserid(), $text, $current_user_id));
 		}
 	}
 

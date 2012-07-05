@@ -208,6 +208,7 @@ class Lang extends DefaultLang
 		'n_user' => 'Username',
 		'n_mark_read' => 'mark as read',
 		'n_mark_all_read' => 'mark all as read',
+		'n_header' => 'Notifications',
 
 		'tt_total' => 'Total',
 		'tt_days' => 'days'

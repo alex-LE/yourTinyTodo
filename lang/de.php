@@ -208,6 +208,7 @@ class Lang extends DefaultLang
 		'n_user' => 'Benutzer',
 		'n_mark_read' => 'als gelesen markieren',
 		'n_mark_all_read' => 'alle gelesen',
+		'n_header' => 'Benachrichtigungen',
 
 		'tt_total' => 'Gesamt',
 		'tt_days' => 'Tage'

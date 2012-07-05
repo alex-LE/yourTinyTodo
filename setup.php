@@ -209,6 +209,7 @@ if(!$ver)
 				"CREATE TABLE IF NOT EXISTS {$db->prefix}notifications (
   id int(11) NOT NULL auto_increment,
   user_id int(11) NOT NULL,
+  creator_user_id int(11) NOT NULL,
   text varchar(255) NOT NULL,
   created timestamp NOT NULL default CURRENT_TIMESTAMP,
   shown tinyint(1) NOT NULL default '0',
@@ -381,6 +382,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
 				"CREATE TABLE {$db->prefix}notifications (
 					id integer NOT NULL,
 					user_id integer,
+					creator_user_id integer,
 					text character varying,
 					created timestamp with time zone,
 					shown integer
@@ -1153,6 +1155,49 @@ function update_14_15($db, $dbtype)
 			  PRIMARY KEY  (id)
 			) CHARSET=utf8 ");
 
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}notifications (
+			  id int(11) NOT NULL auto_increment,
+			  user_id int(11) NOT NULL,
+			  creator_user_id int(11) NOT NULL,
+			  text varchar(255) NOT NULL,
+			  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+			  shown tinyint(1) NOT NULL default '0',
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}notification_listeners (
+			  id int(11) NOT NULL auto_increment,
+			  user_id int(11) NOT NULL,
+			  type set('task','list','global') character set utf8 NOT NULL,
+			  value int(11) default NULL,
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}comments (
+			  id int(11) NOT NULL auto_increment,
+			  task_id int(11) NOT NULL,
+			  user_id int(11) NOT NULL,
+			  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+			  comment varchar(255) NOT NULL,
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}time_tracker (
+			  id int(11) NOT NULL auto_increment,
+			  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+			  task_id int(11) NOT NULL,
+			  user_id int(11) NOT NULL,
+			  minutes int(11) NOT NULL,
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
 	}
 	else if($dbtype == 'postgres')
 	{
@@ -1187,11 +1232,54 @@ function update_14_15($db, $dbtype)
 		$db->ex('CREATE OR REPLACE FUNCTION "concat"(text, anynonarray) RETURNS text AS \'SELECT $1 || CAST($2 AS text);\' LANGUAGE \'sql\'');
 		$db->ex('CREATE OR REPLACE FUNCTION "concat"(anynonarray, text) RETURNS text AS \'SELECT CAST($1 AS text) || $2;\' LANGUAGE \'sql\'');
 		$db->ex('CREATE OR REPLACE FUNCTION "concat"(text, text) RETURNS text AS \'SELECT $1 || $2;\' LANGUAGE \'sql\'');
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}notifications (
+			  id int(11) NOT NULL auto_increment,
+			  user_id int(11) NOT NULL,
+			  creator_user_id int(11) NOT NULL,
+			  text varchar(255) NOT NULL,
+			  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+			  shown tinyint(1) NOT NULL default '0',
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}notification_listeners (
+			  id int(11) NOT NULL auto_increment,
+			  user_id int(11) NOT NULL,
+			  type set('task','list','global') character set utf8 NOT NULL,
+			  value int(11) default NULL,
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}comments (
+			  id int(11) NOT NULL auto_increment,
+			  task_id int(11) NOT NULL,
+			  user_id int(11) NOT NULL,
+			  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+			  comment varchar(255) NOT NULL,
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
+
+
+		$db->ex(
+			"CREATE TABLE IF NOT EXISTS {$db->prefix}time_tracker (
+			  id int(11) NOT NULL auto_increment,
+			  created timestamp NOT NULL default CURRENT_TIMESTAMP,
+			  task_id int(11) NOT NULL,
+			  user_id int(11) NOT NULL,
+			  minutes int(11) NOT NULL,
+			  PRIMARY KEY  (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ; ");
 	}
 	else #sqlite
 	{
 		$db->ex('CREATE TABLE '.$db->prefix.'users ("id" INTEGER PRIMARY KEY  NOT NULL , "uuid" VARCHAR, "username" VARCHAR, "password" VARCHAR, "email" VARCHAR, "d_created" INTEGER, "role" INTEGER)');
-		$db->ex('CREATE TABLE "'.$db->prefix.'notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
+		$db->ex('CREATE TABLE "'.$db->prefix.'notifications" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "creator_user_id" INTEGER, "text" VARCHAR, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "shown" INTEGER)');
 		$db->ex('CREATE TABLE "'.$db->prefix.'notification_listeners" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "user_id" INTEGER, "type" VARCHAR, "value" INTEGER)');
 		$db->ex('CREATE TABLE "'.$db->prefix.'comments" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "task_id" INTEGER, "user_id" INTEGER, "created" DATETIME DEFAULT CURRENT_TIMESTAMP, "comment" TEXT)');
 		$db->ex('CREATE TABLE "'.$db->prefix.'time_tracker" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "created" DATETIME, "task_id" INTEGER, "user_id" INTEGER, "minutes" INTEGER)');

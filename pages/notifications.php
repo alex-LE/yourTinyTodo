@@ -29,7 +29,11 @@ function getNotificationListFromDB()
 		$q = $db->dq("SELECT * FROM {$db->prefix}notifications WHERE shown = 0 AND user_id = ".$current_user_id." ORDER BY created DESC");
 		while($r = $q->fetch_assoc())
 		{
-			$user_name = $db->sq("SELECT username FROM {$db->prefix}users WHERE id=".$r['user_id']);
+			if((int)$r['creator_user_id'] > 0) {
+				$user_name = $db->sq("SELECT username FROM {$db->prefix}users WHERE id=".$r['creator_user_id']);
+			} else {
+				$user_name = '';
+			}
 		?>
 		<tr class="notification_row" id="notification_row_<?=$r['id']?>">
 			<td valign="left" class="col_created"><?php echo timestampToDatetime(strtotime($r['created'])) ?></td>
@@ -50,7 +54,7 @@ header('Content-type:text/html; charset=utf-8');
 ?>
 <div><a href="#" class="ytt-back-button"><?php _e('go_back');?></a></div>
 
-<h3><?php _e('um_header');?></h3>
+<h3><?php _e('n_header');?></h3>
 
 <table class="ytt-notification-table">
 	<tr>
