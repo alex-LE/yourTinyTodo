@@ -1,4 +1,4 @@
-yourTinyTodo
+# yourTinyTodo
 
 Simple way to manage your todo list in AJAX style.
 Written in PHP and jQuery.
@@ -15,7 +15,7 @@ Demo: http://www.mytinytodo.net/demo/ (OLD VERSION)
 Demo Nightly Build: http://alexphpc.my.phpcloud.com/yourtinytodo
 (latest development version)
 
-Features
+## Features
 
 *  Multiple lists
 *  Task notes
@@ -29,7 +29,7 @@ Features
 *  Print-friendly CSS
 *  Style for mobiles devices
 
-Features comming with the next version:
+### Features comming with the next version:
 
  * MulitUser Support (3 UserGroups: Admin, Read/Write, Readonly)
  * Notifications
