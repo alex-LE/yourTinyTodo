@@ -166,6 +166,7 @@ if(!$ver)
  tags VARCHAR(600) NOT NULL default '',	/* for fast access to task tags */
  tags_ids VARCHAR(250) NOT NULL default '', /* no more than 22 tags (x11 chars) */
  duedate DATE default NULL,
+ duration DOUBLE default NULL,
   PRIMARY KEY(id),
   KEY(list_id),
   UNIQUE KEY(uuid)
@@ -299,7 +300,8 @@ ALTER TABLE ONLY {$db->prefix}lists
     ow integer DEFAULT 0 NOT NULL,			-- order weight
     tags character varying(600),			-- for fast access to task tags
     tags_ids character varying(250),		-- no more than 22 tags (x11 chars)
-    duedate date
+    duedate date,
+    duration double precision
 );
 CREATE SEQUENCE {$db->prefix}todolist_id_seq
     START WITH 1
