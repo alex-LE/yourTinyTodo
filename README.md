@@ -25,7 +25,7 @@ Features
   *  Style for mobiles devices
 
 
-Features comming with the next version (already in Dev Branch):
+New Features in version 1.0a:
 
  * MulitUser Support (3 UserGroups: Admin, Read/Write, Readonly)
  * Notifications
