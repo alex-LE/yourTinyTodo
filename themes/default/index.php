@@ -221,7 +221,8 @@ header("Content-type: text/html; charset=utf-8");
 		</div>
 		<div class="form-row form-row-short">
 			<span class="h"><?php _e('duration');?> </span>
-			<input name="duration" id="duration" value="" class="in35" title="" autocomplete="off" />&nbsp;<?php _e('hour_sign');?>
+			<input name="duration_h" id="duration_h" value="" class="in35 textright" title="" autocomplete="off" />&nbsp;<?php _e('hour_sign');?>
+			<input name="duration_m" id="duration_m" value="" class="in35 textright" title="" autocomplete="off" />&nbsp;<?php _e('minute_sign');?>
 		</div>
 		<div class="form-row-short-end"></div>
 		<div class="form-row"><div class="h"><?php _e('task');?></div> <input type="text" name="task" value="" class="in500" maxlength="250" /></div>

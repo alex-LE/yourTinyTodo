@@ -966,18 +966,22 @@ function tasksLoaded() {
         continueTimer();
     }
 
-    $(".ytt-action-logtime-dateselect").datepicker({
-        onSelect: function(dateText, inst) {
-            $(this).parent().find('.ytt-action-logtime-date').html(dateText);
-        },
-        dateFormat: _ytt.duedatepickerformat(),
-        firstDay: _ytt.options.firstdayofweek,
-        duration:'',
-        dayNamesMin:_ytt.lang.daysMin, dayNames:_ytt.lang.daysLong, monthNamesShort:_ytt.lang.monthsLong
-    });
-    $(".ytt-action-logtime-date").click(function(){
-        $(this).parent().find('.ytt-action-logtime-dateselect').datepicker("show");
-    });
+	initDateSelectForTimeTracker();
+}
+
+function initDateSelectForTimeTracker() {
+	$(".ytt-action-logtime-dateselect").datepicker({
+		onSelect: function(dateText, inst) {
+			$(this).parent().find('.ytt-action-logtime-date').html(dateText);
+		},
+		dateFormat: _ytt.duedatepickerformat(),
+		firstDay: _ytt.options.firstdayofweek,
+		duration:'',
+		dayNamesMin:_ytt.lang.daysMin, dayNames:_ytt.lang.daysLong, monthNamesShort:_ytt.lang.monthsLong
+	});
+	$(".ytt-action-logtime-date").click(function(){
+		$(this).parent().find('.ytt-action-logtime-dateselect').datepicker("show");
+	});
 }
 
 function prepareTaskStr(item, noteExp)
@@ -1093,7 +1097,9 @@ function prepareComments(item) {
 
 function prepareProgress(item)
 {
-    if(!item.duration) return '';
+    if(!item.duration_h && !item.duration_m) {
+		return '';
+	}
     if(item.progress >= 100) {
         var bar_color = '#ff3333';
         var text_color = '#ff3333';
@@ -1126,7 +1132,7 @@ function prepareProgress(item)
             '       </span>' +
             '   </div>' +
             '   <div class="logtimePanel">'+
-            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35">&nbsp;'+_ytt.lang.get('time_min')+'&nbsp;<a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
+            '       '+_ytt.lang.get('time_spent')+' <input type="hidden" class="ytt-action-logtime-dateselect" /><span class="ytt-action-logtime-date">'+_ytt.lang.get('time_today')+'</span>:&nbsp;<input type="text" name="hours" class="in35 textright">&nbsp;'+_ytt.lang.get('time_min')+'&nbsp;<a href="#" class="ytt-action-logtime-save">'+_ytt.lang.get('save')+'</a> | <a href="#" class="ytt-action-logtime-cancel"">'+_ytt.lang.get('cancel')+'</a> '+
             '   </div>'+
             '</div>';
 };
@@ -1578,7 +1584,8 @@ function editTask(id)
 	form.tags.value = item.tags.split(',').join(', ');
 	form.duedate.value = item.duedate;
 	form.prio.value = item.prio;
-	form.duration.value = item.duration;
+	form.duration_h.value = item.duration_h;
+	form.duration_m.value = item.duration_m;
 	$('#taskedit-date .date-created>span').text(item.date);
 	if(item.compl) $('#taskedit-date .date-completed').show().find('span').text(item.dateCompleted);
 	else $('#taskedit-date .date-completed').hide();
@@ -1636,7 +1643,7 @@ function saveTask(form)
 		return submitFullTask(form);
 
 	_ytt.db.request('editTask', {id:form.id.value, title: form.task.value, note:form.note.value,
-		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duration:form.duration.value},
+		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duration_h:form.duration_h.value, duration_m:form.duration_m.value},
 		function(json){
 			if(!parseInt(json.total)) return;
 			var item = json.list[0];
@@ -1647,10 +1654,12 @@ function saveTask(form)
 			if(curList.sort != 0) changeTaskOrder(item.id);
 			_ytt.pageBack(); //back to list
 			refreshTaskCnt();
+			initDateSelectForTimeTracker();
 			$('#taskrow_'+item.id).effect("highlight", {color:_ytt.theme.editTaskFlashColor}, 'normal', function(){$(this).css('display','')});
 	});
 	$("#edittags").flushCache();
 	flag.tagsChanged = true;
+
 	return false;
 };
 

@@ -107,6 +107,7 @@ class Lang extends DefaultLang
 		'f_soon' => "Soon",
 		'duration' => "Duration",
 		'hour_sign' => "h",
+		'minute_sign' => 'min.',
 		'action_edit' => "Edit",
 		'action_note' => "Edit Note",
 		'action_delete' => "Delete",

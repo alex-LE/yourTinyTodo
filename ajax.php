@@ -180,7 +180,9 @@ elseif(isset($_GET['editTask']))
 	stop_gpc($_POST);
 	$title = trim(_post('title'));
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
-	$duration = (float)str_replace(',','.',_post('duration'));
+	$duration_h = (float)str_replace(',','.',_post('duration_h'));
+	$duration_m = intval(_post('duration_m'));
+	$duration = $duration_h + ($duration_m / 60);
 	$prio = (int)_post('prio');
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
@@ -794,6 +796,15 @@ function prepareTaskRow($r)
 		$progress_total = $r['duration'];
 	}
 
+	if(!empty($r['duration']) && floatval($r['duration']) > 0) {
+		$duration = floatval($r['duration']);
+		$duration_h = floor($duration);
+		$duration_m = ($duration - floor($duration)) * 60;
+	} else {
+		$duration_h = '';
+		$duration_m = '';
+	}
+
 	return array(
 		'id' => $r['id'],
 		'title' => escapeTags($r['title']),
@@ -819,7 +830,8 @@ function prepareTaskRow($r)
 		'dueStr' => htmlarray($r['compl'] && $dueA['timestamp'] ? formatTime($formatCompletedInline, $dueA['timestamp']) : $dueA['str']),
 		'dueInt' => date2int($r['duedate']),
 		'dueTitle' => htmlarray(sprintf($lang->get('taskdate_inline_duedate'), $dueA['formatted'])),
-		'duration' => (empty($r['duration']))?'':$r['duration'],
+		'duration_h' => $duration_h,
+		'duration_m' => $duration_m,
 		'progress' => $progress,
 		'progress_current' => $progress_current,
 		'progress_total' => $progress_total,
@@ -1114,6 +1126,7 @@ function deleteTask($id)
 
 	$db->ex("BEGIN");
 	$db->ex("DELETE FROM {$db->prefix}tag2task WHERE task_id=$id");
+	$db->ex("DELETE FROM {$db->prefix}time_tracker WHERE task_id=$id");
 	$db->dq("DELETE FROM {$db->prefix}todolist WHERE id=$id");
 	$affected = $db->affected();
 	$db->ex("COMMIT");

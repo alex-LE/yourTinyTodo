@@ -1066,3 +1066,7 @@ li.ytt-item-hidden { display:none; }
     text-align: left;
     width:20px!important;
 }
+
+.textright {
+	text-align: right;
+}
