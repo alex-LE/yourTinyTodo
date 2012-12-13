@@ -10,7 +10,9 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-define('YTT_VERSION', 'ytt1.0a');
+if(!defined('YTT_VERSION')) {
+	define('YTT_VERSION', 'ytt1.1a');
+}
 
 set_exception_handler('myExceptionHandler');
 
