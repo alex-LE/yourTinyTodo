@@ -168,6 +168,7 @@ if(!$ver)
  tags VARCHAR(600) NOT NULL default '',	/* for fast access to task tags */
  tags_ids VARCHAR(250) NOT NULL default '', /* no more than 22 tags (x11 chars) */
  duedate DATE default NULL,
+ duration double DEFAULT NULL,
   PRIMARY KEY(id),
   KEY(list_id),
   UNIQUE KEY(uuid)
