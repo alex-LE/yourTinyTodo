@@ -528,7 +528,8 @@ elseif(isset($_GET['createuser']))
 
 
 	// check input
-	if(empty($username) || empty($password) || empty($email) || !in_array($role, array(1,2,3)))
+	$regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
+	if(empty($username) || empty($password) || empty($email) || !in_array($role, array(1,2,3)) || !preg_match($regex, $email))
 	{
 		jsonExit(array('error' => 1)); // data invalid
 	}
@@ -566,7 +567,8 @@ elseif(isset($_GET['edituser']))
 
 
 	// check input
-	if(empty($username) || empty($email) || !in_array($role, array(1,2,3)) || empty($userid))
+	$regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
+	if(empty($username) || empty($email) || !in_array($role, array(1,2,3)) || empty($userid) || !preg_match($regex, $email))
 	{
 		jsonExit(array('error' => 1)); // data invalid
 	}
