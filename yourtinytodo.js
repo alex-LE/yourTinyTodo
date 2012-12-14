@@ -1583,6 +1583,8 @@ function editTask(id)
 	form.id.value = item.id;
 	form.tags.value = item.tags.split(',').join(', ');
 	form.duedate.value = item.duedate;
+	form.duedate_h.value = item.duedate_h;
+	form.duedate_m.value = item.duedate_m;
 	form.prio.value = item.prio;
 	form.duration_h.value = item.duration_h;
 	form.duration_m.value = item.duration_m;
@@ -1603,7 +1605,11 @@ function clearEditForm()
 	form.duedate.value = '';
 	form.prio.value = '0';
 	form.id.value = '';
+	form.duration_h.value = '';
+	form.duration_m.value = '';
 	toggleEditAllTags(0);
+	$('#duedate_h > option:eq(0)').attr('selected','selected');
+	$('#duedate_m > option:eq(0)').attr('selected','selected');
 };
 
 function showEditForm(isAdd)
@@ -1643,7 +1649,7 @@ function saveTask(form)
 		return submitFullTask(form);
 
 	_ytt.db.request('editTask', {id:form.id.value, title: form.task.value, note:form.note.value,
-		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duration_h:form.duration_h.value, duration_m:form.duration_m.value},
+		prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duedate_h:form.duedate_h.value, duedate_m:form.duedate_m.value, duration_h:form.duration_h.value, duration_m:form.duration_m.value},
 		function(json){
 			if(!parseInt(json.total)) return;
 			var item = json.list[0];
@@ -1769,7 +1775,7 @@ function submitFullTask(form)
 	if(flag.readOnly) return false;
 
 	_ytt.db.request('fullNewTask', { list:curList.id, tag:_ytt.filter.getTags(), title: form.task.value, note:form.note.value,
-			prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value }, function(json){
+			prio:form.prio.value, tags:form.tags.value, duedate:form.duedate.value, duedate_h:form.duedate_h.value, duedate_m:form.duedate_m.value }, function(json){
 		if(!parseInt(json.total)) return;
 		form.task.value = '';
 		var item = json.list[0];

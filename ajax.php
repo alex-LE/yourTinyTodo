@@ -98,6 +98,9 @@ elseif(isset($_GET['fullNewTask']))
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
 	$duedate = parse_duedate(trim(_post('duedate')));
+	$duedate_h = intval(trim(_post('duedate_h')));
+	$duedate_m = intval(trim(_post('duedate_m')));
+	$duedate .= ' '.$duedate_h.':'.$duedate_m;
 	$t = array();
 	$t['total'] = 0;
 	if($title == '') {
@@ -187,6 +190,9 @@ elseif(isset($_GET['editTask']))
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
 	$duedate = parse_duedate(trim(_post('duedate')));
+	$duedate_h = intval(trim(_post('duedate_h')));
+	$duedate_m = intval(trim(_post('duedate_m')));
+	$duedate .= ' '.$duedate_h.':'.$duedate_m;
 	$t = array();
 	$t['total'] = 0;
 	if($title == '') {
@@ -801,7 +807,7 @@ function prepareTaskRow($r)
 	if(!empty($r['duration']) && floatval($r['duration']) > 0) {
 		$duration = floatval($r['duration']);
 		$duration_h = floor($duration);
-		$duration_m = ($duration - floor($duration)) * 60;
+		$duration_m = round(($duration - floor($duration)) * 60,0);
 	} else {
 		$duration_h = '';
 		$duration_m = '';
@@ -828,6 +834,8 @@ function prepareTaskRow($r)
 		'tags' => htmlarray($r['tags']),
 		'tags_ids' => htmlarray($r['tags_ids']),
 		'duedate' => $dueA['formatted'],
+		'duedate_h' => (strtotime($r['duedate']))?intval(date("H", strtotime($r['duedate']))):0,
+		'duedate_m' => (strtotime($r['duedate']))?intval(date("i", strtotime($r['duedate']))):0,
 		'dueClass' => $dueA['class'],
 		'dueStr' => htmlarray($r['compl'] && $dueA['timestamp'] ? formatTime($formatCompletedInline, $dueA['timestamp']) : $dueA['str']),
 		'dueInt' => date2int($r['duedate']),
@@ -1065,6 +1073,10 @@ function prepare_duedate($duedate)
 	elseif($ad[0] == $at[0])	{ $a['class'] = 'future'; $a['str'] = formatDate3(Config::get('dateformatshort'), (int)$ad[0], (int)$ad[1], (int)$ad[2], $lang); }
 	else						{ $a['class'] = 'future'; $a['str'] = formatDate3(Config::get('dateformat2'), (int)$ad[0], (int)$ad[1], (int)$ad[2], $lang); }
 
+	if(date("H:i", strtotime($duedate)) != '00:00') {
+		$a['str'] .= ' - '.date("H:i", strtotime($duedate));
+	}
+
 	$a['formatted'] = formatTime(Config::get('dateformat2'), $a['timestamp']);
 
 	return $a;
@@ -1073,11 +1085,12 @@ function prepare_duedate($duedate)
 function date2int($d)
 {
 	if(!$d) return 33330000;
-	$ad = explode('-', $d);
+	return date("YmdHi", strtotime($d));
+	/*$ad = explode('-', $d);
 	$s = $ad[0];
 	if(strlen($ad[1]) < 2) $s .= "0$ad[1]"; else $s .= $ad[1];
 	if(strlen($ad[2]) < 2) $s .= "0$ad[2]"; else $s .= $ad[2];
-	return (int)$s;
+	return (int)$s;*/
 }
 
 function daysInMonth($m, $y=0)

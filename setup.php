@@ -167,7 +167,7 @@ if(!$ver)
  ow INT NOT NULL default 0,				/* order weight */
  tags VARCHAR(600) NOT NULL default '',	/* for fast access to task tags */
  tags_ids VARCHAR(250) NOT NULL default '', /* no more than 22 tags (x11 chars) */
- duedate DATE default NULL,
+ duedate DATETIME default NULL,
  duration double DEFAULT NULL,
   PRIMARY KEY(id),
   KEY(list_id),
@@ -302,7 +302,7 @@ ALTER TABLE ONLY {$db->prefix}lists
     ow integer DEFAULT 0 NOT NULL,			-- order weight
     tags character varying(600),			-- for fast access to task tags
     tags_ids character varying(250),		-- no more than 22 tags (x11 chars)
-    duedate date
+    duedate datetime
 );
 CREATE SEQUENCE {$db->prefix}todolist_id_seq
     START WITH 1
@@ -514,7 +514,7 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
  ow INTEGER NOT NULL default 0,
  tags VARCHAR(600) NOT NULL default '',
  tags_ids VARCHAR(250) NOT NULL default '',
- duedate DATE default NULL,
+ duedate DATETIME default NULL,
  duration DOUBLE
 ) ");
 			$db->ex("CREATE INDEX todo_list_id ON {$db->prefix}todolist (list_id)");
@@ -735,8 +735,8 @@ function myExceptionHandler($e)
 ### 1.1-1.2 ##########
 function update_11_12($db, $dbtype)
 {
-	if($dbtype == 'mysql') $db->ex("ALTER TABLE todolist ADD duedate DATE default NULL");
-	else $db->ex("ALTER TABLE todolist ADD duedate DATE default NULL");
+	if($dbtype == 'mysql') $db->ex("ALTER TABLE todolist ADD duedate DATETIME default NULL");
+	else $db->ex("ALTER TABLE todolist ADD duedate DATETIME default NULL");
 
 	# Fixing broken tags
 	$db->ex("BEGIN");
@@ -921,7 +921,7 @@ function update_130_131($db, $dbtype)
  prio TINYINT NOT NULL default 0,
  ow INT NOT NULL default 0,
  tags VARCHAR(250) NOT NULL default '',
- duedate DATE default NULL
+ duedate DATETIME default NULL
 ) ");
 		$db->ex("INSERT INTO todolist_backup (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate) ".
 			" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM todolist");
@@ -939,7 +939,7 @@ function update_130_131($db, $dbtype)
  prio TINYINT NOT NULL default 0,
  ow INT NOT NULL default 0,
  tags VARCHAR(250) NOT NULL default '',
- duedate DATE default NULL
+ duedate DATETIME default NULL
 ) ");
 		$db->ex("CREATE INDEX list_id ON todolist (list_id)");
 
@@ -1023,7 +1023,7 @@ function update_131_14($db, $dbtype)
 				 ow INTEGER NOT NULL default 0,
 				 tags VARCHAR(600) NOT NULL default '',
 				 tags_ids VARCHAR(250) NOT NULL default '',
-				 duedate DATE default NULL
+				 duedate DATETIME default NULL
 				) ");
 		$db->ex("INSERT INTO todolist_new (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate)".
 			" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM {$db->prefix}todolist");
