@@ -23,7 +23,9 @@ require_once(YTTPATH. 'core/Lang.class.php');
 require_once(YTTPATH. 'core/Notification.class.php');
 require_once(YTTPATH. 'core/TimeTracker.class.php');
 
-define('YTT_VERSION', '1.1a');
+if(!defined('YTT_VERSION')) {
+	define('YTT_VERSION', '1.1a');
+}
 
 if(!isset($config)) global $config;
 Config::loadConfig($config);

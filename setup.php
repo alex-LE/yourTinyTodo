@@ -565,7 +565,7 @@ elseif($ver == YTT_VERSION)
 }
 else
 {
-	if(!in_array($ver, array('mtt1.1','mtt1.2','mtt1.3.0','mtt1.3.1','mtt1.4'))) {
+	if(!in_array($ver, array('mtt1.1','mtt1.2','mtt1.3.0','mtt1.3.1','mtt1.4','ytt1.0a'))) {
 		exitMessage("Can not update. Unsupported database version ($ver).");
 	}
 	if(!isset($_POST['update'])) {
@@ -601,6 +601,10 @@ else
 		update_12_13($db, $dbtype);
 		update_130_131($db, $dbtype);
 		update_131_14($db, $dbtype);
+	}
+	elseif($ver == 'ytt1.0a')
+	{
+		update_ytt10($db, $dbtype);
 	}
 }
 echo "Done<br/><br/><b>Attention!</b> Delete this file for security reasons.";
@@ -645,6 +649,16 @@ function get_ver($db, $dbtype)
 	if(!$db->table_exists($db->prefix.'users')) return $v;
 
 	$v = 'ytt1.0a';
+	if($dbtype == 'mysql') {
+		if(get_field_type_mysql($db, $db->prefix.'todolist', 'duedate') == 'date') return $v;
+	} elseif($dbtype == 'postgres') {
+		if(get_field_type_postgres($db, $db->prefix.'todolist', 'duedate') == 'date') return $v;
+	} else {
+		//if(!has_field_sqlite($db, $db->prefix.'todolist', 'd_edited')) return $v;
+	}
+
+
+	$v = 'ytt1.1a';
 	return $v;
 }
 
@@ -685,6 +699,28 @@ function has_field_postgres($db, $table, $field)
 	$q = $db->dq("select * from INFORMATION_SCHEMA.COLUMNS where column_name='$field' AND table_name = '$table';");
 	if($q->rows() > 0) return false;
 	else return true;
+}
+
+function get_field_type_mysql($db, $table, $field)
+{
+	$q = $db->dq("DESCRIBE $table $field");
+	$r = $q->fetch_row();
+	if($q && is_array($r)) {
+		return strtolower($r[1]);
+	} else {
+		return false;
+	}
+}
+
+function get_field_type_postgres($db, $table, $field)
+{
+	$q = $db->dq("SELECT data_type FROM information_schema.columns WHERE table_name ='$table' AND column_name = '$field'");
+	$r = $q->fetch_row();
+	if($q && is_array($r)) {
+		return strtolower($r[0]);
+	} else {
+		return false;
+	}
 }
 
 function testConnect(&$error)
@@ -1024,6 +1060,7 @@ function update_131_14($db, $dbtype)
 				 tags VARCHAR(600) NOT NULL default '',
 				 tags_ids VARCHAR(250) NOT NULL default '',
 				 duedate DATETIME default NULL
+				 duration DOUBLE default NULL
 				) ");
 		$db->ex("INSERT INTO todolist_new (id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate)".
 			" SELECT id,list_id,d_created,d_completed,compl,title,note,prio,ow,tags,duedate FROM {$db->prefix}todolist");
@@ -1296,3 +1333,24 @@ function update_14_15($db, $dbtype)
 	$db->ex("COMMIT");
 }
 ### end of 1.5 #####
+
+### update ytt1.0 to ytt1.1 ##########
+function update_ytt10($db, $dbtype)
+{
+	$db->ex("BEGIN");
+	if($dbtype=='mysql')
+	{
+		$db->ex("ALTER TABLE {$db->prefix}todolist MODIFY COLUMN duedate datetime");
+	}
+	else if($dbtype == 'postgres')
+	{
+		$db->ex("ALTER TABLE {$db->prefix}todolist ALTER COLUMN duedate TYPE datetime");
+	}
+	else #sqlite
+	{
+
+	}
+
+	$db->ex("COMMIT");
+}
+### end of ytt1.0 ###
