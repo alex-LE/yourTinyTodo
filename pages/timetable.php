@@ -25,7 +25,7 @@ $list = loadTasks($list_id,0,'','',1);
 $total_time = 0;
 $total_progress = 0;
 foreach($list['list'] as $item) {
-	$total_time += floatval($item['duration']);
+	$total_time += floatval($item['duration_h']/60 + $item['duration_m']);
 	$total_progress += floatval($item['progress_current']);
 }
 
@@ -37,7 +37,6 @@ if($total_time > 0) {
 	$total_time_value = 100;
 }
 
-
 $total_days = 0;
 $total_hours = 0;
 $total_minutes = 0;
@@ -46,11 +45,11 @@ $has_days = '';
 if($total_time > 8) {
 	$total_days = floor($total_time/8);
 	$total_hours = floor($total_time-($total_days*8));
-	$total_minutes = ($total_time-($total_days*8)-$total_hours)*60;
+	$total_minutes = round(($total_time-($total_days*8)-$total_hours)*60,0);
 	$has_days = 'has_days';
 } else {
 	$total_hours = floor($total_time);
-	$total_minutes = ($total_time - $total_hours)*60;
+	$total_minutes = round(($total_time - $total_hours)*60,0);
 }
 
 ?>
