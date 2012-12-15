@@ -695,7 +695,7 @@ elseif(isset($_GET['addComment']))
 	$db->dq("INSERT INTO {$db->prefix}comments (task_id,user_id,comment) VALUES(?,?,?)",
 		array($taskid, $current_user_id, $comment) );
 
-	jsonExit(array('done' => 1, 'user' => getUserName($current_user_id), 'date' => date(Config::get('dateformat'))));
+	jsonExit(array('done' => 1, 'user' => getUserName($current_user_id), 'date' => date(Config::get('dateformat').' H:i')));
 }
 
 ###################################################################################################
@@ -857,7 +857,7 @@ function getTaskComments($task_id) {
 	while($r = $q->fetch_assoc()) {
 		$new_item = array();
 		$new_item['user'] = getUserName($r['user_id']);
-		$new_item['date'] = date(Config::get('dateformat'), strtotime($r['created']));
+		$new_item['date'] = date(Config::get('dateformat').' H:i', strtotime($r['created']));
 		$new_item['comment'] = $r['comment'];
 		$result[] = $new_item;
 	}
