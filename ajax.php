@@ -100,7 +100,9 @@ elseif(isset($_GET['fullNewTask']))
 	$duedate = parse_duedate(trim(_post('duedate')));
 	$duedate_h = intval(trim(_post('duedate_h')));
 	$duedate_m = intval(trim(_post('duedate_m')));
-	$duedate .= ' '.$duedate_h.':'.$duedate_m;
+	if(!empty($duedate)) {
+		$duedate .= ' '.$duedate_h.':'.$duedate_m;
+	}
 	$t = array();
 	$t['total'] = 0;
 	if($title == '') {
@@ -192,7 +194,9 @@ elseif(isset($_GET['editTask']))
 	$duedate = parse_duedate(trim(_post('duedate')));
 	$duedate_h = intval(trim(_post('duedate_h')));
 	$duedate_m = intval(trim(_post('duedate_m')));
-	$duedate .= ' '.$duedate_h.':'.$duedate_m;
+	if(!empty($duedate)) {
+		$duedate .= ' '.$duedate_h.':'.$duedate_m;
+	}
 	$t = array();
 	$t['total'] = 0;
 	if($title == '') {
