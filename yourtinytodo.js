@@ -1006,7 +1006,8 @@ function prepareTaskStr(item, noteExp)
 		    '           <div class="task-through">'+
                             preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
 		                    (curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
-                            prepareProgressMini(item)+
+							prepareAuthor(item.author) +
+							prepareProgressMini(item)+
 		                    prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span>' +
             '           </div>'+
 		    '           <div class="task-note-block">'+
@@ -1026,6 +1027,13 @@ function prepareTaskStr(item, noteExp)
             "</li>\n";
 };
 
+function prepareAuthor(s) {
+	if(s == 'null') {
+		return '';
+	}
+
+	return '<span class="task-author"> by '+ s + '</span>';
+}
 
 function prepareHtml(s)
 {

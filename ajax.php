@@ -63,11 +63,12 @@ elseif(isset($_GET['newTask']))
 		jsonExit($t);
 	}
 
+	$author = (Config::get('multiuser') == 1 && isset($_SESSION['userid']))?intval($_SESSION['userid']):null;
 	if(Config::get('autotag')) $tags .= ','._post('tag');
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}todolist WHERE list_id=$listId AND compl=0");
 	$db->ex("BEGIN");
-	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio) VALUES (?,?,?,?,?,?,?)",
-				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio) );
+	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,author) VALUES (?,?,?,?,?,?,?,?)",
+				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $author) );
 	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
 	{
@@ -109,11 +110,12 @@ elseif(isset($_GET['fullNewTask']))
 		jsonExit($t);
 	}
 	$tags = trim(_post('tags'));
+	$author = (Config::get('multiuser') == 1 && isset($_SESSION['userid']))?(int)$_SESSION['userid']:null;
 	if(Config::get('autotag')) $tags .= ','._post('tag');
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}todolist WHERE list_id=$listId AND compl=0");
 	$db->ex("BEGIN");
-	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate,duration) VALUES(?,?,?,?,?,?,?,?,?,?)",
-				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate, $duration) );
+	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate,duration) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate, $duration, $author) );
 	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
 	{
@@ -796,7 +798,7 @@ function prepareTaskRow($r)
 	$dCompleted = $r['d_completed'] ? timestampToDatetime($r['d_completed']) : '';
 
 	$db = DBConnection::instance();
-	$current_user_id = (int)$_SESSION['userid'];
+	$current_user_id = (Config::get('multiuser') == 1)?(int)$_SESSION['userid']:0;
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$r['id']." AND user_id=".$current_user_id);
 
 	$progress = '';
@@ -849,7 +851,8 @@ function prepareTaskRow($r)
 		'progress' => $progress,
 		'progress_current' => $progress_current,
 		'progress_total' => $progress_total,
-		'comments' => getTaskComments($r['id'])
+		'comments' => getTaskComments($r['id']),
+		'author' => ($r['author'] > 0 && Config::get('multiuser') == 1)?getUserName($r['author']):'null'
 	);
 }
 
@@ -1062,7 +1065,9 @@ function prepare_duedate($duedate)
 	if($duedate == '') {
 		return $a;
 	}
-	$ad = explode('-', $duedate);
+	//$ad = explode('-', $duedate);
+	$ad = strtotime($duedate);
+	$ad = array(date("Y",$ad),date("m",$ad),date("d",$ad));
 	$at = explode('-', date('Y-m-d'));
 	$a['timestamp'] = mktime(0,0,0,$ad[1],$ad[2],$ad[0]);
 	$diff = mktime(0,0,0,$ad[1],$ad[2],$ad[0]) - mktime(0,0,0,$at[1],$at[2],$at[0]);
@@ -1182,7 +1187,7 @@ function prepareList($row)
 	$taskview = (int)$row['taskview'];
 
 	$db = DBConnection::instance();
-	$current_user_id = (int)$_SESSION['userid'];
+	$current_user_id = (Config::get('multiuser') == 1)?intval($_SESSION['userid']):0;
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$row['id']." AND user_id=".$current_user_id);
 
 	return array(

@@ -93,7 +93,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
     #tasktable .task-title {
 
-    }
+	}
 
     #tasktable .duration {
         background-color: #252E37;
@@ -453,6 +453,7 @@ li.task-expanded:hover {background-color: #f6f6f6!important;}
 .task-tags { padding:0px 2px 0 28px; display: block; }
 .task-tags .tag { font-size:0.8em; font-weight:bold; color:#333333; text-decoration:underline;  }
 .task-tags .tag:hover {  }
+.task-author { color:#AAAAAA; font-size: 10px; }
 .duedate {
     color:#262f38;
     padding:3px 12px 3px 5px;
