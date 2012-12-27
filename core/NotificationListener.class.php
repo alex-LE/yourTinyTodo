@@ -75,7 +75,7 @@ class NotificationListener {
 	}
 
 	public static function hasGlobalNotifications($userid) {
-		if($userid) {
+		if(empty($userid)) {
 			return 0;
 		}
 		$db = DBConnection::instance();
