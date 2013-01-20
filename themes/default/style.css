@@ -148,7 +148,6 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 	left: 0;
 	width: 100%;
 	padding: 5px 0;
-	z-index: 100;
 }
 
 #function-bar h2 {
@@ -172,12 +171,10 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 .menuitem {
 	background-color: #666666;
-	border-radius: 4px 4px 4px 4px;
 	font-family: Arial;
 	font-size: 12px;
 	font-weight: bold;
 	text-decoration: none;
-	margin-left: 7px;
 	padding: 6px;
 	color: #FFFFFF;
 }
@@ -409,7 +406,7 @@ li.task-expanded {background-color: #f6f6f6!important;}
 li.task-expanded:hover {background-color: #f6f6f6!important;}
 .task-middle { margin-left:40px; margin-right:20px; }
 #tasklist { list-style-type: none; margin: 0; padding: 0;}
-#tasklist > li { padding:6px 2px 6px 6px; border-bottom:1px solid #DEDEDE; min-height:18px; margin-bottom:1px; background-color:#fff!important; }
+#tasklist > li { padding:6px 2px 6px 6px; border-bottom:1px solid #DEDEDE; min-height:18px; background-color:#fff!important; }
 #tasklist > li:hover { background-color:#f6f6f6!important; }
 .task-actions { float:right; width:20px; text-align:right; }
 .task-date { color:#999999; font-size:0.8em; margin-left:4px; display:none; }
@@ -902,18 +899,14 @@ a.ytt-manage-users { font-size:0.8em; }
 .ytt-menu-button {
 	-moz-user-select:none; -webkit-user-select: none;
 	cursor:pointer;
-	border:1px solid transparent;
+	padding: 2px;
 }
 .ytt-menu-button:hover, .ytt-menu-button.ytt-menu-button-active { 
-	border:1px solid #ccc; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px;
 }
 
 .ytt-menu-container { 
 	overflow:hidden; z-index:100;
 	background-color:#f9f9f9; border:1px solid #C9C9C9; padding:2px 0px;
-	-moz-box-shadow:1px 2px 5px rgba(0,0,0,0.5); -webkit-box-shadow:1px 2px 5px rgba(0,0,0,0.5); box-shadow:1px 2px 5px rgba(0,0,0,0.5); 
-	-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;
-	margin:0px 7px 7px 0px; /* for shadows */
 } 
 .ytt-menu-container ul { list-style: none; padding:0; margin:0; }
 .ytt-menu-container li { margin:1px 0px; cursor:default; color:#000; white-space:nowrap; padding:0.15em 0px; padding-left:24px; padding-right:18px; position:relative; }

@@ -49,8 +49,6 @@ header("Content-type: text/html; charset=utf-8");
 <div id="function-bar">
 	<h2><?php yttinfo('title'); ?></h2>
 
-	<div id="loading"></div>
-
 	<div id="bar">
 		<div id="msg">
 			<span class="msg-text"></span>
