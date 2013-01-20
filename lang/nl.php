@@ -55,6 +55,7 @@ class Lang extends DefaultLang
 		'time_min' => 'min.',
 		'progress_spent' => 'Tijd gespendeerd',
 		'progress_estimated' => 'Geschatte tijd',
+		'loggedin_as' => 'Aangemeld als:',
 	);
 
 	var $inc = array
@@ -191,7 +192,6 @@ class Lang extends DefaultLang
 		'um_nousers' => "Geen gebruikers beschikbaar",
 		'um_createuser' => "Gebruiker aanmaken",
 		'access_denied' => "Toegang geweigerd!<br/>Schakel wachtwoordbeveiliging uit of meld aan.",
-		'loggedin_as' => 'Aangemeld als:',
 
 		/* notifications */
 		'n_task_created' => 'Nieuwe taak "%s" aangemaakt',

@@ -55,6 +55,7 @@ class Lang extends DefaultLang
 		'time_min' => 'min.',
 		'progress_spent' => 'Zeit erfasst',
 		'progress_estimated' => 'Zeit geplant',
+		'loggedin_as' => 'Eingeloggt als:',
 	);
 
 	var $inc = array
@@ -192,7 +193,6 @@ class Lang extends DefaultLang
 		'um_nousers' => "Keine Benutzer vorhanden",
 		'um_createuser' => "Benutzer anlegen",
 		'access_denied' => "Zugriff verweigert!<br/>Passwortschutz abschalten oder einloggen.",
-		'loggedin_as' => 'Eingeloggt als:',
 
 		/* notifications */
 		'n_task_created' => 'Neue Aufgabe "%s" erstellt',

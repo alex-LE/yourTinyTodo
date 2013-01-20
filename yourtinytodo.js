@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false, debugmode:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false, debugmode:false, notification_count:0, show_edit_options:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -110,13 +110,20 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.userId = options.userId;
 		flag.userRole = options.userRole;
 		flag.debugmode = options.debugmode;
+		flag.notification_count = options.notification_count;
+		flag.show_edit_options = options.show_edit_options;
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
 
-        if(!flag.multiUser) {
-            $('#btnNotifications').hide();
-        }
+		if(!flag.multiUser) {
+			$('#btnNotifications').hide();
+			$('#loggedinuser').hide();
+			$('.login_multiuser').remove();
+		} else {
+			$('#loggedinuser').html(_ytt.lang.get('loggedin_as') + this.options.userName);
+			$('.login_singleuser').remove();
+		}
 
 		this.parseAnchor();
 
@@ -533,6 +540,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
         $('#markallasread').live('click', function() {
             markAllNotificationRead();
         });
+
 
         // User management
         $("#manageusers").live('click', showUserManagement);
@@ -1105,7 +1113,7 @@ function prepareComments(item) {
 
 function prepareProgress(item)
 {
-    if(!item.duration_h && !item.duration_m) {
+    if((!item.duration_h && !item.duration_m) || (item.duration_h == 0 && duration_m == 0)) {
 		return '';
 	}
     if(item.progress >= 100) {
@@ -2462,6 +2470,34 @@ function updateAccessStatus()
 		liveSearchToggle(0);
 	}
     $('#page_ajax').hide();
+
+	if(flag.notification_count != false) {
+		$('#notifications').show();
+		$('#notification_counter-value').html(flag.notification_count);
+		if(flag.notification_count > 0) {
+			$('#notification_counter').addClass('hasone');
+		} else {
+			$('#notification_counter').addClass('nothing');
+		}
+	} else {
+		$('#notifications').parent().hide();
+	}
+
+	if(flag.show_edit_options) {
+		$('#btnRenameList').show();
+		$('#btnDeleteList').show();
+		$('#btnClearCompleted').show();
+		$('#btnPublish').show();
+		$('#btnExport').show();
+		$('#btnExport').next().show();
+	} else {
+		$('#btnRenameList').hide();
+		$('#btnDeleteList').hide();
+		$('#btnClearCompleted').hide();
+		$('#btnPublish').hide();
+		$('#btnExport').hide();
+		$('#btnExport').next().hide();
+	}
 }
 
 function showAuth(el)

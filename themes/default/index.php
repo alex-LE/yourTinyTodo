@@ -40,46 +40,7 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/highcharts.js"></script>
 
 
-<script type="text/javascript">
-	$().ready(function(){
-
-	<?php if(isset($_GET['pda'])): ?>
-
-		$('body').width(screen.width);
-		$(window).resize(function() {
-			$('body').width(screen.width);
-		});
-
-		<?php endif; ?>
-
-		yourtinytodo.yttUrl = "<?php yttinfo('ytt_url'); ?>";
-		yourtinytodo.templateUrl = "<?php yttinfo('template_url'); ?>";
-		yourtinytodo.db = new yourtinytodoStorageAjax(yourtinytodo);
-		yourtinytodo.init({
-			needAuth: <?php echo $needAuth ? "true" : "false"; ?>,
-			multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
-			admin: <?php echo is_admin() ? "true" : "false"; ?>,
-			readOnly: <?php echo is_readonly() ? "true" : "false"; ?>,
-			<? if(isset($_SESSION['userid'])) {?>
-			globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
-			userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
-			userRole: <?php echo (!empty($_SESSION['role']))?$_SESSION['role']:'null'; ?>,
-			<? } ?>
-			isLogged: <?php echo ($needAuth && is_logged()) ? "true" : "false"; ?>,
-			showdate: <?php echo (Config::get('showdate') && !isset($_GET['pda'])) ? "true" : "false"; ?>,
-			singletab: <?php echo (isset($_GET['singletab']) || isset($_GET['pda'])) ? "true" : "false"; ?>,
-			duedatepickerformat: "<?php echo htmlspecialchars(Config::get('dateformat2')); ?>",
-			dateformatshort: "<?php echo htmlspecialchars(Config::get('dateformatshort')); ?>",
-			firstdayofweek: <?php echo (int) Config::get('firstdayofweek'); ?>,
-			autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>,
-			authbypass: <?php echo Config::get('auth_bypass') == 'none' ? "false" : "true"; ?>,
-			debugmode: <?php echo Config::get('debugmode') ? "true" : "false"; ?>
-		<?php if(isset($_GET['list'])) echo ",openList: ". (int)$_GET['list']; ?>
-		<?php if(isset($_GET['pda'])) echo ", touchDevice: true"; ?>
-		}).loadLists(1);
-
-	});
-</script>
+<? require_once(YTTPATH.'yourtinytodo_theme_init_js.php'); ?>
 
 <div id="wrapper">
 <div id="container">
@@ -96,16 +57,14 @@ header("Content-type: text/html; charset=utf-8");
 			<div class="msg-details"></div>
 		</div>
 		<div class="bar-menu">
-			<? if(false !== $notifications_count) {?>
 			<span class="menu-owner menuitem" style="display:none;position: relative;">
-				<a href="#notifications" id="notifications"><?php _e('a_notifications');?><span id="notification_counter" class="<?=($notifications_count > 0)?'hasone':'nothing'?>">
+				<a href="#notifications" id="notifications" style="display:none"><?php _e('a_notifications');?><span id="notification_counter">
 						<span class="notification_counter-left"></span>
-						<?=$notifications_count?>
+						<span class="notification_counter-value"></span>
 						<span class="notification_counter-right"></span>
 					</span>
 				</a>
 			</span>
-			<?}?>
 			<span class="bar-delim" style="display:none"></span>
 			<span class="menu-owner menuitem" style="display:none">
 				<a href="#settings" id="settings"><?php _e('a_settings');?></a>
@@ -341,10 +300,6 @@ header("Content-type: text/html; charset=utf-8");
 	<span class="prio-pos prio-pos-2">+2</span>
 </div>
 
-<?php
-	$show_edit_options = (!isset($_SESSION['role']) || $_SESSION['role'] < 3);
-?>
-
 <div id="page_ajax" style="display:none"></div>
 </div>
 
@@ -357,7 +312,7 @@ header("Content-type: text/html; charset=utf-8");
 <div id="footer">
 	<div id="footer_content">
 		Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?>
-		<div id="loggedinuser"><?=_e('loggedin_as')?> <?=(isset($_SESSION['userid']))?getUserName($_SESSION['userid']):''?></div>
+		<div id="loggedinuser"></div>
 	</div>
 </div>
 
@@ -435,15 +390,16 @@ header("Content-type: text/html; charset=utf-8");
 
 <div id="authform" style="display:none">
 	<form id="login_form" action="" method="post">
-		<?php if($multiUser) { ?>
-		<div><label for="username"><?php _e('um_username');?></label><input type="text" name="username" id="username" /></div>
-		<div><label for="password"><?php _e('um_password');?></label><input type="password" name="password" id="password" /></div>
-		<div><input type="submit" value="<?php _e('btn_login');?>" /></div>
-		<?php } else { ?>
-		<div class="h"><?php _e('password');?></div>
-		<div><input type="password" name="password" id="password" /></div>
-		<div><input type="submit" value="<?php _e('btn_login');?>" /></div>
-		<?php } ?>
+		<!-- if multiuser is enabled -->
+		<div class="login_multiuser"><label for="username"><?php _e('um_username');?></label><input type="text" name="username" id="username" /></div>
+		<div class="login_multiuser"><label for="password"><?php _e('um_password');?></label><input type="password" name="password" id="password" /></div>
+		<div class="login_multiuser"><input type="submit" value="<?php _e('btn_login');?>" /></div>
+
+		<!-- if singleuser is enabled -->
+		<div class="h login_singleuser"><?php _e('password');?></div>
+		<div class="login_singleuser"><input type="password" name="password" id="password" /></div>
+		<div class="login_singleuser"><input type="submit" value="<?php _e('btn_login');?>" /></div>
+
 	</form>
 </div>
 
@@ -459,13 +415,13 @@ header("Content-type: text/html; charset=utf-8");
 
 <div id="listmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list ytt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li><?}?>
-		<?php if($show_edit_options) {?><li class="ytt-menu-delimiter ytt-need-real-list"></li><?}?>
+		<li class="ytt-need-list ytt-need-real-list" id="btnRenameList"><?php _e('list_rename');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnDeleteList"><?php _e('list_delete');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnClearCompleted"><?php _e('list_clearcompleted');?></li>
+		<li class="ytt-need-list ytt-need-real-list ytt-menu-indicator" id="btnExport" submenu="listexportmenucontainer"><div class="submenu-icon"></div><?php _e('list_export'); ?></li>
+		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnTimeTable"><?php _e('list_timetable');?></li>
-		<?php if($show_edit_options) {?><li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li><?}?>
+		<li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
 		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
 		<li class="ytt-need-list ytt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="ytt-sort-direction">&nbsp;</span></li>
