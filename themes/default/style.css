@@ -165,8 +165,6 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 #main {
 	background: #fff;
-	-webkit-border-radius: 7px;
-	border-radius: 7px; 
 	padding:65px 24px 24px;
 	overflow: hidden;
 	position: relative;
@@ -350,7 +348,6 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 .ytt-htabs  { clear:both; padding:8px; background:#ededed; }
 
 .ytt-img-button { width:16px; height:16px; padding:2px; border:1px solid transparent; display:inline-block; }
-.ytt-img-button:hover { border:1px solid #ccc; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; }
 .ytt-img-button span { display:inline-block; width:16px; height:16px; }
 
 .arrdown { display:inline-block; height:7px; width:9px; background:url(images/arrdown.gif); }
@@ -366,7 +363,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 #task_placeholder.placeholding span { display:inline-block; }
 
 .ytt-taskbox-icon { width:16px; height:16px; position:absolute; top:50%; margin-top:-8px; }
-.ytt-taskbox-icon.ytt-icon-submittask { background:url(images/mzl.png) 0px -32px no-repeat; right:4px; }
+.ytt-taskbox-icon.ytt-icon-submittask {cursor: pointer; background:url(images/mzl.png) 0px -32px no-repeat; right:4px; }
 
 #newtask_adv span { background:url(images/buttons.png) 0 -48px no-repeat; }
 #newtask_adv:hover span { background-position:-16px -48px; }
@@ -817,7 +814,7 @@ li.task-expanded .task-progress-block { display:block; }
 .task-note span a { color:#777777; }
 .task-note span a:hover { color:#af0000; }
 
-.task-prio { font-weight: bold; padding:2px 3px; margin-left:0px; margin-right:5px; cursor:default; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.task-prio { font-weight: bold; padding:2px 3px; margin-left:0px; margin-right:5px; cursor:default;}
 .prio-neg { background-color:#7cb8ed; color:#ffffff; }
 .prio-pos { background-color:#fb3232; color:#ffffff; }
 .prio-pos-1 { background-color:#ff7700; color:#ffffff; }
