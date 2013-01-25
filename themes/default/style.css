@@ -8,12 +8,10 @@ Based on myTinyTodo by Max Pozdeev
 Licensed under the GNU GPL v3 license. See file COPYRIGHT for details.
 */
 
-/*  default style   */
-
 html { height:100%; }
 body {
 	height:100%; min-height:100%;
-	background-color: #C1C1C1;
+	background-color: #ededed;
 	margin: 0;
 	padding: 0;
 	color: #333;
@@ -30,7 +28,7 @@ td, th, input, textarea, select { font-family:arial; font-size:1em; }
 form { display: inline; }
 h2,h3 { margin:0; }
 h2 { font-size:1.5em; float:left; padding-right:10px; }
-h3 { border-bottom:2px solid #B5D5FF; margin-bottom:10px; padding:6px 0; font-size:1.1em; }
+h3 { border-bottom:1px solid #7cb8ed; margin-bottom:8px; padding:6px 0; font-size:1.1em; }
 #page_tasks h3 { padding-left:4px; padding-right:4px; }
 a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
@@ -280,15 +278,15 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 #msg.ytt-info .msg-details { border:1px solid #EFC300;}
 
 .ytt-tabs { list-style:none; padding:0; margin:0;}
-.ytt-tabs li { margin:1px 3px 0 0; float:left; background-color:#ededed;}
+.ytt-tabs li { margin:1px 3px 0 0; float:left; background-color:#fbfbfb; border:solid 1px #ededed;border-bottom: none;}
 .ytt-tab a { position:relative; margin:0; font-size:0.9em; font-weight:bold; text-decoration:none; text-align:center; white-space:nowrap; color:#444444; display:block; height:21px; padding:6px 6px 0px 2px; outline:none; vertical-align:top; }
 .ytt-tab a span { display:inline-block; min-width:75px; max-width:195px; cursor:pointer; padding:0; overflow:hidden; }
 .ytt-tab .list-action { display:none; float:left; position:absolute; top:6px; right:5px; width:15px; height:15px; background:transparent url(images/icons.gif) 0 0 no-repeat; cursor:pointer; }
 /*.ytt-tab .list-action:hover, .ytt-tab .list-action.ytt-menu-button-active { background-position:-16px 0; } */
 .ytt-tab.ytt-tabs-selected span { margin-right:16px; }
 .ytt-tab.ytt-tabs-selected .list-action { display:block; }
-.ytt-tab.ytt-tabs-selected { background-color:#C1C1C1;color:black;}
-.ytt-tabs li:hover a { background-color:#C1C1C1; color:black;}
+.ytt-tab.ytt-tabs-selected { background-color:#ededed;color:black;}
+.ytt-tabs li:hover a { background-color:#ededed; color:black;}
 .ytt-tabs.ytt-tabs-only-one li { display:none; }
 .ytt-tabs.ytt-tabs-only-one li.ytt-tabs-selected { display:block; }
 #ytt_body.readonly li.ytt-tabs-selected span { margin-right:0; }
@@ -305,7 +303,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 	padding-bottom:2px; 
 	padding-left:2px;
 	padding-right:2px;
-	 background-color:#C1C1C1;
+	background-color:#ededed; border:solid 1px #ededed;border-bottom: none;
 	margin-top: 2px;
 	-moz-border-radius-topright:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px;
 }
@@ -324,11 +322,11 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 }
 
 .ytt-tabs-add-button {
-	float:left; margin-top:1px; padding:6px 2px 0px 2px; font-size:0.9em; height:21px; background:#ededed;
+	float:left; margin-top:1px; padding:6px 2px 0px 2px; font-size:0.9em; height:21px; background-color:#fbfbfb; border:solid 1px #ededed;border-bottom: none;
 	-webkit-border-radius: 0px 6px 0px 0px;
 	border-radius: 0px 6px 0px 0px;
 }
-.ytt-tabs-add-button:hover{background-color: #C1C1C1;}
+.ytt-tabs-add-button:hover{background-color: #ededed;}
 .ytt-tabs-add-button:hover { cursor:pointer; }
 .ytt-tabs-add-button>span { display:block; width:16px; height:16px; background:url(images/buttons.png) 0 0 no-repeat; }
 .ytt-tabs-add-button:hover>span { background-position:-16px 0; }
@@ -339,7 +337,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 
 #ytt_body.no-lists #toolbar > * { visibility:hidden; }
-.ytt-htabs  { clear:both; padding:8px; background:#C1C1C1; }
+.ytt-htabs  { clear:both; padding:8px; background:#ededed; }
 
 .ytt-img-button { width:16px; height:16px; padding:2px; border:1px solid transparent; display:inline-block; }
 .ytt-img-button span { display:inline-block; width:16px; height:16px; }
