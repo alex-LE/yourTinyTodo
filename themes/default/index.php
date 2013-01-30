@@ -17,6 +17,7 @@ header("Content-type: text/html; charset=utf-8");
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php yttinfo('title'); ?></title>
 	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style.css" media="all" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php yttinfo('template_url'); ?> /favicon.ico" />
 	<?php if(Config::get('rtl')): ?>
 	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style_rtl.css" media="all" />
 	<?php endif; ?>
