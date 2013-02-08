@@ -22,15 +22,4 @@ if(!is_int(Config::get('firstdayofweek')) || Config::get('firstdayofweek')<0 || 
 
 define('TEMPLATEPATH', YTTPATH. 'themes/'.Config::get('template').'/');
 
-if(isset($_SERVER['HTTP_USER_AGENT']))
-{
-	$l=array('Android','iPhone','iPad');
-	foreach($l as $item){
-		if(stripos($_SERVER['HTTP_USER_AGENT'],$item)!==false&&!isset($_GET['pda'])){
-			header('location: ?pda');
-			exit;
-		}
-	}
-}
-
 require(TEMPLATEPATH. 'index.php');

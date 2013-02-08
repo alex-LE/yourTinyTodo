@@ -16,15 +16,10 @@ header("Content-type: text/html; charset=utf-8");
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php yttinfo('title'); ?></title>
-	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style.css?v=<?=YTT_VERSION?>" media="all" />
+	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style.css" media="all" />
+	<link rel="shortcut icon" type="image/x-icon" href="<?php yttinfo('template_url'); ?> /favicon.ico" />
 	<?php if(Config::get('rtl')): ?>
-	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style_rtl.css?v=<?=YTT_VERSION?>" media="all" />
-	<?php endif; ?>
-	<?php if(isset($_GET['pda'])): ?>
-	<meta name="viewport" id="viewport" content="width=device-width" />
-	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>pda.css?v=<?=YTT_VERSION?>" media="all" />
-	<?php else: ?>
-	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>print.css?v=<?=YTT_VERSION?>" media="print" />
+	<link rel="stylesheet" type="text/css" href="<?php yttinfo('template_url'); ?>style_rtl.css" media="all" />
 	<?php endif; ?>
 </head>
 
@@ -48,8 +43,6 @@ header("Content-type: text/html; charset=utf-8");
 
 <div id="function-bar">
 	<h2><?php yttinfo('title'); ?></h2>
-
-	<div id="loading"></div>
 
 	<div id="bar">
 		<div id="msg">
