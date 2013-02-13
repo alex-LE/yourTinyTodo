@@ -35,7 +35,7 @@ function getUserListFromDB()
 			<td valign="left" class="notification"><?php echo (NotificationListener::hasGlobalNotifications($r['id']))?_e('um_notification_on'):_e('um_notification_off') ?></td>
 			<td>
 				<a href="#" class="edituser" rel="<?php echo $r['id'] ?>"><?php _e('action_edit') ?></a>
-				<?php if($r['id'] != $_SESSION['userid']) { ?>
+				<?php if(isset($_SESSION['userid']) && $r['id'] != $_SESSION['userid']) { ?>
 				&nbsp;|&nbsp;
 				<a href="#" class="deleteuser" rel="<?php echo $r['id'] ?>"><?php _e('action_delete') ?></a>
 				<?php } ?>

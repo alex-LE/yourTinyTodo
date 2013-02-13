@@ -13,7 +13,7 @@
 		globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 		userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
 		userRole: <?php echo (!empty($_SESSION['role']))?$_SESSION['role']:'null'; ?>,
-		userName: <?php echo (isset($_SESSION['userid']))?getUserName($_SESSION['userid']):''; ?>,
+		userName: '<?php echo (isset($_SESSION['userid']))?getUserName($_SESSION['userid']):''; ?>',
 		<? } ?>
 		isLogged: <?php echo ($needAuth && is_logged()) ? "true" : "false"; ?>,
 		showdate: <?php echo (Config::get('showdate') && !isset($_GET['pda'])) ? "true" : "false"; ?>,

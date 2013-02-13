@@ -76,6 +76,8 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 #tasktable .task-title {}
 
+.task-author { color:#AAAAAA; font-size: 10px; }
+
 #tasktable .duration {
 	background-color: #252E37;
 	color: #FFFFFF;
