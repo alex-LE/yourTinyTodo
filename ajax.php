@@ -114,7 +114,7 @@ elseif(isset($_GET['fullNewTask']))
 	if(Config::get('autotag')) $tags .= ','._post('tag');
 	$ow = 1 + (int)$db->sq("SELECT MAX(ow) FROM {$db->prefix}todolist WHERE list_id=$listId AND compl=0");
 	$db->ex("BEGIN");
-	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate,duration) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+	$db->dq("INSERT INTO {$db->prefix}todolist (uuid,list_id,title,d_created,d_edited,ow,prio,note,duedate,duration,author) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
 				array(generateUUID(), $listId, $title, time(), time(), $ow, $prio, $note, $duedate, $duration, $author) );
 	$id = $db->last_insert_id($db->prefix.'todolist');
 	if($tags != '')
@@ -805,9 +805,12 @@ function prepareTaskRow($r)
 	$progress_current = '';
 	$progress_total = '';
 	if(!empty($r['duration'])) {
-		$progress = ceil((TimeTracker::getTaskTotal($r['id'])*100)/($r['duration']*60));
-		$progress_current = TimeTracker::getTaskTotal($r['id'])/60;
-		$progress_total = $r['duration'];
+		$task_total = TimeTracker::getTaskTotal($r['id']);
+		if($task_total > 0) {
+			$progress = ceil(($task_total*100)/($r['duration']*60));
+			$progress_current = $task_total/60;
+			$progress_total = $r['duration'];
+		}
 	}
 
 	if(!empty($r['duration']) && floatval($r['duration']) > 0) {
