@@ -33,7 +33,7 @@ h3 { border-bottom:1px solid #7cb8ed; margin-bottom:8px; padding:6px 0; font-siz
 a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 #space { height:30px; }
-#footer { height:30px; margin-top:-28px; }
+#footer { height:30px; margin-top:-28px; background-color: #666666; }
 #footer_content {padding:5px; font-size:0.8em; color:#FFFFFF;}
 #footer_content a {color:#FFFFFF;}
 

@@ -121,7 +121,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			$('#loggedinuser').hide();
 			$('.login_multiuser').remove();
 		} else {
-			$('#loggedinuser').html(_ytt.lang.get('loggedin_as') + this.options.userName);
+			$('#loggedinuser').html(this.lang.get('loggedin_as') + ' ' + this.options.userName);
 			$('.login_singleuser').remove();
 		}
 
