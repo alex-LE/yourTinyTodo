@@ -63,6 +63,8 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		touchDevice: false
 	},
 
+	show_archived_lists: 0,
+
 	timers: {
 		previewtag: 0
 	},
@@ -672,7 +674,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		
 		tabLists.clear();
 		
-		this.db.loadLists(null, function(res)
+		this.db.loadLists(this.show_archived_lists, function(res)
 		{
 			var ti = '';
 			var openListId = 0;
@@ -923,6 +925,22 @@ function publishCurList()
 			$('#btnPublish').removeClass('ytt-item-checked');
 			$('#btnRssFeed').addClass('ytt-item-disabled');
 		}
+	});
+};
+
+function archiveCurList()
+{
+	if(!curList) return false;
+	_ytt.db.request('archiveList', { list:curList.id, archive:curList.archive?0:1 }, function(json){
+		if(!parseInt(json.total)) return;
+		curList.archive = curList.archive?0:1;
+		if(curList.archive) {
+			$('#btnArchive').addClass('ytt-item-checked');
+		}
+		else {
+			$('#btnArchive').removeClass('ytt-item-checked');
+		}
+		_ytt.loadLists();
 	});
 };
 
@@ -1487,6 +1505,7 @@ function listMenuClick(el, menu)
 		case 'btnRenameList': renameCurList(); break;
 		case 'btnDeleteList': deleteCurList(); break;
 		case 'btnPublish': publishCurList(); break;
+		case 'btnArchive': archiveCurList(); break;
 		case 'btnExportCSV': exportCurList('csv'); break;
 		case 'btnExportICAL': exportCurList('ical'); break;
 		case 'btnRssFeed': feedCurList(); break;
@@ -2165,6 +2184,7 @@ function tabmenuOnListSelected(list)
 		$('#btnPublish').removeClass('ytt-item-checked');
 		$('#btnRssFeed').addClass('ytt-item-disabled');
 	}
+	if(list.archive) $('#btnArchive').addClass('ytt-item-checked');
 	if(list.showCompl) $('#btnShowCompleted').addClass('ytt-item-checked');
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
     if(list.notification) $('#btnNotifications').addClass('ytt-item-checked');
@@ -2291,6 +2311,10 @@ function slmenuOnListsLoaded()
 	}
 	$('#slmenucontainer ul>.slmenu-lists-begin').nextAll().remove();
 	$('#slmenucontainer ul>.slmenu-lists-begin').after(s);
+
+	if(_ytt.show_archived_lists == 1) {
+		$('.list-id--2').addClass('ytt-item-checked');
+	}
 };
 
 function slmenuOnListRenamed(list)
@@ -2309,7 +2333,7 @@ function slmenuOnListAdded(list)
 
 function slmenuOnListSelected(list)
 {
-	$('#slmenucontainer li').removeClass('ytt-item-checked');
+	$('#slmenucontainer li:not(.list-id--2)').removeClass('ytt-item-checked');
 	$('#slmenucontainer li.list-id-'+list.id).addClass('ytt-item-checked').removeClass('ytt-list-hidden');
 
 };
@@ -2328,9 +2352,19 @@ function slmenuSelect(el, menu)
 		id = a[0];
 		value = a[1];
 	}
+	if(id == 'slmenu_list' && value == -2) {
+		if(_ytt.show_archived_lists == 0) {
+			_ytt.show_archived_lists = 1;
+		} else {
+			_ytt.show_archived_lists = 0;
+		}
+
+		_ytt.loadLists();
+	}
 	if(id == 'slmenu_list') {
 		tabSelect(parseInt(value));
 	}
+
 	return false;
 };
 
@@ -2455,13 +2489,13 @@ function updateAccessStatus()
 		$('#ytt_body').addClass('readonly');
 		liveSearchToggle(1);
 		// remove some tab menu items
-		$('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish').remove();
+		$('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish,#btnArchive').remove();
 	}
     else if(flag.needAuth && flag.isLogged && flag.readOnly) {
         $('#ytt_body').addClass('readonly');
         liveSearchToggle(1);
         // remove some tab menu items
-        $('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish').remove();
+        $('#btnRenameList,#btnDeleteList,#btnClearCompleted,#btnPublish,#btnArchive').remove();
     }
 	else {
         flag.readOnly = false;
@@ -2488,6 +2522,7 @@ function updateAccessStatus()
 		$('#btnDeleteList').show();
 		$('#btnClearCompleted').show();
 		$('#btnPublish').show();
+		$('#btnArchive').show();
 		$('#btnExport').show();
 		$('#btnExport').next().show();
 	} else {
@@ -2495,6 +2530,7 @@ function updateAccessStatus()
 		$('#btnDeleteList').hide();
 		$('#btnClearCompleted').hide();
 		$('#btnPublish').hide();
+		$('#btnArchive').hide();
 		$('#btnExport').hide();
 		$('#btnExport').next().hide();
 	}

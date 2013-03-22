@@ -124,6 +124,7 @@ class Lang extends DefaultLang
 		'list_rename' => "Liste umbenennen",
 		'list_delete' => "Liste löschen",
 		'list_publish' => "Liste veröffentlichen",
+		'list_archive' => "Liste archivieren",
 		'list_showcompleted' => "Zeige abgeschlossene Tasks",
 		'list_clearcompleted' => "Lösche abgeschlossene Tasks",
 		'list_select' => "Liste auswählen",
@@ -144,6 +145,7 @@ class Lang extends DefaultLang
 		'feed_modified_tasks' => "Bearbeitete Tasks",
 		'feed_new_tasks' => "Neue Tasks",
 		'alltasks' => "Alle Tasks",
+		'archivelists' => "Archivierte Listen",
 
 		/* Settings */
 		'set_header' => "Einstellungen",

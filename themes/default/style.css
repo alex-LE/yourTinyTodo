@@ -156,7 +156,6 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 }
 
 #function-bar #bar {
-	margin-right: 25px;
 	margin-top: 0;
 	overflow: hidden;
 	height:28px;
@@ -177,6 +176,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 	text-decoration: none;
 	padding: 6px;
 	color: #FFFFFF;
+	margin-left: 5px;
 }
 
 .menuitem * {

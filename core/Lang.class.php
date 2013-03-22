@@ -116,6 +116,7 @@ class DefaultLang {
 		'list_rename' => "Rename list",
 		'list_delete' => "Delete list",
 		'list_publish' => "Publish list",
+		'list_archive' => "Archive list",
 		'list_showcompleted' => "Show completed tasks",
 		'list_clearcompleted' => "Clear completed tasks",
 		'list_select' => "Select list",
@@ -135,7 +136,8 @@ class DefaultLang {
 		'feed_completed_tasks' => "Completed tasks",
 		'feed_modified_tasks' => "Modified tasks",
 		'feed_new_tasks' => "New tasks",
-		'alltasks' => "All tasks",
+		'alltasks' => "All lists",
+		'archivelists' => "Archived lists",
 
 		/* Settings */
 		'set_header' => "Settings",

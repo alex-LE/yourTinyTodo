@@ -19,8 +19,19 @@ $db = DBConnection::instance();
 
 if(isset($_GET['loadLists']))
 {
-	if($needAuth && !is_logged()) $sqlWhere = 'WHERE published=1';
-	else $sqlWhere = '';
+	if($needAuth && !is_logged()) {
+		$sqlWhere = 'WHERE published=1';
+	} else {
+		$sqlWhere = '';
+	}
+
+	$archive = (int)_get('archive');
+	if(empty($sqlWhere)) {
+		$sqlWhere .= 'WHERE archive = '.$archive;
+	} else {
+		$sqlWhere .= ' AND archive = '.$archive;
+	}
+
 	$t = array();
 	$t['total'] = 0;
 	$q = $db->dq("SELECT * FROM {$db->prefix}lists $sqlWhere ORDER BY ow ASC, id ASC");
@@ -442,6 +453,14 @@ elseif(isset($_GET['publishList']))
 	$listId = (int)_post('list');
 	$publish = (int)_post('publish');
 	$db->ex("UPDATE {$db->prefix}lists SET published=?,d_created=? WHERE id=$listId", array($publish ? 1 : 0, time()));
+	jsonExit(array('total'=>1));
+}
+elseif(isset($_GET['archiveList']))
+{
+	check_write_access();
+	$listId = (int)_post('list');
+	$archive = (int)_post('archive');
+	$db->ex("UPDATE {$db->prefix}lists SET archive=?,d_created=? WHERE id=$listId", array($archive ? 1 : 0, time()));
 	jsonExit(array('total'=>1));
 }
 elseif(isset($_GET['moveTask']))
@@ -1197,6 +1216,7 @@ function prepareList($row)
 		'id' => $row['id'],
 		'name' => htmlarray($row['name']),
 		'sort' => (int)$row['sorting'],
+		'archive' => (int)$row['archive'],
 		'published' => $row['published'] ? 1 :0,
 		'showCompl' => $taskview & 1 ? 1 : 0,
 		'showNotes' => $taskview & 2 ? 1 : 0,

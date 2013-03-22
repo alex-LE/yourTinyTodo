@@ -35,9 +35,9 @@ yourtinytodoStorageAjax.prototype =
 	},
 
 
-	loadLists: function(params, callback)
+	loadLists: function(archive, callback)
 	{
-		$.getJSON(this.ytt.yttUrl+'ajax.php?loadLists'+'&rnd='+Math.random(), callback);
+		$.getJSON(this.ytt.yttUrl+'ajax.php?loadLists&archive='+archive+'&rnd='+Math.random(), callback);
 	},
 
 
@@ -157,6 +157,11 @@ yourtinytodoStorageAjax.prototype =
 	publishList: function(params, callback)
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?publishList', { list:params.list, publish:params.publish },  callback, 'json');
+	},
+
+	archiveList: function(params, callback)
+	{
+		$.post(this.ytt.yttUrl+'ajax.php?archiveList', { list:params.list, archive:params.archive },  callback, 'json');
 	},
 	
 	setShowNotesInList: function(params, callback)

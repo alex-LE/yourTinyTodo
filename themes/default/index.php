@@ -328,6 +328,7 @@ header("Content-type: text/html; charset=utf-8");
 <div id="slmenucontainer" class="ytt-menu-container" style="display:none">
 	<ul>
 		<li id="slmenu_list:-1" class="list-id--1 ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#alltasks"><?php _e('alltasks'); ?></a></li>
+		<li id="slmenu_list:-2" class="list-id--2 ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#archivelists"><?php _e('archivelists'); ?></a></li>
 		<li class="ytt-menu-delimiter slmenu-lists-begin ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>></li>
 	</ul>
 </div>
@@ -415,6 +416,7 @@ header("Content-type: text/html; charset=utf-8");
 		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnTimeTable"><?php _e('list_timetable');?></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnArchive"><div class="menu-icon"></div><?php _e('list_archive');?></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
 		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
 		<li class="ytt-need-list ytt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="ytt-sort-direction">&nbsp;</span></li>
