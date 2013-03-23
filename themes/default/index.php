@@ -35,7 +35,7 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/highcharts.js"></script>
 
 
-<? require_once(YTTPATH.'yourtinytodo_theme_init_js.php'); ?>
+<?php require_once(YTTPATH.'yourtinytodo_theme_init_js.php'); ?>
 
 <div id="wrapper">
 <div id="container">

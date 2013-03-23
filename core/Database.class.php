@@ -1,4 +1,4 @@
-<?
+<?php
 require_once(YTTPATH.'core/interfaces/databaseresult.interface.php');
 
 abstract class Database {

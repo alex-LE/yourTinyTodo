@@ -1,4 +1,4 @@
-<?
+<?php
 require_once(YTTPATH. 'core/NotificationListener.class.php');
 
 class Notification {

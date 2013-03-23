@@ -1,4 +1,4 @@
-<?
+<?php
 
 interface IDatabaseResult {
 	public function affected();

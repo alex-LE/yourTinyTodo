@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 This file is part of yourTinyTodo by the yourTinyTodo community.
 Copyrights for portions of this file are retained by their owners.
@@ -59,7 +59,7 @@ if($total_time > 8) {
 <div id="tasktable">
 	<h3><?=$list_data['name']?></h3>
 	<ul>
-		<?
+		<?php
 		foreach($list['list'] as $item) {
 			$bar_width = ($item['progress'] >= 100)?'520':round(($item['progress']*520)/100);
 			if($item['progress'] >= 100) {
@@ -85,17 +85,17 @@ if($total_time > 8) {
 		<li>
 			<span class="task-prio <?=$cl?>"><?=$v?></span>
 			<span class="task-title"><?=$item['title']?></span>
-			<?if(!empty($item['duration'])) {?>
+			<?php if(!empty($item['duration'])) {?>
 			<span class="duration">
 				<?=floor($item['duration'])?>h <?=(($item['duration']-floor($item['duration']))*60)?>m
 				<img src="<?='themes/'. Config::get('template') . '/'?>images/timetable_edge.png" alt="" />
 			</span>
-			<?}?>
+			<?php}?>
 			<span class="ytt-progress-bar">
             	<span class="ytt-progress-percentbar" style="width:<?=$bar_width?>px;background-color: <?=$bar_color?>"></span>
             </span>
 		</li>
-		<? } ?>
+		<?php } ?>
 	</ul>
 </div>
 

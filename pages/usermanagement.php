@@ -41,7 +41,7 @@ function getUserListFromDB()
 				<?php } ?>
 			</td>
 		</tr>
-		<?
+		<?php
 	}
 }
 

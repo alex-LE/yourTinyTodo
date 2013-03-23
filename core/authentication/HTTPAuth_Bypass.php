@@ -1,4 +1,4 @@
-<?
+<?php
 require_once(YTTCOREPATH.'interfaces/authentication_bypass.interface.php');
 
 class HTTPAuth_Bypass implements IAuthentication_Bypass {

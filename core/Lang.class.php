@@ -1,4 +1,4 @@
-<?
+<?php
 class DefaultLang {
 	protected $js = array();
 	protected $rtl = 0;

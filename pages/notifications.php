@@ -43,7 +43,7 @@ function getNotificationListFromDB()
 				<a href="#markread" rel="<?=$r['id']?>" class="markread"></a>
 			</td>
 		</tr>
-		<?
+		<?php
 		}
 	}
 }

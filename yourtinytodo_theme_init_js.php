@@ -9,12 +9,12 @@
 		multiUser: <?php echo $multiUser ? "true" : "false"; ?>,
 		admin: <?php echo is_admin() ? "true" : "false"; ?>,
 		readOnly: <?php echo is_readonly() ? "true" : "false"; ?>,
-		<? if(isset($_SESSION['userid'])) {?>
+		<?php if(isset($_SESSION['userid'])) {?>
 		globalNotifications: <?php echo (NotificationListener::hasGlobalNotifications($_SESSION['userid'])) ? "true" : "false"; ?>,
 		userId: <?php echo (!empty($_SESSION['userid']))?$_SESSION['userid']:'null'; ?>,
 		userRole: <?php echo (!empty($_SESSION['role']))?$_SESSION['role']:'null'; ?>,
 		userName: '<?php echo (isset($_SESSION['userid']))?getUserName($_SESSION['userid']):''; ?>',
-		<? } ?>
+		<?php } ?>
 		isLogged: <?php echo ($needAuth && is_logged()) ? "true" : "false"; ?>,
 		showdate: <?php echo (Config::get('showdate') && !isset($_GET['pda'])) ? "true" : "false"; ?>,
 		singletab: <?php echo (isset($_GET['singletab']) || isset($_GET['pda'])) ? "true" : "false"; ?>,
