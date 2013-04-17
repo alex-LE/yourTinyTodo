@@ -122,6 +122,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			$('#btnNotifications').hide();
 			$('#loggedinuser').hide();
 			$('.login_multiuser').remove();
+			$('#btnPrivate').addClass('ytt-item-disabled');
 		} else {
 			$('#loggedinuser').html(this.lang.get('loggedin_as') + ' ' + this.options.userName);
 			$('.login_singleuser').remove();
@@ -2164,6 +2165,11 @@ function cmenuOnListsLoaded()
 		s += '<li id="cmenu_list:'+all[i].id+'" class="'+(all[i].hidden?'ytt-list-hidden':'')+'">'+all[i].name+'</li>';
 	}
 	$('#cmenulistscontainer ul').html(s);
+
+	if(!flag.multiUser) {
+		$('#btnPrivate').addClass('ytt-item-disabled');
+	}
+
 };
 
 function cmenuOnListAdded(list)
