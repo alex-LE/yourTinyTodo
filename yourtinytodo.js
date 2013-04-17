@@ -2355,8 +2355,10 @@ function slmenuSelect(el, menu)
 	if(id == 'slmenu_list' && value == -2) {
 		if(_ytt.show_archived_lists == 0) {
 			_ytt.show_archived_lists = 1;
+			$('.list-id--2').addClass('ytt-item-checked');
 		} else {
 			_ytt.show_archived_lists = 0;
+			$('.list-id--2').removeClass('ytt-item-checked');
 		}
 
 		_ytt.loadLists();
