@@ -329,7 +329,7 @@ header("Content-type: text/html; charset=utf-8");
 	<ul>
 		<li id="slmenu_list:-1" class="list-id--1 ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#alltasks"><?php _e('alltasks'); ?></a></li>
 		<li class="ytt-menu-delimiter"></li>
-		<li id="slmenu_list:-2" class="list-id--2 ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#archivelists"><?php _e('archivelists'); ?></a></li>
+		<li id="slmenu_list:-2" class="list-id--2" <?php if(is_readonly()) echo 'style="display:none"' ?>><div class="menu-icon"></div><a href="#archivelists"><?php _e('archivelists'); ?></a></li>
 		<li class="ytt-menu-delimiter slmenu-lists-begin ytt-need-list" <?php if(is_readonly()) echo 'style="display:none"' ?>></li>
 	</ul>
 </div>
