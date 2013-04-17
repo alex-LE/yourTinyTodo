@@ -817,7 +817,7 @@ function prepareTaskRow($r)
 	$dCompleted = $r['d_completed'] ? timestampToDatetime($r['d_completed']) : '';
 
 	$db = DBConnection::instance();
-	$current_user_id = (Config::get('multiuser') == 1)?(int)$_SESSION['userid']:0;
+	$current_user_id = (Config::get('multiuser') == 1 && isset($_SESSION['userid']))?(int)$_SESSION['userid']:0;
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$r['id']." AND user_id=".$current_user_id);
 
 	$progress = '';
@@ -1209,7 +1209,7 @@ function prepareList($row)
 	$taskview = (int)$row['taskview'];
 
 	$db = DBConnection::instance();
-	$current_user_id = (Config::get('multiuser') == 1)?intval($_SESSION['userid']):0;
+	$current_user_id = (Config::get('multiuser') == 1 && isset($_SESSION['userid']))?intval($_SESSION['userid']):0;
 	$notification_id = (int)$db->sq("SELECT id FROM {$db->prefix}notification_listeners WHERE type = 'list' AND value = ".$row['id']." AND user_id=".$current_user_id);
 
 	return array(
