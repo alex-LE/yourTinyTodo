@@ -122,7 +122,6 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			$('#btnNotifications').hide();
 			$('#loggedinuser').hide();
 			$('.login_multiuser').remove();
-			$('#btnPrivate').addClass('ytt-item-disabled');
 		} else {
 			$('#loggedinuser').html(this.lang.get('loggedin_as') + ' ' + this.options.userName);
 			$('.login_singleuser').remove();
