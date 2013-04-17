@@ -148,6 +148,7 @@ if(!$ver)
  published TINYINT UNSIGNED NOT NULL default 0,
  taskview INT UNSIGNED NOT NULL default 0,
  archive INT UNSIGNED NOT NULL default 0,
+ private_user_id INT UNSIGNED NOT NULL default 0,
  PRIMARY KEY(id),
  UNIQUE KEY(uuid)
 ) CHARSET=utf8 ");
@@ -274,7 +275,8 @@ if(!$ver)
     sorting integer DEFAULT 0 NOT NULL,
     published integer DEFAULT 0 NOT NULL,
     taskview integer DEFAULT 0 NOT NULL,
-    archive integer DEFAULT 0 NOT NULL
+    archive integer DEFAULT 0 NOT NULL,
+    private_user_id integer DEFAULT 0 NOT NULL
 );
 CREATE SEQUENCE {$db->prefix}lists_id_seq
     START WITH 1
@@ -499,7 +501,8 @@ CREATE INDEX {$db->prefix}tag2task_idx_list_id ON {$db->prefix}tag2task USING bt
  sorting TINYINT UNSIGNED NOT NULL default 0,
  published TINYINT UNSIGNED NOT NULL default 0,
  taskview INTEGER UNSIGNED NOT NULL default 0,
- archive INTEGER UNSIGNED NOT NULL default 0
+ archive INTEGER UNSIGNED NOT NULL default 0,
+ private_user_id INTEGER UNSIGNED NOT NULL default 0
 ) ");
 
 			$db->ex("CREATE UNIQUE INDEX lists_uuid ON {$db->prefix}lists (uuid)");

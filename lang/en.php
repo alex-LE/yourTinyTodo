@@ -125,6 +125,7 @@ class Lang extends DefaultLang
 		'list_delete' => "Delete list",
 		'list_publish' => "Publish list",
 		'list_archive' => "Archive list",
+		'list_private' => "Private list",
 		'list_showcompleted' => "Show completed tasks",
 		'list_clearcompleted' => "Clear completed tasks",
 		'list_select' => "Select list",

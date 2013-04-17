@@ -418,6 +418,7 @@ header("Content-type: text/html; charset=utf-8");
 		<li class="ytt-need-list ytt-need-real-list" id="btnTimeTable"><?php _e('list_timetable');?></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnPublish"><div class="menu-icon"></div><?php _e('list_publish');?></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnArchive"><div class="menu-icon"></div><?php _e('list_archive');?></li>
+		<li class="ytt-need-list ytt-need-real-list" id="btnPrivate"><div class="menu-icon"></div><?php _e('list_private');?></li>
 		<li class="ytt-need-list ytt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><?php _e('list_rssfeed');?></li>
 		<li class="ytt-menu-delimiter ytt-need-real-list"></li>
 		<li class="ytt-need-list ytt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div><?php _e('sortByHand');?> <span class="ytt-sort-direction">&nbsp;</span></li>

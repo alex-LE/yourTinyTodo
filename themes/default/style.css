@@ -280,6 +280,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 #msg.ytt-info .msg-details { border:1px solid #EFC300;}
 
 .ytt-tabs { list-style:none; padding:0; margin:0;}
+.ytt-tab span.private {background: url("images/lock.png") no-repeat 2px 2px; padding-left: 18px}
 .ytt-tabs li { margin:1px 3px 0 0; float:left; background-color:#fbfbfb; border:solid 1px #ededed;border-bottom: none;}
 .ytt-tab a { position:relative; margin:0; font-size:0.9em; font-weight:bold; text-decoration:none; text-align:center; white-space:nowrap; color:#444444; display:block; height:21px; padding:6px 6px 0px 2px; outline:none; vertical-align:top; }
 .ytt-tab a span { display:inline-block; min-width:75px; max-width:195px; cursor:pointer; padding:0; overflow:hidden; }

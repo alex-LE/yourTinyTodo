@@ -163,6 +163,11 @@ yourtinytodoStorageAjax.prototype =
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?archiveList', { list:params.list, archive:params.archive },  callback, 'json');
 	},
+
+	privateList: function(params, callback)
+	{
+		$.post(this.ytt.yttUrl+'ajax.php?privateList', { list:params.list, private:params.private },  callback, 'json');
+	},
 	
 	setShowNotesInList: function(params, callback)
 	{

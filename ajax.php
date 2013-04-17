@@ -452,7 +452,7 @@ elseif(isset($_GET['publishList']))
 	check_write_access();
 	$listId = (int)_post('list');
 	$publish = (int)_post('publish');
-	$db->ex("UPDATE {$db->prefix}lists SET published=?,d_created=? WHERE id=$listId", array($publish ? 1 : 0, time()));
+	$db->ex("UPDATE {$db->prefix}lists SET published=?,d_edited=? WHERE id=$listId", array($publish ? 1 : 0, time()));
 	jsonExit(array('total'=>1));
 }
 elseif(isset($_GET['archiveList']))
@@ -460,7 +460,15 @@ elseif(isset($_GET['archiveList']))
 	check_write_access();
 	$listId = (int)_post('list');
 	$archive = (int)_post('archive');
-	$db->ex("UPDATE {$db->prefix}lists SET archive=?,d_created=? WHERE id=$listId", array($archive ? 1 : 0, time()));
+	$db->ex("UPDATE {$db->prefix}lists SET archive=?,d_edited=? WHERE id=$listId", array($archive ? 1 : 0, time()));
+	jsonExit(array('total'=>1));
+}
+elseif(isset($_GET['privateList']))
+{
+	check_write_access();
+	$listId = (int)_post('list');
+	$private = ((int)_post('private') > 0) ? (int)$_SESSION['userid'] : 0;
+	$db->ex("UPDATE {$db->prefix}lists SET private_user_id=?,d_edited=? WHERE id=$listId", array($private, time()));
 	jsonExit(array('total'=>1));
 }
 elseif(isset($_GET['moveTask']))
@@ -1222,6 +1230,7 @@ function prepareList($row)
 		'showNotes' => $taskview & 2 ? 1 : 0,
 		'hidden' => $taskview & 4 ? 1 : 0,
 		'notification' => $notification_id > 0 ? 1 : 0,
+        'private' => (Config::get('multiuser') == 1 && intval($row['private_user_id']) > 0) ? intval($row['private_user_id']) : 0,
 	);
 }
 
