@@ -1031,7 +1031,7 @@ function prepareTaskStr(item, noteExp)
             '           </div>'+"\n"+
 		    '           <div class="task-through">'+
                             preparePrio(prio,id)+'<span class="task-title">'+prepareHtml(item.title)+'</span> '+
-		                    (curList.id == -1 ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
+		                    ((curList.id == -1 && item.listId == 1) ? '<span class="task-listname">'+ tabLists.get(item.listId).name +'</span>' : '') +	"\n" +
 							prepareAuthor(item.author) +
 							prepareProgressMini(item)+
 		                    prepareTagsStr(item)+'<span class="task-date">'+item.dateInlineTitle+'</span>' +
@@ -1051,6 +1051,7 @@ function prepareTaskStr(item, noteExp)
                         prepareComments(item)+
 		    "       </div>" +
             "</li>\n";
+
 };
 
 function prepareAuthor(s) {
