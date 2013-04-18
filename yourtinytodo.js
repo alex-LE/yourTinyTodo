@@ -674,10 +674,11 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		
 		tabLists.clear();
 		
-		this.db.loadLists(this.show_archived_lists, function(res)
+		this.db.loadLists(function(res)
 		{
 			var ti = '';
 			var openListId = 0;
+			var openArchivedListId = 0;
 			if(res && res.total)
 			{
 				// open required or first non-hidden list
@@ -688,7 +689,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 							break;
 						}
 					}
-					else if(!res.list[i].hidden) {
+					else if(!res.list[i].hidden && (parseInt(res.list[i].private) == 0 || parseInt(res.list[i].private) == parseInt(flag.userId))) {
 						openListId = res.list[i].id;
 						break;
 					}
@@ -696,15 +697,25 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 				
 				// open all tasks tab
 				if(_ytt.options.openList == -1) openListId = -1;
-				
-				// or open first if all list are hidden
-				if(!openListId) openListId = res.list[0].id;
 
                 var span_class = "";
 				$.each(res.list, function(i,item){
 					tabLists.add(item);
                     if(parseInt(item.private) == 0 || parseInt(item.private) == parseInt(flag.userId)) {
-                        span_class = (item.private > 0) ? 'class="private"' : '';
+						if(!_ytt.show_archived_lists && item.archive == 1) {
+							return true;
+						}
+						if(_ytt.show_archived_lists && item.archive == 0) {
+							return true;
+						}
+
+						// or open first if all list are hidden
+						if(!openListId) openListId = item.id;
+
+						/*if(!openArchivedListId && _ytt.show_archived_lists && item.archive == 1) {
+							openArchivedListId = item.id;
+						}*/
+						span_class = (item.private > 0) ? 'class="private"' : '';
                         ti += '<li id="list_'+item.id+'" class="ytt-tab'+(item.hidden?' ytt-tabs-hidden':'')+'">'+
                             '<a href="#list/'+item.id+'" title="'+item.name+'"><span ' + span_class + '>'+item.name+'</span>'+
                             '<div class="list-action"></div></a></li>';
@@ -726,7 +737,12 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 			$('#lists ul').html(ti);
 			$('#lists').show();
 			_ytt.doAction('listsLoaded');
-			tabSelect(openListId);
+
+			if(openArchivedListId) {
+				tabSelect(openArchivedListId);
+			} else {
+				tabSelect(openListId);
+			}
 
 			$('#page_tasks').show();
 
@@ -2161,7 +2177,13 @@ function cmenuOnListsLoaded()
 	var s = '';
 	var all = tabLists.getAll();
 	for(var i in all) {
-		s += '<li id="cmenu_list:'+all[i].id+'" class="'+(all[i].hidden?'ytt-list-hidden':'')+'">'+all[i].name+'</li>';
+		name = all[i].name;
+		if(all[i].archive == 1) {
+			name += ' (archived)';
+		} else if(all[i].private > 0 && all[i].private != flag.userId) {
+			name += ' (private)';
+		}
+		s += '<li id="cmenu_list:'+all[i].id+'" class="'+(all[i].hidden?'ytt-list-hidden':'')+'">'+name+'</li>';
 	}
 	$('#cmenulistscontainer ul').html(s);
 

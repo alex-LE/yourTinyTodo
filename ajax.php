@@ -25,12 +25,14 @@ if(isset($_GET['loadLists']))
 		$sqlWhere = '';
 	}
 
+	/*
 	$archive = (int)_get('archive');
 	if(empty($sqlWhere)) {
 		$sqlWhere .= 'WHERE archive = '.$archive;
 	} else {
 		$sqlWhere .= ' AND archive = '.$archive;
 	}
+	*/
 
 	$t = array();
 	$t['total'] = 0;

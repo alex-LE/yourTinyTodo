@@ -35,9 +35,9 @@ yourtinytodoStorageAjax.prototype =
 	},
 
 
-	loadLists: function(archive, callback)
+	loadLists: function(callback)
 	{
-		$.getJSON(this.ytt.yttUrl+'ajax.php?loadLists&archive='+archive+'&rnd='+Math.random(), callback);
+		$.getJSON(this.ytt.yttUrl+'ajax.php?loadLists&rnd='+Math.random(), callback);
 	},
 
 
