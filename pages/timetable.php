@@ -90,7 +90,7 @@ if($total_time > 8) {
 				<?=floor($item['duration'])?>h <?=(($item['duration']-floor($item['duration']))*60)?>m
 				<img src="<?='themes/'. Config::get('template') . '/'?>images/timetable_edge.png" alt="" />
 			</span>
-			<?php}?>
+			<?php } ?>
 			<span class="ytt-progress-bar">
             	<span class="ytt-progress-percentbar" style="width:<?=$bar_width?>px;background-color: <?=$bar_color?>"></span>
             </span>
