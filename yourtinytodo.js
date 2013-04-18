@@ -2233,8 +2233,16 @@ function tabmenuOnListSelected(list)
 		$('#btnPublish').removeClass('ytt-item-checked');
 		$('#btnRssFeed').addClass('ytt-item-disabled');
 	}
-	if(list.private == 1) $('#btnPrivate').addClass('ytt-item-checked');
-	if(list.archive) $('#btnArchive').addClass('ytt-item-checked');
+	if(list.private == 1) {
+		$('#btnPrivate').addClass('ytt-item-checked');
+	} else {
+		$('#btnPrivate').removeClass('ytt-item-checked');
+	}
+	if(list.archive) {
+		$('#btnArchive').addClass('ytt-item-checked');
+	} else {
+		$('#btnArchive').removeClass('ytt-item-checked');
+	}
 	if(list.showCompl) $('#btnShowCompleted').addClass('ytt-item-checked');
 	else $('#btnShowCompleted').removeClass('ytt-item-checked');
     if(list.notification) $('#btnNotifications').addClass('ytt-item-checked');
