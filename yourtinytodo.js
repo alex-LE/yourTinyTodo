@@ -48,6 +48,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		msgFlashColor: '#ffffff'
 	},
 
+	converter: {},
 	actions: {},
 	menus: {},
 	yttUrl: '',
@@ -101,7 +102,7 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	init: function(options)
 	{
 		jQuery.extend(this.options, options);
-
+		this.converter = new Markdown.getSanitizingConverter().makeHtml;
 		flag.needAuth = options.needAuth ? true : false;
 		flag.isLogged = options.isLogged ? true : false;
 		flag.multiUser = options.multiUser ? true : false;
@@ -1074,7 +1075,7 @@ function prepareTaskStr(item, noteExp)
             '           </div>'+
 		    '           <div class="task-note-block">'+
 			'				<span class="icon"></span>'+
-			'               <div id="tasknote'+id+'" class="task-note"><span>'+prepareHtml(item.note)+'</span></div>'+
+			'               <div id="tasknote'+id+'" class="task-note"><span>'+_ytt.converter(prepareHtml(item.note))+'</span></div>'+
 			'               <div id="tasknotearea'+id+'" class="task-note-area">' +
             '                   <textarea id="notetext'+id+'"></textarea>'+
 			'                   <span class="task-note-actions">' +
@@ -1637,7 +1638,7 @@ function saveTaskNote(id)
 		var item = json.list[0];
 		taskList[id].note = item.note;
 		taskList[id].noteText = item.noteText;
-		$('#tasknote'+id+'>span').html(prepareHtml(item.note));
+		$('#tasknote'+id+'>span').html(_ytt.converter(prepareHtml(item.note)));
 		if(item.note == '') $('#taskrow_'+id).removeClass('task-has-note task-expanded');
 		else $('#taskrow_'+id).addClass('task-has-note task-expanded');
 		cancelTaskNote(id);

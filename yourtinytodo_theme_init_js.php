@@ -1,3 +1,6 @@
+<script src="Markdown.Converter.js"></script>
+<script src="Markdown.Sanitizer.js"></script>
+
 <script type="text/javascript">
 	$().ready(function(){
 
