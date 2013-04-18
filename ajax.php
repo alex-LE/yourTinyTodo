@@ -837,6 +837,8 @@ function prepareTaskRow($r)
 			$progress = ceil(($task_total*100)/($r['duration']*60));
 			$progress_current = $task_total/60;
 			$progress_total = $r['duration'];
+		} else {
+			$progress_total = $r['duration'];
 		}
 	}
 
