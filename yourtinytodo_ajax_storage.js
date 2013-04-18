@@ -70,7 +70,7 @@ yourtinytodoStorageAjax.prototype =
 	fullNewTask: function(params, callback)
 	{
 		$.post(this.ytt.yttUrl+'ajax.php?fullNewTask',
-			{ list:params.list, title:params.title, note:params.note, prio:params.prio, tags:params.tags, duedate:params.duedate, duedate_h:params.duedate_h, duedate_m:params.duedate_m },
+			{ list:params.list, title:params.title, note:params.note, prio:params.prio, tags:params.tags, duedate:params.duedate, duedate_h:params.duedate_h, duedate_m:params.duedate_m, duration_h:params.duration_h, duration_m:params.duration_m },
 			callback, 'json');
 	},
 

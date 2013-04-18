@@ -106,7 +106,9 @@ elseif(isset($_GET['fullNewTask']))
 	$title = trim(_post('title'));
 	$note = str_replace("\r\n", "\n", trim(_post('note')));
 	$prio = (int)_post('prio');
-	$duration = (float)str_replace(',','.',_post('duration'));
+	$duration_h = (float)str_replace(',','.',_post('duration_h'));
+	$duration_m = intval(_post('duration_m'));
+	$duration = $duration_h + ($duration_m / 60);
 	if($prio < -1) $prio = -1;
 	elseif($prio > 2) $prio = 2;
 	$duedate = parse_duedate(trim(_post('duedate')));
