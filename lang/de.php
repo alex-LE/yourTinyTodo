@@ -165,6 +165,8 @@ class Lang extends DefaultLang
 		'set_smartsyntax_descr' => "(/Priorität/ Task /Tags/)",
 		'set_markdown' => "Markdown Unterstützung",
 		'set_markdown_descr' => 'Schau <a href="http://softwaremaniacs.org/playground/showdown-highlight/" target="_blank">hier</a> für Beispiele',
+		'set_timetable_day' => "Timetable - Tag",
+		'set_timetable_day_descr' => "(Anzahl Stunden die als Tag gezählt werden)",
 		'set_timezone' => "Zeitzone",
 		'set_autotag' => "Autotagging",
 		'set_autotag_descr' => "(fügt automatisch Tags aus dem aktuellen Tag Filter in den neuen Task)",

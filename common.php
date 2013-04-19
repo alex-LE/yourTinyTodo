@@ -101,6 +101,7 @@ class Config
 		'showdate' => array('default'=>0, 'type'=>'i'),
 		'auth_bypass' => array('default'=>'none', 'type'=>'s'),
 		'debugmode' => array('default'=>0, 'type'=>'i'),
+		'timetable_day' => array('default'=>8, 'type'=>'i'),
 	);
 
 	public static $config;

@@ -13,6 +13,8 @@ require_once('../ajax.php');
 
 $db = DBConnection::instance();
 
+$hours_per_day = (intval(Config::get('timetable_day')) > 0) ? intval(Config::get('timetable_day')) : 8;
+
 $list_id = (isset($_GET['listid']) && intval($_GET['listid']) > 0)?intval($_GET['listid']):0;
 if(empty($list_id)) {
 	die('Error!');
@@ -25,7 +27,7 @@ $list = loadTasks($list_id,0,'','',1);
 $total_time = 0;
 $total_progress = 0;
 foreach($list['list'] as $item) {
-	$total_time += floatval($item['duration_h']/60 + $item['duration_m']);
+	$total_time += floatval($item['duration_h'] + $item['duration_m']/60);
 	$total_progress += floatval($item['progress_current']);
 }
 
@@ -42,22 +44,21 @@ $total_hours = 0;
 $total_minutes = 0;
 $has_days = '';
 
-if($total_time > 8) {
-	$total_days = floor($total_time/8);
-	$total_hours = floor($total_time-($total_days*8));
-	$total_minutes = round(($total_time-($total_days*8)-$total_hours)*60,0);
+if($total_time > $hours_per_day) {
+	$total_days = floor($total_time/$hours_per_day);
+	$total_hours = floor($total_time-($total_days*$hours_per_day));
+	$total_minutes = round(($total_time-($total_days*$hours_per_day)-$total_hours)*60,0);
 	$has_days = 'has_days';
 } else {
 	$total_hours = floor($total_time);
 	$total_minutes = round(($total_time - $total_hours)*60,0);
 }
-
 ?>
 
 <div id="chart_container"></div>
 <div id="chart_text"></div>
 <div id="tasktable">
-	<h3><?=$list_data['name']?></h3>
+	<h3><?=$list_data['name']?> - Timetable</h3>
 	<ul>
 		<?php
 		foreach($list['list'] as $item) {

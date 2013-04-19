@@ -36,6 +36,7 @@ if(isset($_POST['save']))
 	}
 	Config::set('smartsyntax', (int)_post('smartsyntax'));
 	Config::set('markdown', (int)_post('markdown'));
+	Config::set('timetable_day', (int)_post('timetable_day'));
 	// Do not set invalid timezone
 	try {
 	    $tz = trim(_post('timezone'));
@@ -187,6 +188,12 @@ header('Content-type:text/html; charset=utf-8');
 <td>
 	<label><input type="radio" name="markdown" value="1" <?php if(_c('markdown')) echo 'checked="checked"'; ?> /><?php _e('set_enabled');?></label> <br/>
 	<label><input type="radio" name="markdown" value="0" <?php if(!_c('markdown')) echo 'checked="checked"'; ?> /><?php _e('set_disabled');?></label>
+</td></tr>
+
+<tr>
+<th><?php _e('set_timetable_day');?>:<br/><span class="descr"><?php _e('set_timetable_day_descr');?></span></th>
+<td>
+	<label><input type="text" name="timetable_day" value="<?php echo _c('timetable_day'); ?>" /></label>
 </td></tr>
 
 <tr>

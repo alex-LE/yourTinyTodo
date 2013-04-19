@@ -71,4 +71,5 @@ $config['showdate'] = 0;
 
 $config['auth_bypass'] = 'none';
 $config['debugmode'] = 0;
+$config['timetable_day'] = 8;
 ?>
