@@ -163,6 +163,8 @@ class Lang extends DefaultLang
 		'set_newpass_descr' => "(freilassen, wenn du das aktuelle Passwort nicht ändern willst)",
 		'set_smartsyntax' => "Smart syntax",
 		'set_smartsyntax_descr' => "(/Priorität/ Task /Tags/)",
+		'set_markdown' => "Markdown Unterstützung",
+		'set_markdown_descr' => 'Schau <a href="http://softwaremaniacs.org/playground/showdown-highlight/" target="_blank">hier</a> für Beispiele',
 		'set_timezone' => "Zeitzone",
 		'set_autotag' => "Autotagging",
 		'set_autotag_descr' => "(fügt automatisch Tags aus dem aktuellen Tag Filter in den neuen Task)",

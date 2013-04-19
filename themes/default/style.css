@@ -27,7 +27,7 @@ body {
 td, th, input, textarea, select { font-family:arial; font-size:1em; }
 form { display: inline; }
 h2,h3 { margin:0; }
-h2 { font-size:1.5em; float:left; padding-right:10px; }
+h2.title { font-size:1.5em; float:left; padding-right:10px; }
 h3 { border-bottom:1px solid #7cb8ed; margin-bottom:8px; padding:6px 0; font-size:1.1em; }
 #page_tasks h3 { padding-left:4px; padding-right:4px; }
 a { color:#0000ff; cursor:pointer; text-decoration:underline; }

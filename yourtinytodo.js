@@ -16,7 +16,7 @@ var sortOrder; //save task order before dragging
 var searchTimer;
 var objPrio = {};
 var selTask = 0;
-var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false, debugmode:false, notification_count:0, show_edit_options:false };
+var flag = { needAuth:false, isLogged:false, tagsChanged:true, readOnly:false, editFormChanged:false, multiUser:false, userRole:0, userId:0, admin:false, globalNotifications:false, authbypass:false, debugmode:false, notification_count:0, show_edit_options:false, markdown:false };
 var taskCnt = { total:0, past: 0, today:0, soon:0 };
 var tabLists = {
 	_lists: {},
@@ -48,7 +48,6 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		msgFlashColor: '#ffffff'
 	},
 
-	converter: {},
 	actions: {},
 	menus: {},
 	yttUrl: '',
@@ -102,7 +101,6 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	init: function(options)
 	{
 		jQuery.extend(this.options, options);
-		this.converter = new Markdown.getSanitizingConverter().makeHtml;
 		flag.needAuth = options.needAuth ? true : false;
 		flag.isLogged = options.isLogged ? true : false;
 		flag.multiUser = options.multiUser ? true : false;
@@ -113,11 +111,16 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		flag.userId = options.userId;
 		flag.userRole = options.userRole;
 		flag.debugmode = options.debugmode;
+		flag.markdown = options.markdown;
 		flag.notification_count = options.notification_count;
 		flag.show_edit_options = options.show_edit_options;
 
 		if(this.options.showdate) $('#page_tasks').addClass('show-inline-date');
 		if(this.options.singletab) $('#lists .ytt-tabs').addClass('ytt-tabs-only-one');
+
+		if(flag.markdown) {
+			$('.tasknote').removeClass('in500').markItUp(mySettings);
+		}
 
 		if(!flag.multiUser) {
 			$('#btnNotifications').hide();
@@ -640,6 +643,16 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 		return this;
 	},
 
+	converter: function(content) {
+		if(flag.markdown) {
+			var showdownconv = new Showdown.converter();
+			return showdownconv.makeHtml(content);
+		} else {
+			return prepareHtml(content);
+		}
+
+	},
+
 	log: function(v)
 	{
 		console.log.apply(this, arguments);
@@ -1075,9 +1088,10 @@ function prepareTaskStr(item, noteExp)
             '           </div>'+
 		    '           <div class="task-note-block">'+
 			'				<span class="icon"></span>'+
-			'               <div id="tasknote'+id+'" class="task-note"><span>'+_ytt.converter(prepareHtml(item.note))+'</span></div>'+
+			'               <div id="tasknote'+id+'" class="task-note">'+_ytt.converter(item.note)+'</div>'+
 			'               <div id="tasknotearea'+id+'" class="task-note-area">' +
-            '                   <textarea id="notetext'+id+'"></textarea>'+
+            '					<div id="wmd-button-bar-'+id+'"></div>' +
+			'                   <textarea id="notetext'+id+'"></textarea>'+
 			'                   <span class="task-note-actions">' +
             '                       <a href="#" class="ytt-action-note-save">'+_ytt.lang.get('actionNoteSave')+
 		    '                       </a> | <a href="#" class="ytt-action-note-cancel">'+_ytt.lang.get('actionNoteCancel')+'</a>' +
@@ -1088,7 +1102,6 @@ function prepareTaskStr(item, noteExp)
                         prepareComments(item)+
 		    "       </div>" +
             "</li>\n";
-
 };
 
 function prepareAuthor(s) {
@@ -1617,6 +1630,7 @@ function toggleTaskNote(id)
 		$('#tasknote'+id).hide();
 		$('#taskrow_'+id).addClass('task-expanded');
 		$('#notetext'+id).focus();
+
 	} else {
 		cancelTaskNote(id)
 	}

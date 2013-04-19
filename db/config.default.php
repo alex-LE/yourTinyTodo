@@ -40,6 +40,9 @@ $config['password'] = "";
 # To disable smart syntax uncomment the line below
 #$config['smartsyntax'] = 0;
 
+# Markdown support
+$config['markdown'] = 0;
+
 # multi user support
 $config['multiuser'] = 0;
 

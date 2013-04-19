@@ -35,6 +35,7 @@ if(isset($_POST['save']))
 		Config::set('multiuser', 0);
 	}
 	Config::set('smartsyntax', (int)_post('smartsyntax'));
+	Config::set('markdown', (int)_post('markdown'));
 	// Do not set invalid timezone
 	try {
 	    $tz = trim(_post('timezone'));
@@ -179,6 +180,13 @@ header('Content-type:text/html; charset=utf-8');
 <td>
  <label><input type="radio" name="smartsyntax" value="1" <?php if(_c('smartsyntax')) echo 'checked="checked"'; ?> /><?php _e('set_enabled');?></label> <br/>
  <label><input type="radio" name="smartsyntax" value="0" <?php if(!_c('smartsyntax')) echo 'checked="checked"'; ?> /><?php _e('set_disabled');?></label>
+</td></tr>
+
+<tr>
+<th><?php _e('set_markdown');?>:<br/><span class="descr"><?php _e('set_markdown_descr');?></span></th>
+<td>
+	<label><input type="radio" name="markdown" value="1" <?php if(_c('markdown')) echo 'checked="checked"'; ?> /><?php _e('set_enabled');?></label> <br/>
+	<label><input type="radio" name="markdown" value="0" <?php if(!_c('markdown')) echo 'checked="checked"'; ?> /><?php _e('set_disabled');?></label>
 </td></tr>
 
 <tr>

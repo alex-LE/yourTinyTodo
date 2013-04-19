@@ -1,5 +1,10 @@
-<script src="Markdown.Converter.js"></script>
-<script src="Markdown.Sanitizer.js"></script>
+<?php if(Config::get('markdown')) { ?>
+<script src="showdown.js"></script>
+<script type="text/javascript" src="markitup/jquery.markitup.js"></script>
+<script type="text/javascript" src="markitup/sets/markdown/set.js"></script>
+<link rel="stylesheet" type="text/css" href="markitup/skins/markitup/style.css" />
+<link rel="stylesheet" type="text/css" href="markitup/sets/markdown/style.css" />
+<?php } ?>
 
 <script type="text/javascript">
 	$().ready(function(){
@@ -27,6 +32,7 @@
 		autotag: <?php echo Config::get('autotag') ? "true" : "false"; ?>,
 		authbypass: <?php echo Config::get('auth_bypass') == 'none' ? "false" : "true"; ?>,
 		debugmode: <?php echo Config::get('debugmode') ? "true" : "false"; ?>,
+		markdown: <?php echo Config::get('markdown') ? "true" : "false"; ?>,
 		notification_count: <?php echo ($notifications_count === false)?"false":$notifications_count ?>,
 		show_edit_options: <?php echo (!isset($_SESSION['role']) || $_SESSION['role'] < 3)?'true':'false'; ?>
 	<?php if(isset($_GET['list'])) echo ",openList: ". (int)$_GET['list']; ?>

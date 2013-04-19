@@ -87,6 +87,7 @@ class Config
 		'password' => array('default'=>'', 'type'=>'s'),
 		'multiuser' => array('default'=>0, 'type'=>'i'),
 		'smartsyntax' => array('default'=>1, 'type'=>'i'),
+		'markdown' => array('default'=>0, 'type'=>'i'),
 		'timezone' => array('default'=>'UTC', 'type'=>'s'),
 		'autotag' => array('default'=>1, 'type'=>'i'),
 		'duedateformat' => array('default'=>1, 'type'=>'i'),
@@ -173,6 +174,9 @@ function url_dir($url)
 
 function escapeTags($s)
 {
+	if(Config::get('markdown')) {
+		return $s;
+	}
 	$c1 = chr(1);
 	$c2 = chr(2);
 	$s = preg_replace("~<b>([\s\S]*?)</b>~i", "${c1}b${c2}\$1${c1}/b${c2}", $s);

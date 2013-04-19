@@ -42,7 +42,7 @@ header("Content-type: text/html; charset=utf-8");
 <div id="ytt_body">
 
 <div id="function-bar">
-	<h2><?php yttinfo('title'); ?></h2>
+	<h2 class="title"><?php yttinfo('title'); ?></h2>
 
 	<div id="bar">
 		<div id="msg">
@@ -268,7 +268,7 @@ header("Content-type: text/html; charset=utf-8");
 		</div>
 		<div class="form-row-short-end"></div>
 		<div class="form-row"><div class="h"><?php _e('task');?></div> <input type="text" name="task" value="" class="in500" maxlength="250" /></div>
-		<div class="form-row"><div class="h"><?php _e('note');?></div> <textarea name="note" class="in500"></textarea></div>
+		<div class="form-row"><div class="h"><?php _e('note');?></div> <textarea name="note" class="in500 tasknote"></textarea></div>
 		<div class="form-row"><div class="h"><?php _e('tags');?></div>
 			<table cellspacing="0" cellpadding="0" width="100%"><tr>
 				<td><input type="text" name="tags" id="edittags" value="" class="in500" maxlength="250" /></td>

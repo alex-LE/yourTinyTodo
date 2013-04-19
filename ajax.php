@@ -183,7 +183,12 @@ elseif(isset($_GET['editNote']))
 	check_write_access();
 	$id = (int)_post('id');
 	stop_gpc($_POST);
-	$note = str_replace("\r\n", "\n", trim(_post('note')));
+	if(Config::get('markdown')) {
+		$note = trim(_post('note'));
+	} else {
+		$note = str_replace("\r\n", "\n", trim(_post('note')));
+	}
+
 	$db->dq("UPDATE {$db->prefix}todolist SET note=?,d_edited=? WHERE id=$id", array($note, time()) );
 
 	$title = $db->sq("SELECT title FROM {$db->prefix}todolist WHERE id=$id");
@@ -870,7 +875,7 @@ function prepareTaskRow($r)
 		'compl' => (int)$r['compl'],
 		'notification' => ($notification_id > 0)?1:0,
 		'prio' => $r['prio'],
-		'note' => nl2br(escapeTags($r['note'])),
+		'note' => (Config::get('markdown')) ? $r['note'] : nl2br(escapeTags($r['note'])),
 		'noteText' => (string)$r['note'],
 		'ow' => (int)$r['ow'],
 		'tags' => htmlarray($r['tags']),
@@ -952,7 +957,7 @@ function inputTaskParams()
 	$a = array(
 		'id' => _post('id'),
 		'title'=> trim(_post('title')),
-		'note' => str_replace("\r\n", "\n", trim(_post('note'))),
+		'note' => (Config::get('markdown')) ? trim(_post('note')) : str_replace("\r\n", "\n", trim(_post('note'))),
 		'prio' => (int)_post('prio'),
 		'duedate' => '',
 		'tags' => trim(_post('tags')),
