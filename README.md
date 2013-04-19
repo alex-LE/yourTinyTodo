@@ -32,6 +32,13 @@ New Features in version 1.0a:
  * Comments per Task
  * Time Tracking
 
+
+Features coming with 1.1:
+ * Markdown support (format a tasks note)
+ * archive lists
+ * private lists
+
+
 IMPORTANT
 
 A default admin user will be created during setup.
