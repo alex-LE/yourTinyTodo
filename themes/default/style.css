@@ -20,7 +20,7 @@ body {
 }
 
 #wrapper { margin:0px auto; max-width:950px;  height:100%; }
-#container { height:auto !important;height:100%;min-height:100%;    }
+#container { height:auto !important;height:100%;  }
 #ytt_body { padding:5px 2px 16px; }
 
 
@@ -32,7 +32,7 @@ h3 { border-bottom:1px solid #7cb8ed; margin-bottom:8px; padding:6px 0; font-siz
 #page_tasks h3 { padding-left:4px; padding-right:4px; }
 a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
-#space { height:30px; }
+#space { height:20px; }
 #footer { height:30px; margin-top:-28px; background-color: #666666; }
 #footer_content {padding:5px; font-size:0.8em; color:#FFFFFF;}
 #footer_content a {color:#FFFFFF;}
@@ -41,6 +41,7 @@ a { color:#0000ff; cursor:pointer; text-decoration:underline; }
 
 #taskajax {
 	position: relative;
+	min-height: 400px;
 }
 
 #tasktable {
@@ -907,11 +908,16 @@ a.ytt-manage-users { font-size:0.8em; }
 } 
 .ytt-menu-container ul { list-style: none; padding:0; margin:0; }
 .ytt-menu-container li { margin:1px 0px; cursor:default; color:#000; white-space:nowrap; padding:0.15em 0px; padding-left:24px; padding-right:18px; position:relative; }
-.ytt-menu-container li:hover, .ytt-menu-container li.ytt-menu-item-active { 
-	background-color:#316AC5;
-	color:white; 
-	background:-moz-linear-gradient(#5373fc,  #3157f4);
-	background:-webkit-gradient(linear, left top, left bottom, from(#5373fc), to(#3157f4));
+.ytt-menu-container li:hover, .ytt-menu-container li.ytt-menu-item-active {
+	color:white;
+	background: #5373fc; /* Old browsers */
+	background: -moz-linear-gradient(top,  #5373fc 0%, #3157f4 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5373fc), color-stop(100%,#3157f4)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #5373fc 0%,#3157f4 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #5373fc 0%,#3157f4 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #5373fc 0%,#3157f4 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #5373fc 0%,#3157f4 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5373fc', endColorstr='#3157f4',GradientType=0 ); /* IE6-9 */
 }
 .ytt-menu-container li.ytt-item-disabled, .ytt-menu-container li.ytt-item-disabled a { color:#ACA899; }
 .ytt-menu-container a { display:block; cursor:default; text-decoration:none; outline:none; color:#000; }
