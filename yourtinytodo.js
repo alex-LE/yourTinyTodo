@@ -644,6 +644,9 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
 	},
 
 	converter: function(content) {
+		if(content == null || content.length == 0) {
+			return '';
+		}
 		if(flag.markdown) {
 			var showdownconv = new Showdown.converter();
 			return showdownconv.makeHtml(content);
