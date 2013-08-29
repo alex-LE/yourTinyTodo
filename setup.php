@@ -116,7 +116,7 @@ if(!$ver)
 			if(!is_writable('./db/')) {
 				exitMessage("Database folder ('db/') is not writable.");
 			}
-			@copy(YTTPATH.'db/todolist.default.db', YTTPATH.'db/todolist.db');
+			copy(YTTPATH.'db/todolist.default.db', YTTPATH.'db/todolist.db');
 		}
 		if(!testConnect($error)) {
 			exitMessage("Database connection error: $error");
@@ -707,7 +707,7 @@ function testConnect(&$error)
 		}
 		else
 		{
-			if(false === $f = @fopen(YTTPATH. 'db/todolist.db', 'a+')) throw new Exception("database file is not readable/writable");
+			if(false === $f = fopen(YTTPATH. 'db/todolist.db', 'a+')) throw new Exception("database file is not readable/writable");
 			else fclose($f);
 
 			if(!is_writable(YTTPATH. 'db/')) throw new Exception("database directory ('db') is not writable");

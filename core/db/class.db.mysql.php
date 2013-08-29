@@ -75,11 +75,11 @@ class Database_Mysql extends Database
 
 	function connect($host, $user = null, $pass = null, $db = null)
 	{
-		if(!$this->dbh = @mysql_connect($host,$user,$pass))
+		if(!$this->dbh = mysql_connect($host,$user,$pass))
 		{
 			throw new Exception(mysql_error());
 		}
-		if( @!mysql_select_db($db, $this->dbh) )
+		if( !mysql_select_db($db, $this->dbh) )
 		{
 			throw new Exception($this->error());
 		}
