@@ -607,11 +607,12 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
                 $(this).val('');
                 _ytt.db.request('addComment', { task_id:getLiTaskId(parent_ul.get(0)), comment:comment }, function(json) {
                     if(json.done == 1) {
-                        var new_item =  '    <li class="existingcomment">' +
+						var comment_safe = escapeHtml(comment);
+						var new_item =  '    <li class="existingcomment">' +
                                         '       <span class="subicon"></span>' +
                                         '       <span class="author">'+json.user+'</span>'+
                                         '       <span class="created">'+json.date+'</span>'+
-                                        '       ' + comment +
+                                        '       ' + comment_safe +
                                         '   </li>';
                         parent_ul.find('.ytt-newcomment').parent().before(new_item);
                     }
@@ -3047,3 +3048,12 @@ function saveTimerInCookie() {
 }
 
 })();
+
+function escapeHtml(text) {
+	return text
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+}

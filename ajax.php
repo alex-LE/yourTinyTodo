@@ -906,7 +906,7 @@ function getTaskComments($task_id) {
 		$new_item = array();
 		$new_item['user'] = getUserName($r['user_id']);
 		$new_item['date'] = date(Config::get('dateformat').' H:i', strtotime($r['created']));
-		$new_item['comment'] = $r['comment'];
+		$new_item['comment'] = htmlspecialchars($r['comment'], ENT_QUOTES, 'UTF-8');
 		$result[] = $new_item;
 	}
 	return $result;
