@@ -1193,6 +1193,7 @@ function deleteTask($id)
 	$db->ex("DELETE FROM {$db->prefix}tag2task WHERE task_id=$id");
 	$db->ex("DELETE FROM {$db->prefix}time_tracker WHERE task_id=$id");
 	$db->dq("DELETE FROM {$db->prefix}todolist WHERE id=$id");
+	$db->dq("DELETE FROM {$db->prefix}comments WHERE task_id=$id");
 	$affected = $db->affected();
 	$db->ex("COMMIT");
 
