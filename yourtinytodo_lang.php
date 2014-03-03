@@ -17,4 +17,4 @@ require_once(YTTPATH. 'lang/'. $config['lang']. '.php');
 
 header('Content-type: text/javascript; charset=utf-8');
 ?>
-yourtinytodo.lang.init(<?=Lang::instance()->makeJS()?>);
+yourtinytodo.lang.init(<? echo Lang::instance()->makeJS()?>);

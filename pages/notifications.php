@@ -35,12 +35,12 @@ function getNotificationListFromDB()
 				$user_name = '';
 			}
 		?>
-		<tr class="notification_row" id="notification_row_<?=$r['id']?>">
+		<tr class="notification_row" id="notification_row_<? echo $r['id']?>">
 			<td valign="left" class="col_created"><?php echo timestampToDatetime(strtotime($r['created'])) ?></td>
 			<td valign="left" class="col_user"><?php echo $user_name ?></td>
 			<td valign="left" class="col_desc"><?php echo $r['text'] ?></td>
 			<td>
-				<a href="#markread" rel="<?=$r['id']?>" class="markread"></a>
+				<a href="#markread" rel="<? echo $r['id']?>" class="markread"></a>
 			</td>
 		</tr>
 		<?php
@@ -61,7 +61,7 @@ header('Content-type:text/html; charset=utf-8');
 		<th><?php _e('n_created');?></th>
 		<th><?php _e('n_user');?></th>
 		<th><?php _e('n_description');?></th>
-		<th><button id="markallasread"><?=_e('n_mark_all_read')?></button></th>
+		<th><button id="markallasread"><? echo _e('n_mark_all_read')?></button></th>
 	</tr>
 	<?php getNotificationListFromDB(); ?>
 </table>

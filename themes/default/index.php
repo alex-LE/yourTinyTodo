@@ -28,10 +28,10 @@ header("Content-type: text/html; charset=utf-8");
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery-ui-1.8.18.custom.min.js"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.autocomplete-1.1.js"></script>
-<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.cookie.js?v=<?=YTT_VERSION?>"></script>
-<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<?=YTT_VERSION?>"></script>
-<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<?=YTT_VERSION?>"></script>
-<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<?=YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/jquery.cookie.js?v=<? echo YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo.js?v=<? echo YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_lang.php?v=<? echo YTT_VERSION?>"></script>
+<script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>yourtinytodo_ajax_storage.js?v=<? echo YTT_VERSION?>"></script>
 <script type="text/javascript" src="<?php yttinfo('ytt_url'); ?>jquery/highcharts.js"></script>
 
 
@@ -77,10 +77,10 @@ header("Content-type: text/html; charset=utf-8");
 <div id="header">
 	<div id="ytt-work-timer">
 		<span id="ytt-time">00:00:00</span>
-		<a href="#" id="ytt-timer-pause" title="<?=_e('timer_pause')?>"></a>
-		<a href="#" id="ytt-timer-stop" title="<?=_e('timer_stop')?>"></a>
-		<a href="#" id="ytt-timer-finish" title="<?=_e('timer_finish')?>"></a>
-		<a href="#" id="ytt-timer-continue" title="<?=_e('timer_continue')?>"></a>
+		<a href="#" id="ytt-timer-pause" title="<? echo _e('timer_pause')?>"></a>
+		<a href="#" id="ytt-timer-stop" title="<? echo _e('timer_stop')?>"></a>
+		<a href="#" id="ytt-timer-finish" title="<? echo _e('timer_finish')?>"></a>
+		<a href="#" id="ytt-timer-continue" title="<? echo _e('timer_continue')?>"></a>
 	</div>
 </div>
 
@@ -304,7 +304,7 @@ header("Content-type: text/html; charset=utf-8");
 
 <div id="footer">
 	<div id="footer_content">
-		Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <?=YTT_VERSION?>
+		Powered by <strong><a href="http://www.yourtinytodo.net/">yourTinyTodo</a></strong> <? echo YTT_VERSION?>
 		<div id="loggedinuser"></div>
 	</div>
 </div>

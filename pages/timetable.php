@@ -58,7 +58,7 @@ if($total_time > $hours_per_day) {
 <div id="chart_container"></div>
 <div id="chart_text"></div>
 <div id="tasktable">
-	<h3><?=$list_data['name']?> - Timetable</h3>
+	<h3><? echo $list_data['name']?> - Timetable</h3>
 	<ul>
 		<?php
 		foreach($list['list'] as $item) {
@@ -84,16 +84,16 @@ if($total_time > $hours_per_day) {
 			}
 		?>
 		<li>
-			<span class="task-prio <?=$cl?>"><?=$v?></span>
-			<span class="task-title"><?=$item['title']?></span>
+			<span class="task-prio <? echo $cl?>"><? echo $v?></span>
+			<span class="task-title"><? echo $item['title']?></span>
 			<?php if(!empty($item['duration'])) {?>
 			<span class="duration">
-				<?=floor($item['duration'])?>h <?=(($item['duration']-floor($item['duration']))*60)?>m
-				<img src="<?='themes/'. Config::get('template') . '/'?>images/timetable_edge.png" alt="" />
+				<? echo floor($item['duration'])?>h <? echo (($item['duration']-floor($item['duration']))*60)?>m
+				<img src="<? echo 'themes/'. Config::get('template') . '/'?>images/timetable_edge.png" alt="" />
 			</span>
 			<?php } ?>
 			<span class="ytt-progress-bar">
-            	<span class="ytt-progress-percentbar" style="width:<?=$bar_width?>px;background-color: <?=$bar_color?>"></span>
+            	<span class="ytt-progress-percentbar" style="width:<? echo $bar_width?>px;background-color: <? echo $bar_color?>"></span>
             </span>
 		</li>
 		<?php } ?>
@@ -108,12 +108,12 @@ if($total_time > $hours_per_day) {
 
 			progressData.push({
 				name: 'rest',
-				y:<?=$total_time_value?>,
+				y:<? echo $total_time_value?>,
 				color: '#ECECEC'
 			});
 			progressData.push({
 				name: 'current',
-				y:<?=$total_progress_value?>,
+				y:<? echo $total_progress_value?>,
 				color: '#80C038'
 			});
 
@@ -159,10 +159,10 @@ if($total_time > $hours_per_day) {
 					var textX = chart.plotLeft + (chart.plotWidth  * 0.5);
 					var textY = chart.plotTop  + (chart.plotHeight * 0.5);
 
-					var span = '<span id="pieChartInfoText" class="<?=$has_days?>">';
-					span += '<span id="total_caption"><?=_e('tt_total')?></span><br>';
-					span += '<span id="total_time_days"><?=$total_days?> <?=_e('tt_days')?></span>';
-					span += '<span id="total_time_hours"><?=$total_hours?>h <?=$total_minutes?>m</span>';
+					var span = '<span id="pieChartInfoText" class="<? echo $has_days?>">';
+					span += '<span id="total_caption"><? echo _e('tt_total')?></span><br>';
+					span += '<span id="total_time_days"><? echo $total_days?> <? echo _e('tt_days')?></span>';
+					span += '<span id="total_time_hours"><? echo $total_hours?>h <? echo $total_minutes?>m</span>';
 					span += '</span>';
 
 					$("#chart_text").append(span);
