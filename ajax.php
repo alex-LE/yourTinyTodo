@@ -20,9 +20,9 @@ $db = DBConnection::instance();
 if(isset($_GET['loadLists']))
 {
 	if($needAuth && !is_logged()) {
-		$sqlWhere = 'WHERE published=1';
+		$sqlWhere = 'WHERE published = 1 AND (private_user_id = 0 OR private_user_id = '.(int)$_SESSION['userid'].')';
 	} else {
-		$sqlWhere = '';
+		$sqlWhere = 'WHERE (private_user_id = 0 OR private_user_id = '.(int)$_SESSION['userid'].')';
 	}
 
 	/*
