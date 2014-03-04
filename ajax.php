@@ -1250,7 +1250,7 @@ function getUserListsSimple()
 {
 	$db = DBConnection::instance();
 	$a = array();
-	$q = $db->dq("SELECT id,name FROM {$db->prefix}lists ORDER BY id ASC");
+	$q = $db->dq("SELECT id,name FROM {$db->prefix}lists WHERE private_user_id = 0 OR private_user_id = ".(int)$_SESSION['userid']." ORDER BY id ASC");
 	while($r = $q->fetch_row()) {
 		$a[$r[0]] = $r[1];
 	}
