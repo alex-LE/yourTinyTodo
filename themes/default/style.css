@@ -568,8 +568,20 @@ li.task-completed .task-note-block .task-note { text-decoration:line-through; }
 	color: #4787C6;
 	font-size: 11px;
 	position: absolute;
-	right: 0;
+	right: 15px;
 	top: -17px;
+}
+
+.task-comment-block ul li .delete {
+	color: #4787C6;
+	font-size: 15px;
+	position: absolute;
+	right: 1px;
+	top: -19px;
+}
+
+.task-comment-block ul li .delete a {
+	text-decoration: none;
 }
 
 .task-comment-block ul li .subicon {

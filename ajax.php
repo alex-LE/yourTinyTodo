@@ -739,6 +739,16 @@ elseif(isset($_GET['addComment']))
 
 	jsonExit(array('done' => 1, 'user' => getUserName($current_user_id), 'date' => date(Config::get('dateformat').' H:i')));
 }
+elseif(isset($_GET['delComment']))
+{
+	check_write_access();
+	stop_gpc($_POST);
+	$commentid = (int)_post('ytt_commentId');
+
+	$db->dq("DELETE FROM {$db->prefix}comments WHERE id = ?", array($commentid));
+
+	jsonExit(array('done' => 1));
+}
 
 ###################################################################################################
 
@@ -904,6 +914,7 @@ function getTaskComments($task_id) {
 	$result = array();
 	while($r = $q->fetch_assoc()) {
 		$new_item = array();
+		$new_item['id'] = $r['id'];
 		$new_item['user'] = getUserName($r['user_id']);
 		$new_item['date'] = date(Config::get('dateformat').' H:i', strtotime($r['created']));
 		$new_item['comment'] = htmlspecialchars($r['comment'], ENT_QUOTES, 'UTF-8');

@@ -56,6 +56,7 @@ class Lang extends DefaultLang
 		'progress_spent' => 'Time spent',
 		'progress_estimated' => 'Time estimated',
 		'loggedin_as' => 'Logged in as:',
+		'delete' => 'delete',
 	);
 
 	var $inc = array

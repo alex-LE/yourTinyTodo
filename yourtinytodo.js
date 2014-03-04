@@ -620,6 +620,15 @@ var yourtinytodo = window.yourtinytodo = _ytt = {
             }
         });
 
+		$('.delcomment').live('click', function() {
+			var comment_el = $(this).parent().parent();
+			_ytt.db.request('delComment', {comment_id: $(this).attr('rel')}, function(json) {
+				if(json.done == 1) {
+					comment_el.remove();
+				}
+			});
+		});
+
                 // work timer
         $('#ytt-timer-pause').live('click', function() {
            pauseTimer();
@@ -1172,6 +1181,7 @@ function prepareComments(item) {
                     '           <span class="author">'+item.comments[i].user+'</span>'+
                     '           <span class="created">'+item.comments[i].date+'</span>'+
                     '           <span class="comment">'+item.comments[i].comment+'</span>' +
+                    '           <span class="delete"><a href="#" rel="'+item.comments[i].id+'" class="delcomment" title="'+_ytt.lang.get('delete')+'">x</a></span>' +
                     '       </li>';
     }
 

@@ -227,6 +227,11 @@ yourtinytodoStorageAjax.prototype =
     addComment: function(params, callback)
     {
         $.post(this.ytt.yttUrl+'ajax.php?addComment', { ytt_taskId:params.task_id, ytt_comment:params.comment }, callback, 'json');
+    },
+
+    delComment: function(params, callback)
+    {
+        $.post(this.ytt.yttUrl+'ajax.php?delComment', { ytt_commentId:params.comment_id }, callback, 'json');
     }
 };
 
