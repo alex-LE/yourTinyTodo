@@ -293,8 +293,8 @@ elseif(isset($_GET['suggestTags']))
 	$begin = trim(_get('q'));
 	$limit = (int)_get('limit');
 	if($limit<1) $limit = 8;
-	$q = $db->dq("SELECT name,id FROM {$db->prefix}tags INNER JOIN {$db->prefix}tag2task ON id=tag_id WHERE list_id=$listId AND name LIKE ".
-					$db->quoteForLike('%s%%',$begin) ." GROUP BY tag_id ORDER BY name LIMIT $limit");
+	$q = $db->dq("SELECT t.name,t.id FROM {$db->prefix}tags t INNER JOIN {$db->prefix}tag2task tt ON t.id=tt.tag_id WHERE tt.list_id=$listId AND t.name LIKE ".
+					$db->quoteForLike('%s%%',$begin) ." GROUP BY t.id,t.name ORDER BY name LIMIT $limit");
 	$s = '';
 	while($r = $q->fetch_row()) {
 		$s .= "$r[0]|$r[1]\n";
@@ -325,8 +325,8 @@ elseif(isset($_GET['tagCloud']))
 	$listId = (int)_get('list');
 	check_read_access($listId);
 
-	$q = $db->dq("SELECT name,tag_id,COUNT(tag_id) AS tags_count FROM {$db->prefix}tag2task INNER JOIN {$db->prefix}tags ON tag_id=id ".
-						"WHERE list_id=$listId GROUP BY (tag_id) ORDER BY tags_count ASC");
+	$q = $db->dq("SELECT t.name,tt.tag_id,COUNT(tt.tag_id) AS tags_count FROM {$db->prefix}tag2task tt INNER JOIN {$db->prefix}tags t ON tt.tag_id=t.id ".
+						"WHERE tt.list_id=$listId GROUP BY t.name,tt.tag_id ORDER BY tags_count ASC");
 	$at = array();
 	$ac = array();
 	while($r = $q->fetch_assoc()) {
@@ -722,8 +722,8 @@ function loadTasks($listId, $compl = 0, $tag = '', $s = '', $sort = 0, $setCompl
 			$sqlWhere = " AND c=". sizeof($tagIds); //overwrite sqlWhere!
 		}
 		elseif($tagIds) {
-			$inner .= "INNER JOIN {$db->prefix}tag2task ON id=task_id";
-			$sqlWhere .= " AND tag_id = ". $tagIds[0];
+			$inner .= "INNER JOIN {$db->prefix}tag2task ON {$db->prefix}todolist.id={$db->prefix}tag2task.task_id";
+			$sqlWhere .= " AND {$db->prefix}tag2task.tag_id = ". $tagIds[0];
 		}
 
 		if($tagExIds) {
