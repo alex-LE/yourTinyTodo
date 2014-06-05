@@ -1,0 +1,190 @@
+<div class="container">
+
+<div class="row">
+	<ul class="nav nav-tabs" id="listtabs">
+		<li data-ng-repeat="list in lists" data-ng-class='{active:$first}'>
+			<a data-target="#list{{list.id}}" data-toggle="tab" ng-click="activeListIndex = $index">
+				<span class="glyphicon glyphicon-lock" data-ng-hide="!list.private" title="private list"></span>{{list.name}}
+			</a>
+		</li>
+		<button type="button" class="btn btn-default btn-sm navbar-btn pull-right" id="addlist">
+			<span class="glyphicon glyphicon-plus"></span>
+		</button>
+	</ul>
+</div>
+
+<div class="row" id="toolbar">
+	<div class="col-md-7 col-xs-9">
+		<form data-ng-submit="addSimpleTask()">
+			<div class="input-group">
+				<input type="text" placeholder="New task" class="form-control" id="task" name="task" data-ng-model="newSimpleTask.title" />
+				<span class="input-group-btn">
+					<button title="Add" id="newtask_submit" type="button" class="btn btn-default">
+						<span class="glyphicon glyphicon-play"></span>
+					</button>
+					<a href="#" id="newtask_adv" class="btn btn-default" title="advanced add">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</a>
+				</span>
+			</div>
+			<input type="hidden" name="listindex" value="{{$index}}">
+		</form>
+	</div>
+	<div class="col-md-3 col-md-offset-2 col-xs-3">
+		<div class="input-group">
+			{{activeListIndex}}
+			<span class="input-group-addon glyphicon glyphicon-search"></span>
+			<input type="text" placeholder="Search" class="form-control" id="search" name="search" data-ng-model="search" />
+		</div>
+	</div>
+</div>
+
+<div class="row" id="taskcontainer">
+
+	<div class="tab-content">
+		<div class="tab-pane" data-ng-class='{active:$first}' data-ng-repeat="list in lists" id="list{{list.id}}">
+			<div class="row taskhead">
+				<ul class="nav navbar-nav navbar-left">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">List Actions <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Rename list</a></li>
+							<li><a href="#">Delete list</a></li>
+							<li><a href="#">Clear completed tasks</a></li>
+							<li class="dropdown-submenu">
+								<a href="#">Export</a>
+								<ul class="dropdown-menu">
+									<li><a href="#">CSV</a></li>
+								</ul>
+							</li>
+							<li class="divider"></li>
+							<li><a href="#">action</a></li>
+							<li><a href="#">action</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-left">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tasks ({{list.tasks.length}}) <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">All tasks</a></li>
+							<li><a href="#">Overdue</a></li>
+							<li><a href="#">Today and tomorrow</a></li>
+							<li><a href="#">Soon</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Sort by date created</a></li>
+							<li><a href="#">Sort by priority</a></li>
+							<li><a href="#">Sort by due date</a></li>
+							<li><a href="#">Sort by date modified</a></li>
+							<li><a href="#">Sort by progress</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#"><span class="label label-default">tag 1</span></a></li>
+							<li><a href="#"><span class="label label-default">tag 2</span></a></li>
+							<li><a href="#"><span class="label label-default">tag 3</span></a></li>
+							<li><a href="#"><span class="label label-default">tag 4</span></a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+			<div class="panel-group tasklist">
+				<p class="text-muted text-center" data-ng-hide="list.tasks.length > 0">no tasks found</p>
+				<ul data-ng-hide="list.tasks.length == 0">
+					<li class="taskitem" data-ng-repeat="task in list.tasks | filter:search">
+						<div class="panel panel-default callout-primary" id="task{{task.id}}">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<input type="checkbox" name="" value=""/>
+									<span class="label" data-ng-class="{'label-primary': task.prio == -1, 'label-default':task.prio == 0, 'label-warning':task.prio == 1, 'label-danger':task.prio == 2}">{{task.prio|formatPrio}}</span>
+									<span class="badge alert-success pull-right">{{task.due}}</span>
+
+									<div class="actions pull-right">
+										<a title="" href="#" data-placement="top"
+										   class="btn btn-xs btn-link edit has-tooltip" data-original-title="Edit todo">
+											<i class="glyphicon glyphicon-pencil"></i>
+										</a>
+										<a title="" href="#" data-placement="top"
+										   class="btn btn-xs btn-link remove has-tooltip"
+										   data-original-title="Remove todo">
+											<i class="glyphicon glyphicon-trash"></i>
+										</a>
+									</div>
+
+									<a data-ng-hide="task.desc != ''">
+										{{task.title}}
+									</a>
+
+									<a data-toggle="collapse" data-target="#collapse{{task.id}}"
+									   data-ng-hide="task.desc == ''">
+										{{task.title}}
+										<span class="caret"></span>
+									</a>
+
+									<div class="progress progress-striped">
+										<div class="progress-bar progress-bar-success" role="progressbar"
+										     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+										     style="width: 40%">
+											<span class="sr-only">40% Complete (success)</span>
+										</div>
+									</div>
+								</h4>
+							</div>
+							<div id="collapse{{task.id}}" class="panel collapse" data-ng-hide="task.desc == ''">
+								<div class="panel-body">
+									<blockquote>{{task.desc}}</blockquote>
+									<!--<ul class="taskcomments">
+										<li>
+											<div class="avatar pull-left">
+												<span class="glyphicon glyphicon-user img-circle"></span>
+											</div>
+											<div class="comment">
+												<div class="comment-head">
+													<span class="comment-user">User</span>
+													<span class="comment-details pull-right">
+														2014-02-15 14:33
+														<a href="#"><span class="glyphicon glyphicon-trash"></span></a>
+													</span>
+												</div>
+												<div class="comment-content">
+													Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="avatar pull-left">
+												<span class="glyphicon glyphicon-user img-circle"></span>
+											</div>
+											<div class="comment">
+												<div class="comment-head">
+													<span class="comment-user">User</span>
+													<span class="comment-details pull-right">
+														2014-02-15 14:33
+														<a href="#"><span class="glyphicon glyphicon-trash"></span></a>
+													</span>
+												</div>
+												<div class="comment-content">
+													Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+												</div>
+											</div>
+										</li>
+									</ul>-->
+									<button type="button" class="btn btn-default btn-xs comment-add">Add comment
+									</button>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+</div><!-- /.container -->

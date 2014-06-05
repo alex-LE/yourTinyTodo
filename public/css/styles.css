@@ -1,0 +1,244 @@
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	padding-top: 80px;
+	background: #f5f5f5;
+
+	/* Margin bottom by footer height */
+	margin-bottom: 30px;
+}
+
+#footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 30px;
+	background-color: #f5f5f5;
+}
+
+#toolbar {
+	background: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	border-top: none;
+	border-bottom: none;
+	padding: 10px 0;
+}
+
+.taskhead {
+	padding: 5px 20px 10px 0;
+	background: #ffffff;
+}
+
+#taskcontainer {
+	background: #ffffff;
+	padding: 0 15px;
+	border: 1px solid #DDDDDD;
+	border-top: none;
+	min-height: 500px;
+}
+
+#addlist {
+	margin-bottom: 0;
+	margin-top: 8px;
+}
+
+#newtask_adv {
+	margin-left: 10px;
+}
+
+.tasklist > ul {
+	padding-left:0;
+}
+
+.tasklist .panel-title a {
+	text-decoration: none;
+}
+
+.tasklist .panel-title .progress {
+	height: 10px;
+	margin-bottom: 0;
+	margin-top: 8px;
+	max-width: 200px;
+	background: #FFFFFF;
+}
+
+.tasklist .panel.callout-primary {
+	border-left: 4px solid #428BCA;
+}
+
+.tasklist .panel.callout-primary {
+	border-left: 4px solid #428BCA;
+}
+
+.tasklist .panel.callout-default {
+	border-left: 4px solid #999999;
+}
+
+.tasklist .panel.callout-warning {
+	border-left: 4px solid #F0AD4E;
+}
+
+.tasklist .panel.callout-danger {
+	border-left: 4px solid #D9534F;
+}
+
+.tasklist .actions {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: 23px;
+}
+
+.tasklist .panel-title {
+	position: relative;
+}
+
+.tasklist .panel-default > .panel-heading {
+	min-height: 56px;
+	/*cursor: all-scroll;*/
+}
+
+	.tasklist .panel-default > .panel-heading:hover .actions {
+		display: block;
+	}
+
+.tasklist .panel-default .panel-body {
+	background: #F5F5F5;
+}
+
+.tasklist blockquote {
+	font-size: 12px;
+	background: #FFFFFF;
+}
+
+.nav-tabs > li > a .glyphicon {
+	margin-right: 10px;
+	font-size: 12px;
+}
+
+.right-caret {
+	border-bottom: 4px solid rgba(0, 0, 0, 0);
+	border-top: 4px solid rgba(0, 0, 0, 0);
+	border-left: 4px solid rgba(0, 0, 0, 0);
+	display: inline-block;
+	height: 0;
+	opacity: 0.3;
+	vertical-align: top;
+	width: 0;
+}
+
+.taskcomments {
+	list-style-type:none;
+	padding-left: 2px;
+}
+
+.taskcomments li {
+	font-size: 12px;
+	margin: 0;
+	padding: 5px 3px 5px 5px;
+}
+
+.taskcomments .comment {
+	padding-left: 40px;
+}
+
+.taskcomments .avatar .glyphicon {
+	background: none repeat scroll 0 0 #FFFFFF;
+	font-size: 15px;
+	height: 30px;
+	padding: 6px 0 0 8px;
+	width: 30px;
+}
+
+.taskcomments .comment-head {
+	background: none repeat scroll 0 0 #FFFFFF;
+	border: 1px solid #DDDDDD;
+	padding: 3px 5px;
+	font-weight: bold;
+}
+
+.taskcomments .comment-user {
+
+}
+
+.taskcomments .comment-details {
+
+ }
+
+	.taskcomments .comment-details .glyphicon {
+		margin-left: 5px;
+	}
+
+.taskcomments .comment-content {
+	border-color: #DDDDDD;
+	border-style: none solid solid;
+	border-width: 0 1px 1px;
+	padding: 3px 5px;
+	background: none repeat scroll 0 0 #FFFFFF;
+}
+
+.comment-sign {
+	font-size:20px;
+}
+
+.comment-add {
+	margin-left: 48px;
+}
+
+.dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu:hover>.dropdown-menu{display:block;}
+.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+
+.bootstrap-checkbox .glyphicon {
+	 font-size: 20px;
+}
+/*
+.subtask {
+	padding: 0;
+	margin-left: 3%;
+	width: 97%;
+}
+*/
+.tasklist {
+	overflow: hidden;
+}
+
+.tasklist ul {
+	list-style-type: none;
+}
+
+.tasklist ul li {
+	margin: 5px 0;
+	overflow: hidden;
+}
+
+.sortable-placeholder {
+	height: 80px;
+	border: 2px dashed #CCCCCC;
+}
+
+body.dragging, body.dragging * {
+	cursor: move !important;
+}
+
+.dragged {
+	position: absolute;
+	opacity: 0.5;
+	z-index: 2000;
+}
+
+.tasklist ul li.placeholder {
+	height: 80px;
+	width: 100%;
+	border: 2px dashed #CCCCCC;
+	float: left;
+}
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
